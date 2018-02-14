@@ -58,7 +58,9 @@ function Login(props, context) {
         </form>
 
       </Panel>
-
+<a href="" onClick={(e) => { e.preventDefault(); history.push('/registration'); }} >
+                       <i className="fa fa-table fa-fw" /> &nbsp;Register here
+                     </a>
     </div>
 
   );
