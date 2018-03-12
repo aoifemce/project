@@ -951,9 +951,9 @@ module.exports =
   
   var _notification2 = _interopRequireDefault(_notification);
   
-  var _panelWells = __webpack_require__(181);
+  var _membershipReg = __webpack_require__(181);
   
-  var _panelWells2 = _interopRequireDefault(_panelWells);
+  var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
   var _typography = __webpack_require__(183);
   
@@ -1022,7 +1022,7 @@ module.exports =
     // keep in mind, routes are evaluated in order
     children: [_home2.default,
     // contact,
-    _tables2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _icons2.default, _morrisjsCharts2.default, _notification2.default, _panelWells2.default, _typography2.default,
+    _tables2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _icons2.default, _morrisjsCharts2.default, _notification2.default, _membershipReg2.default, _typography2.default,
     // register,
     _blank2.default,
   
@@ -1602,7 +1602,19 @@ module.exports =
                 _react2.default.createElement(
                   'a',
                   { href: '', onClick: function onClick(e) {
-                      e.preventDefault();_history2.default.push('/');
+                      e.preventDefault();_history2.default.push('/membershipReg');
+                    } },
+                  _react2.default.createElement('i', { className: 'fa fa-user-plus fa-fw' }),
+                  ' \xA0Members Registration'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  'a',
+                  { href: '', onClick: function onClick(e) {
+                      e.preventDefault();_history2.default.push('/button');
                     } },
                   _react2.default.createElement('i', { className: 'fa fa-dashboard fa-fw' }),
                   ' \xA0Fixtures / Results'
@@ -20173,12 +20185,87 @@ module.exports =
         )
       ),
       _react2.default.createElement(
-        'a',
-        { href: '', onClick: function onClick(e) {
-            e.preventDefault();_history2.default.push('/registration');
-          } },
-        _react2.default.createElement('i', { className: 'fa fa-table fa-fw' }),
-        ' \xA0Register here'
+        _Panel2.default,
+        { header: _react2.default.createElement(
+            'h3',
+            null,
+            'Please Register'
+          ), className: 'register-panel' },
+        _react2.default.createElement(
+          'form',
+          { role: 'form', onSubmit: function onSubmit(e) {
+              submitHandler(e);
+            } },
+          _react2.default.createElement(
+            'fieldset',
+            null,
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                type: 'text',
+                className: 'form-control',
+                placeholder: 'Username',
+                name: 'name'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'Email',
+                type: 'email',
+                name: 'email'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'Password',
+                type: 'password',
+                name: 'password'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'Town',
+                type: '',
+                name: 'town'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'Club Name',
+                type: '',
+                name: 'clubName'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'Type of Club',
+                type: '',
+                name: 'clubType'
+              })
+            ),
+            _react2.default.createElement(
+              _Button2.default,
+              { type: 'submit', bsSize: 'small', bsStyle: 'primary', block: true },
+              'Register'
+            )
+          )
+        )
       )
     );
   }
@@ -28015,18 +28102,18 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _PanelWells = __webpack_require__(182);
+  var _membershipReg = __webpack_require__(182);
   
-  var _PanelWells2 = _interopRequireDefault(_PanelWells);
+  var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
   exports.default = {
   
-    path: '/panelwells',
+    path: '/membershipReg',
   
     action: function action() {
-      return _react2.default.createElement(_PanelWells2.default, null);
+      return _react2.default.createElement(_membershipReg2.default, null);
     }
   };
 
@@ -28048,9 +28135,14 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
-  var title = 'PanelWells';
+  var title = 'Membership Registration';
   
-  function displayPanelWells(props, context) {
+  var buttonStyle = {
+    float: 'right',
+    margin: '-7px -10px 0px 0px'
+  };
+  
+  function displayMembershipRegistration(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
       'div',
@@ -28061,7 +28153,8 @@ module.exports =
         _react2.default.createElement(
           _reactBootstrap.PageHeader,
           null,
-          'Panels and Wells'
+          'Membership Registration  ',
+          _react2.default.createElement('i', { className: 'fa fa-user-plus fa-fw' })
         )
       ),
       _react2.default.createElement(
@@ -28069,75 +28162,24 @@ module.exports =
         { className: 'row' },
         _react2.default.createElement(
           'div',
-          { className: 'col-lg-4' },
+          { className: 'col-lg-8' },
           _react2.default.createElement(
             _reactBootstrap.Panel,
             {
               header: _react2.default.createElement(
                 'span',
                 null,
-                'Default Panel'
-              ),
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                'Panel Footer'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt . est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                'Primary Panel'
-              ), className: 'panel-primary',
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                'Panel Footer'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                'Success Panel'
+                'Adult Membership'
               ), className: 'panel-success',
               footer: _react2.default.createElement(
                 'span',
                 null,
-                'Panel Footer'
+                '\xA330',
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'primary', style: buttonStyle },
+                  'Add to Basket'
+                )
               )
             },
             _react2.default.createElement(
@@ -28146,39 +28188,7 @@ module.exports =
               _react2.default.createElement(
                 'p',
                 null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                'Info Panel'
-              ), className: 'panel-info',
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                'Panel Footer'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
+                '17 and above for all sports'
               )
             )
           )
@@ -28192,12 +28202,17 @@ module.exports =
               header: _react2.default.createElement(
                 'span',
                 null,
-                'Warning Panel'
-              ), className: 'panel-warning',
+                _react2.default.createElement('i', { className: 'fa fa-shopping-basket fa-fw' }),
+                'Basket'
+              ), className: 'panel-primary',
               footer: _react2.default.createElement(
                 'span',
                 null,
-                'Panel Footer'
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'success' },
+                  'Buy Now'
+                )
               )
             },
             _react2.default.createElement(
@@ -28206,26 +28221,31 @@ module.exports =
               _react2.default.createElement(
                 'p',
                 null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
+                '() items in basket'
               )
             )
           )
         ),
         _react2.default.createElement(
           'div',
-          { className: 'col-lg-4' },
+          { className: 'col-lg-8' },
           _react2.default.createElement(
             _reactBootstrap.Panel,
             {
               header: _react2.default.createElement(
                 'span',
                 null,
-                'Danger Panel'
-              ), className: 'panel-danger',
+                'Student Membership'
+              ), className: 'panel-success',
               footer: _react2.default.createElement(
                 'span',
                 null,
-                'Panel Footer'
+                '\xA315',
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'primary', style: buttonStyle },
+                  'Add to Basket'
+                )
               )
             },
             _react2.default.createElement(
@@ -28234,30 +28254,31 @@ module.exports =
               _react2.default.createElement(
                 'p',
                 null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
+                'Anyone still in full time education'
               )
             )
           )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
+        ),
         _react2.default.createElement(
           'div',
-          { className: 'col-lg-4' },
+          { className: 'col-lg-8' },
           _react2.default.createElement(
             _reactBootstrap.Panel,
             {
               header: _react2.default.createElement(
                 'span',
                 null,
-                'Green Panel'
-              ), className: 'panel-green',
+                'Children Membership'
+              ), className: 'panel-success',
               footer: _react2.default.createElement(
                 'span',
                 null,
-                'Panel Footer'
+                '\xA315',
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'primary', style: buttonStyle },
+                  'Add to Basket'
+                )
               )
             },
             _react2.default.createElement(
@@ -28266,353 +28287,7 @@ module.exports =
               _react2.default.createElement(
                 'p',
                 null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                'Yellow Panel'
-              ), className: 'panel-yellow',
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                'Panel Footer'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                'Red Panel'
-              ), className: 'panel-red',
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                'Panel Footer'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue.'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Collapsible Accordion Panel Group'
-              ) },
-            _react2.default.createElement(
-              _reactBootstrap.Accordion,
-              null,
-              _react2.default.createElement(
-                _reactBootstrap.Panel,
-                {
-                  header: _react2.default.createElement(
-                    'h4',
-                    { className: 'panel-title' },
-                    'Collapsible Group Item #1'
-                  ), eventKey: '1'
-                },
-                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Panel,
-                {
-                  header: _react2.default.createElement(
-                    'h4',
-                    { className: 'panel-title' },
-                    'Collapsible Group Item #2'
-                  ), eventKey: '2'
-                },
-                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Panel,
-                {
-                  header: _react2.default.createElement(
-                    'h4',
-                    { className: 'panel-title' },
-                    'Collapsible Group Item #3'
-                  ), eventKey: '3'
-                },
-                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-6' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Basic Tabs'
-              ) },
-            _react2.default.createElement(
-              _reactBootstrap.Tabs,
-              { id: 'tabs1', defaultActiveKey: 1 },
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 1, title: 'Home' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Home Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 2, title: 'Profile' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Profile Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 3, title: 'Messages' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Messages Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 4, title: 'Settings' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Settings Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-6' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Pill Tabs'
-              ) },
-            _react2.default.createElement(
-              _reactBootstrap.Tabs,
-              { id: 'tabs2', bsStyle: 'pills', defaultActiveKey: 1 },
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 1, title: 'Home' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Home Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 2, title: 'Profile' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Profile Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 3, title: 'Messages' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Messages Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.Tab,
-                { eventKey: 4, title: 'Settings' },
-                _react2.default.createElement(
-                  'h4',
-                  null,
-                  'Settings Tab'
-                ),
-                _react2.default.createElement(
-                  'p',
-                  null,
-                  'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                )
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Well,
-            null,
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Normal Well'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Well,
-            { bsSize: 'large' },
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Large Well'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Well,
-            { bsSize: 'small' },
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Small Well'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _reactBootstrap.Jumbotron,
-            null,
-            _react2.default.createElement(
-              'h1',
-              null,
-              'Jumbotron'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing, posuere lectus et, fringilla augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tincidunt est vitae ultrices accumsan. Aliquam ornare lacus adipiscing.'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              _react2.default.createElement(
-                _reactBootstrap.Button,
-                { bsStyle: 'primary', bsSize: 'large' },
-                'Learn more'
+                '16 or below for all sports '
               )
             )
           )
@@ -28621,9 +28296,9 @@ module.exports =
     );
   }
   
-  displayPanelWells.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+  displayMembershipRegistration.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
   
-  exports.default = displayPanelWells;
+  exports.default = displayMembershipRegistration;
 
 /***/ }),
 /* 183 */
@@ -29331,7 +29006,21 @@ module.exports =
           _react2.default.createElement(
             _reactBootstrap.PageHeader,
             null,
-            'Blank'
+            'Registration'
+          )
+        ),
+        _react2.default.createElement(
+          _reactBootstrap.Panel,
+          null,
+          _react2.default.createElement(
+            _reactBootstrap.Panel.Header,
+            null,
+            'Adult Registration'
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Panel.Body,
+            null,
+            '16+ across all sports'
           )
         )
       )

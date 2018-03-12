@@ -21,9 +21,13 @@ class Sidebar extends Component {
         <div className="sidebar-nav navbar-collapse collapse">
           <ul className="nav in" id="side-menu">
 
-
+             <li>
+              <a href="" onClick={(e) => { e.preventDefault(); history.push('/membershipReg'); }} >
+                <i className="fa fa-user-plus fa-fw" /> &nbsp;Members Registration
+              </a>
+            </li>
             <li>
-              <a href="" onClick={(e) => { e.preventDefault(); history.push('/'); }} >
+              <a href="" onClick={(e) => { e.preventDefault(); history.push('/button'); }} >
                 <i className="fa fa-dashboard fa-fw" /> &nbsp;Fixtures / Results
               </a>
             </li>

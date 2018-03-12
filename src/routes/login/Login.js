@@ -56,12 +56,75 @@ function Login(props, context) {
             <Button type="submit" bsSize="large" bsStyle="success" block>Login</Button>
           </fieldset>
         </form>
+      </Panel>
+
+
+      <Panel header={<h3>Please Register</h3>} className="register-panel">
+
+        <form role="form" onSubmit={(e) => { submitHandler(e); }}>
+          <fieldset>
+            <div className="form-group">
+              <FormControl
+                type="text"
+                className="form-control"
+                placeholder="Username"
+                name="name"
+              />
+            </div>
+
+            <div className="form-group">
+              <FormControl
+                className="form-control"
+                placeholder="Email"
+                type="email"
+                name="email"
+              />
+            </div>
+
+         <div className="form-group">
+              <FormControl
+                className="form-control"
+                placeholder="Password"
+                type="password"
+                name="password"
+              />
+            </div>
+
+         <div className="form-group">
+              <FormControl
+                className="form-control"
+                placeholder="Town"
+                type=""
+                name="town"
+              />
+            </div>
+
+         <div className="form-group">
+          <FormControl
+            className="form-control"
+            placeholder="Club Name"
+            type=""
+            name="clubName"
+          />
+        </div>
+
+         <div className="form-group">
+            <FormControl
+              className="form-control"
+              placeholder="Type of Club"
+              type=""
+              name="clubType"
+            />
+      </div>
+
+            <Button type="submit" bsSize="small" bsStyle="primary" block>Register</Button>
+          </fieldset>
+        </form>
 
       </Panel>
-<a href="" onClick={(e) => { e.preventDefault(); history.push('/registration'); }} >
-                       <i className="fa fa-table fa-fw" /> &nbsp;Register here
-                     </a>
+
     </div>
+
 
   );
 }

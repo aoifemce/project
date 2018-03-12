@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { PageHeader } from 'react-bootstrap';
+import { PageHeader, Panel, PanelHeader, PanelBody, PanelFooter } from 'react-bootstrap';
 
 const title = 'Blank';
 
@@ -9,10 +9,22 @@ function displayBlank(props, context) {
     <div>
       <div className="row">
         <div className="col-lg-12">
-          <PageHeader>Blank</PageHeader>
+          <PageHeader>Registration</PageHeader>
         </div>
+
+
+         <Panel>
+            <Panel.Header>Adult Registration</Panel.Header>
+            <Panel.Body>16+ across all sports</Panel.Body>
+          </Panel>
+
+
+
       </div>
     </div>
+
+
+
   );
 }
 
