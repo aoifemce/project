@@ -27,11 +27,11 @@ function submitHandler(e) {
 function Login(props, context) {
   context.setTitle(title);
   return (
-    <div className="col-md-4 col-md-offset-4">
+    <div className="col-md-6 col-md-offset-3">
       <div className="text-center">
         <h1 className="login-brand-text">Club Connect</h1>
       </div>
-      <Panel header={<h3>Please Sign In</h3>} className="login-panel">
+      <Panel header={<h3>Please Sign In</h3>}>
 
         <form role="form" onSubmit={(e) => { submitHandler(e); }}>
           <fieldset>
@@ -59,7 +59,7 @@ function Login(props, context) {
       </Panel>
 
 
-      <Panel header={<h3>Please Register</h3>} className="register-panel">
+      <Panel header={<h3>Please Register</h3>}>
 
         <form role="form" onSubmit={(e) => { submitHandler(e); }}>
           <fieldset>
@@ -117,14 +117,12 @@ function Login(props, context) {
             />
       </div>
 
-            <Button type="submit" bsSize="small" bsStyle="primary" block>Register</Button>
+            <Button type="submit" bsSize="large" bsStyle="primary" block>Register</Button>
           </fieldset>
         </form>
 
       </Panel>
-
     </div>
-
 
   );
 }

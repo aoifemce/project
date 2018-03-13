@@ -955,13 +955,13 @@ module.exports =
   
   var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
-  var _typography = __webpack_require__(183);
+  var _chat = __webpack_require__(189);
   
-  var _typography2 = _interopRequireDefault(_typography);
+  var _chat2 = _interopRequireDefault(_chat);
   
-  var _blank = __webpack_require__(185);
+  var _resultsFixtures = __webpack_require__(185);
   
-  var _blank2 = _interopRequireDefault(_blank);
+  var _resultsFixtures2 = _interopRequireDefault(_resultsFixtures);
   
   var _error = __webpack_require__(187);
   
@@ -1022,9 +1022,9 @@ module.exports =
     // keep in mind, routes are evaluated in order
     children: [_home2.default,
     // contact,
-    _tables2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _icons2.default, _morrisjsCharts2.default, _notification2.default, _membershipReg2.default, _typography2.default,
+    _tables2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _icons2.default, _morrisjsCharts2.default, _notification2.default, _membershipReg2.default, _chat2.default,
     // register,
-    _blank2.default,
+    _resultsFixtures2.default,
   
     // place new routes before...
     // content,
@@ -1614,7 +1614,7 @@ module.exports =
                 _react2.default.createElement(
                   'a',
                   { href: '', onClick: function onClick(e) {
-                      e.preventDefault();_history2.default.push('/button');
+                      e.preventDefault();_history2.default.push('/resultsFixtures');
                     } },
                   _react2.default.createElement('i', { className: 'fa fa-dashboard fa-fw' }),
                   ' \xA0Fixtures / Results'
@@ -1626,7 +1626,7 @@ module.exports =
                 _react2.default.createElement(
                   'a',
                   { href: '', onClick: function onClick(e) {
-                      e.preventDefault();_history2.default.push('/table');
+                      e.preventDefault();_history2.default.push('/chat');
                     } },
                   _react2.default.createElement('i', { className: 'fa fa-comments fa-fw' }),
                   ' \xA0Group Chat'
@@ -20126,7 +20126,7 @@ module.exports =
     context.setTitle(title);
     return _react2.default.createElement(
       'div',
-      { className: 'col-md-4 col-md-offset-4' },
+      { className: 'col-md-6 col-md-offset-3' },
       _react2.default.createElement(
         'div',
         { className: 'text-center' },
@@ -20142,7 +20142,7 @@ module.exports =
             'h3',
             null,
             'Please Sign In'
-          ), className: 'login-panel' },
+          ) },
         _react2.default.createElement(
           'form',
           { role: 'form', onSubmit: function onSubmit(e) {
@@ -20190,7 +20190,7 @@ module.exports =
             'h3',
             null,
             'Please Register'
-          ), className: 'register-panel' },
+          ) },
         _react2.default.createElement(
           'form',
           { role: 'form', onSubmit: function onSubmit(e) {
@@ -20261,7 +20261,7 @@ module.exports =
             ),
             _react2.default.createElement(
               _Button2.default,
-              { type: 'submit', bsSize: 'small', bsStyle: 'primary', block: true },
+              { type: 'submit', bsSize: 'large', bsStyle: 'primary', block: true },
               'Register'
             )
           )
@@ -28301,650 +28301,8 @@ module.exports =
   exports.default = displayMembershipRegistration;
 
 /***/ }),
-/* 183 */
-/***/ (function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  
-  var _react = __webpack_require__(11);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _Typography = __webpack_require__(184);
-  
-  var _Typography2 = _interopRequireDefault(_Typography);
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-  
-  exports.default = {
-  
-    path: '/typography',
-  
-    action: function action() {
-      return _react2.default.createElement(_Typography2.default, null);
-    }
-  };
-
-/***/ }),
-/* 184 */
-/***/ (function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  
-  var _react = __webpack_require__(11);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _Panel = __webpack_require__(151);
-  
-  var _Panel2 = _interopRequireDefault(_Panel);
-  
-  var _PageHeader = __webpack_require__(157);
-  
-  var _PageHeader2 = _interopRequireDefault(_PageHeader);
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-  
-  var title = 'Typography';
-  
-  function displayTypography(props, context) {
-    context.setTitle(title);
-    return _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _PageHeader2.default,
-            null,
-            'Typography'
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Headings'
-              ) },
-            _react2.default.createElement(
-              'h1',
-              null,
-              'Heading 1',
-              _react2.default.createElement(
-                'small',
-                null,
-                'Sub-heading'
-              )
-            ),
-            _react2.default.createElement(
-              'h2',
-              null,
-              'Heading 2',
-              _react2.default.createElement(
-                'small',
-                null,
-                'Sub-heading'
-              )
-            ),
-            _react2.default.createElement(
-              'h3',
-              null,
-              'Heading 3',
-              _react2.default.createElement(
-                'small',
-                null,
-                'Sub-heading'
-              )
-            ),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Heading 4',
-              _react2.default.createElement(
-                'small',
-                null,
-                'Sub-heading'
-              )
-            ),
-            _react2.default.createElement(
-              'h5',
-              null,
-              'Heading 5',
-              _react2.default.createElement(
-                'small',
-                null,
-                'Sub-heading'
-              )
-            ),
-            _react2.default.createElement(
-              'h6',
-              null,
-              'Heading 6',
-              _react2.default.createElement(
-                'small',
-                null,
-                'Sub-heading'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Paragraphs'
-              ) },
-            _react2.default.createElement(
-              'p',
-              { className: 'lead' },
-              'This is an example of lead body copy.'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'This is an example of standard paragraph text. This is an example of',
-              _react2.default.createElement(
-                'a',
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                'link anchor text'
-              ),
-              'within body copy.'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              _react2.default.createElement(
-                'small',
-                null,
-                'This is an example of small, fine print text.'
-              )
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              _react2.default.createElement(
-                'strong',
-                null,
-                'This is an example of strong, bold text.'
-              )
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              _react2.default.createElement(
-                'em',
-                null,
-                'This is an example of emphasized, italic text.'
-              )
-            ),
-            _react2.default.createElement('br', null),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Alignment Helpers'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-left' },
-              'Left aligned text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-center' },
-              'Center aligned text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-right' },
-              'Right aligned text.'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Emphasis Classes'
-              ) },
-            _react2.default.createElement(
-              'p',
-              { className: 'text-muted' },
-              'This is an example of muted text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-primary' },
-              'This is an example of primary text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-success' },
-              'This is an example of success text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-info' },
-              'This is an example of info text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-warning' },
-              'This is an example of warning text.'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'text-danger' },
-              'This is an example of danger text.'
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Abbreviations'
-              ) },
-            _react2.default.createElement(
-              'p',
-              null,
-              'The abbreviation of the word attribute is',
-              _react2.default.createElement(
-                'abbr',
-                { title: 'attribute' },
-                'attr'
-              ),
-              '.'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              _react2.default.createElement(
-                'abbr',
-                {
-                  title: 'HyperText Markup Language',
-                  className: 'initialism'
-                },
-                'HTML'
-              ),
-              'is an abbreviation for a programming language.'
-            ),
-            _react2.default.createElement('br', null),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Addresses'
-            ),
-            _react2.default.createElement(
-              'address',
-              null,
-              _react2.default.createElement(
-                'strong',
-                null,
-                'Twitter, Inc.'
-              ),
-              _react2.default.createElement('br', null),
-              '795 Folsom Ave, Suite 600',
-              _react2.default.createElement('br', null),
-              'San Francisco, CA 94107',
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'abbr',
-                { title: 'Phone' },
-                'P:'
-              ),
-              '(123) 456-7890'
-            ),
-            _react2.default.createElement(
-              'address',
-              null,
-              _react2.default.createElement(
-                'strong',
-                null,
-                'Full Name'
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'a',
-                { href: 'mailto:#' },
-                'first.last@example.com'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Blockquotes'
-              ) },
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Default Blockquote'
-            ),
-            _react2.default.createElement(
-              'blockquote',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.'
-              )
-            ),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Blockquote with Citation'
-            ),
-            _react2.default.createElement(
-              'blockquote',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.'
-              ),
-              _react2.default.createElement(
-                'small',
-                null,
-                'Someone famous in',
-                _react2.default.createElement(
-                  'cite',
-                  { title: 'Source Title' },
-                  'Source Title'
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Right Aligned Blockquote'
-            ),
-            _react2.default.createElement(
-              'blockquote',
-              { className: 'pull-right' },
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Lists'
-              ) },
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Unordered List'
-            ),
-            _react2.default.createElement(
-              'ul',
-              null,
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                _react2.default.createElement(
-                  'ul',
-                  null,
-                  _react2.default.createElement(
-                    'li',
-                    null,
-                    'List Item'
-                  ),
-                  _react2.default.createElement(
-                    'li',
-                    null,
-                    'List Item'
-                  ),
-                  _react2.default.createElement(
-                    'li',
-                    null,
-                    'List Item'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              )
-            ),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Ordered List'
-            ),
-            _react2.default.createElement(
-              'ol',
-              null,
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              )
-            ),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Unstyled List'
-            ),
-            _react2.default.createElement(
-              'ul',
-              { className: 'list-unstyled' },
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              )
-            ),
-            _react2.default.createElement(
-              'h4',
-              null,
-              'Inline List'
-            ),
-            _react2.default.createElement(
-              'ul',
-              { className: 'list-inline' },
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              ),
-              _react2.default.createElement(
-                'li',
-                null,
-                'List Item'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Description Lists'
-              ) },
-            _react2.default.createElement(
-              'dl',
-              null,
-              _react2.default.createElement(
-                'dt',
-                null,
-                'Standard Description List'
-              ),
-              _react2.default.createElement(
-                'dd',
-                null,
-                'Description Text'
-              ),
-              _react2.default.createElement(
-                'dt',
-                null,
-                'Description List Title'
-              ),
-              _react2.default.createElement(
-                'dd',
-                null,
-                'Description List Text'
-              )
-            ),
-            _react2.default.createElement(
-              'dl',
-              { className: 'dl-horizontal' },
-              _react2.default.createElement(
-                'dt',
-                null,
-                'Horizontal Description List'
-              ),
-              _react2.default.createElement(
-                'dd',
-                null,
-                'Description Text'
-              ),
-              _react2.default.createElement(
-                'dt',
-                null,
-                'Description List Title'
-              ),
-              _react2.default.createElement(
-                'dd',
-                null,
-                'Description List Text'
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Code'
-              ) },
-            _react2.default.createElement(
-              'p',
-              null,
-              'This is an example of an inline code element within body copy. Wrap inline code within a ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '<code>...</code>'
-              ),
-              'tag.'
-            ),
-            _react2.default.createElement(
-              'pre',
-              null,
-              'This is an example of preformatted text.'
-            )
-          )
-        )
-      )
-    );
-  }
-  
-  displayTypography.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
-  
-  exports.default = displayTypography;
-
-/***/ }),
+/* 183 */,
+/* 184 */,
 /* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -28958,17 +28316,17 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _blank = __webpack_require__(186);
+  var _resultsFixtures = __webpack_require__(186);
   
-  var _blank2 = _interopRequireDefault(_blank);
+  var _resultsFixtures2 = _interopRequireDefault(_resultsFixtures);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
   exports.default = {
-    path: '/blank',
+    path: '/resultsFixtures',
   
     action: function action() {
-      return _react2.default.createElement(_blank2.default, null);
+      return _react2.default.createElement(_resultsFixtures2.default, null);
     }
   };
 
@@ -28990,45 +28348,122 @@ module.exports =
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
-  var title = 'Blank';
+  var title = 'Results and Fixtures';
   
-  function displayBlank(props, context) {
+  var buttonStyle = {
+    float: 'right',
+    margin: '-7px -10px 0px 0px'
+  };
+  
+  function resultsFixtures(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
       'div',
       null,
       _react2.default.createElement(
         'div',
+        { className: 'col-lg-12' },
+        _react2.default.createElement(
+          _reactBootstrap.PageHeader,
+          null,
+          'Results and Fixtures'
+        )
+      ),
+      _react2.default.createElement(
+        'div',
         { className: 'row' },
         _react2.default.createElement(
           'div',
-          { className: 'col-lg-12' },
+          { className: 'col-lg-8' },
           _react2.default.createElement(
-            _reactBootstrap.PageHeader,
-            null,
-            'Registration'
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                'Results'
+              ), className: 'panel-success',
+              footer: _react2.default.createElement(
+                'span',
+                null,
+                'Last 7 days'
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement('p', null)
+            )
           )
         ),
         _react2.default.createElement(
-          _reactBootstrap.Panel,
-          null,
+          'div',
+          { className: 'col-lg-4' },
           _react2.default.createElement(
-            _reactBootstrap.Panel.Header,
-            null,
-            'Adult Registration'
-          ),
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                'Club Lotto Results'
+              ), className: 'panel-primary',
+              footer: _react2.default.createElement(
+                'span',
+                null,
+                ' Next weeks lotto - \xA35000 '
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'p',
+                null,
+                '4 6 15 7 No Winners'
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-8' },
           _react2.default.createElement(
-            _reactBootstrap.Panel.Body,
-            null,
-            '16+ across all sports'
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                'Fixtures'
+              ), className: 'panel-success',
+              footer: _react2.default.createElement(
+                'span',
+                null,
+                'Next 7 days'
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'p',
+                null,
+                'u14/u16 Football Training 7pm Tuesday and Thursday'
+              ),
+              _react2.default.createElement(
+                'p',
+                null,
+                'Senior camogie training 7.30 Wednesday & Friday'
+              )
+            )
           )
         )
       )
     );
   }
   
-  displayBlank.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
-  exports.default = displayBlank;
+  resultsFixtures.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+  
+  exports.default = resultsFixtures;
 
 /***/ }),
 /* 187 */
@@ -29084,6 +28519,120 @@ module.exports =
 /***/ (function(module, exports) {
 
   module.exports = require("./assets");
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _chat = __webpack_require__(190);
+  
+  var _chat2 = _interopRequireDefault(_chat);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  exports.default = {
+  
+    path: '/chat',
+  
+    action: function action() {
+      return _react2.default.createElement(_chat2.default, null);
+    }
+  };
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _Panel = __webpack_require__(151);
+  
+  var _Panel2 = _interopRequireDefault(_Panel);
+  
+  var _PageHeader = __webpack_require__(157);
+  
+  var _PageHeader2 = _interopRequireDefault(_PageHeader);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var title = 'Chat';
+  
+  var containerStyle = {
+    fontSize: 'large',
+    color: 'gray',
+    display: 'grid',
+    gridTemplateColumns: '1fr 7fr',
+    gridTemplateAreas: 'sidebar main',
+    width: '100vw',
+    height: '100vh'
+  };
+  
+  var newMessageStyle = {
+    position: 'fixed',
+    bottom: '0',
+    width: '100%',
+    padding: '20px',
+    marginLeft: '0px',
+    borderTop: '5px solid dodgerblue'
+  };
+  
+  var messageListStyle = {
+    padding: '10px 0 0 12px'
+  };
+  
+  var sideBarStyle = {
+    padding: '10px 0 0 5px',
+    borderRight: '5px solid dodgerblue',
+    height: '100%'
+  };
+  function displayChat(props, context) {
+    context.setTitle(title);
+    return _react2.default.createElement(
+      'div',
+      { style: containerStyle, id: 'container' },
+      _react2.default.createElement(
+        'aside',
+        { style: sideBarStyle, id: 'sidebar' },
+        'Users'
+      ),
+      _react2.default.createElement(
+        'section',
+        { id: 'main' },
+        _react2.default.createElement(
+          'section',
+          { style: messageListStyle, id: 'messages-list' },
+          'Messages list'
+        ),
+        _react2.default.createElement(
+          'section',
+          { style: newMessageStyle, id: 'new-message' },
+          'New message'
+        )
+      )
+    );
+  }
+  
+  displayChat.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+  
+  exports.default = displayChat;
 
 /***/ })
 /******/ ]);

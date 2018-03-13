@@ -22,8 +22,8 @@ import icons from './dashboardPages/icons';
 import morrisjscharts from './dashboardPages/morrisjsCharts';
 import notification from './dashboardPages/notification';
 import membershipReg from './dashboardPages/membershipReg';
-import typography from './dashboardPages/typography';
-import blank from './dashboardPages/blank';
+import chat from './dashboardPages/chat';
+import resultsFixtures from './dashboardPages/resultsFixtures';
 import error from './error';
 
 import Header from '../components/Header';
@@ -61,9 +61,9 @@ export default [
       morrisjscharts,
       notification,
       membershipReg,
-      typography,
+      chat,
       // register,
-      blank,
+      resultsFixtures,
 
       // place new routes before...
       // content,

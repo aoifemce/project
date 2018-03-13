@@ -27,13 +27,13 @@ class Sidebar extends Component {
               </a>
             </li>
             <li>
-              <a href="" onClick={(e) => { e.preventDefault(); history.push('/button'); }} >
+              <a href="" onClick={(e) => { e.preventDefault(); history.push('/resultsFixtures'); }} >
                 <i className="fa fa-dashboard fa-fw" /> &nbsp;Fixtures / Results
               </a>
             </li>
 
             <li>
-              <a href="" onClick={(e) => { e.preventDefault(); history.push('/table'); }} >
+              <a href="" onClick={(e) => { e.preventDefault(); history.push('/chat'); }} >
                 <i className="fa fa-comments fa-fw" /> &nbsp;Group Chat
               </a>
             </li>
