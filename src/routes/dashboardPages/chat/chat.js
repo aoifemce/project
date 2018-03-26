@@ -1,53 +1,48 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import Panel from 'react-bootstrap/lib/Panel';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
-
+import MessageList from './components/MessageList';
+import firebase from 'firebase';
+import MessageBox from './components/MessageBox';
 
 const title = 'Chat';
 
+class Chat extends Component {
 
-var containerStyle = {
-  fontSize: 'large',
-  color: 'gray',
-  display: 'grid',
-  gridTemplateColumns: '1fr 7fr',
-  gridTemplateAreas: 'sidebar main',
-  width: '100vw',
-  height: '100vh'
-};
-
-var newMessageStyle = {
-  position: 'fixed',
-  bottom: '0',
-  width: '100%',
-  padding: '20px',
-  marginLeft: '0px',
-  borderTop: '5px solid dodgerblue'
-};
-
-var messageListStyle = {
-  padding: '10px 0 0 12px'
-};
-
-var sideBarStyle = {
-  padding: '10px 0 0 5px',
-  borderRight: '5px solid dodgerblue',
-  height: '100%'
+constructor(props){
+  super(props);
+  var config = {
+      apiKey: "AIzaSyCOgQiq1Tq6Cdgx60UVZ6a2mp-42T9XNJ0",
+      authDomain: "clubconnect-c4852.firebaseapp.com",
+      databaseURL: "https://clubconnect-c4852.firebaseio.com",
+      projectId: "clubconnect-c4852",
+      storageBucket: "clubconnect-c4852.appspot.com",
+      messagingSenderId: "270307080443"
+    };
+    firebase.initializeApp(config);
 }
-function displayChat(props, context) {
-  context.setTitle(title);
-  return (
 
-   <div style={ containerStyle  } id="container">
-        <aside  style={sideBarStyle} id="sidebar">Users</aside>
-        <section  id="main">
-          <section style={messageListStyle} id="messages-list">Messages list</section>
-          <section  style={newMessageStyle} id="new-message">New message</section>
-        </section>
-      </div>
+  render() {
+    return (
+      <div className="container">
+
+            <div className="columns">
+              <div className="column is-3"></div>
+              <div className="column is-6">
+                <MessageList db={firebase} />
+              </div>
+            </div>
+
+        <div className="columns">
+          <div className="column is-3"></div>
+          <div className="column is-6">
+            <MessageBox db={firebase} />
+          </div>
+        </div>
+        </div>
+
     );
+  }
 }
 
-displayChat.contextTypes = { setTitle: PropTypes.func.isRequired };
-
-export default displayChat;
+export default Chat;

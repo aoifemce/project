@@ -24,6 +24,10 @@ function submitHandler(e) {
   history.push('/');
 }
 
+function register(){
+
+}
+
 function Login(props, context) {
   context.setTitle(title);
   return (
@@ -37,10 +41,10 @@ function Login(props, context) {
           <fieldset>
             <div className="form-group">
               <FormControl
-                type="text"
+                type="email"
                 className="form-control"
-                placeholder="Username"
-                name="name"
+                placeholder="Email"
+                name="email"
               />
             </div>
 
@@ -59,15 +63,15 @@ function Login(props, context) {
       </Panel>
 
 
-      <Panel header={<h3>Please Register</h3>}>
+      <Panel header={<h3>Please Register Your Club</h3>}>
 
-        <form role="form" onSubmit={(e) => { submitHandler(e); }}>
+        <form id="register" action="/createClub" method="post"  onSubmit={(e) => { submitHandler(e); }}>
           <fieldset>
             <div className="form-group">
               <FormControl
                 type="text"
                 className="form-control"
-                placeholder="Username"
+                placeholder="Name"
                 name="name"
               />
             </div>
@@ -91,16 +95,8 @@ function Login(props, context) {
             </div>
 
          <div className="form-group">
-              <FormControl
-                className="form-control"
-                placeholder="Town"
-                type=""
-                name="town"
-              />
-            </div>
-
-         <div className="form-group">
           <FormControl
+            id="clubName"
             className="form-control"
             placeholder="Club Name"
             type=""
@@ -115,9 +111,29 @@ function Login(props, context) {
               type=""
               name="clubType"
             />
-      </div>
+          </div>
+          <div className="form-group">
+            <FormControl
+              className="form-control"
+              placeholder="County"
+              type=""
+              name="county"
+            />
+            </div>
+
+            <div className="form-group">
+              <FormControl
+                className="form-control"
+                placeholder="Town"
+                type=""
+                name="town"
+                isRequired
+              />
+            </div>
+
 
             <Button type="submit" bsSize="large" bsStyle="primary" block>Register</Button>
+
           </fieldset>
         </form>
 

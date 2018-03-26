@@ -4,6 +4,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
+
 // import expressGraphQL from 'express-graphql';
 // import jwt from 'jsonwebtoken';
 import React from 'react';
@@ -19,6 +20,9 @@ import errorPageStyle from './routes/error/ErrorPage.css';
 import routes from './routes';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import { port, auth } from './config';
+import con from './db';
+
+var db = require('./db');
 
 const app = express();
 
@@ -134,8 +138,56 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.send(`<!doctype html>${html}`);
 });
 
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+io.on('connection', function(client){
+   console.log(`The server is running at http://localhost:${port}/`);
+  });
 app.listen(port, () => {
   console.log(`The server is running at http://localhost:${port}/`);
+});
+
+
+app.post('/getMessage', (req, res)=>{
+  io.emit('sendMessage', req.body);
+});
+
+
+app.post('/createClub', function(req, res){
+
+        var clubName = req.body.clubName;
+        var typeOfClub = req.body.clubType;
+        var town = req.body.town;
+        var county = req.body.county;
+        var name = req.body.name;
+        var email = req.body.email;
+        var password = req.body.password;
+        var clubPost  = {clubName: clubName, typeOfClub: typeOfClub, town:town, county:county};
+
+
+    con.query('INSERT INTO tbl_clubs SET?',clubPost,  function(err, result){
+        if(err) throw err;
+
+        console.log("1 record inserted");
+        var clubId = result.insertId
+        var userPost  = {name: name, email: email, password:password};
+            con.query('INSERT INTO tbl_users SET?',userPost,  function(err, result){
+                    if(err) throw err;
+
+                    console.log("1 record inserted");
+                    var userId = result.insertId
+                    var clubAdminPost  = {clubId: clubId, userId: userId};
+                                    con.query('INSERT INTO tbl_clubAdmins SET?',clubAdminPost,  function(err, result){
+                                                if(err) throw err;
+
+                                                console.log("1 record inserted");
+                                                var userId = result.insertId
+                                            });
+                });
+
+    });
+
+
 });
 
 //

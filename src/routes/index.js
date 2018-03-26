@@ -18,13 +18,14 @@ import button from './dashboardPages/buttons';
 import flotcharts from './dashboardPages/flotCharts';
 import forms from './dashboardPages/forms';
 import grid from './dashboardPages/grid';
-import icons from './dashboardPages/icons';
+import onlinestore from './dashboardPages/onlinestore';
 import morrisjscharts from './dashboardPages/morrisjsCharts';
 import notification from './dashboardPages/notification';
 import membershipReg from './dashboardPages/membershipReg';
 import chat from './dashboardPages/chat';
 import resultsFixtures from './dashboardPages/resultsFixtures';
 import error from './error';
+import clubs from './dashboardPages/clubs';
 
 import Header from '../components/Header';
 
@@ -53,11 +54,12 @@ export default [
       home,
       // contact,
       table,
+      clubs,
       button,
       flotcharts,
       forms,
       grid,
-      icons,
+      onlinestore,
       morrisjscharts,
       notification,
       membershipReg,

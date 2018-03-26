@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Icons from './Icons';
+import Clubs from './clubs';
 
 export default {
 
-  path: '/icons',
+  path: '/clubs',
 
   action() {
-    return <Icons />;
+    return <Clubs />;
   },
 
 };

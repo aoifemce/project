@@ -39,8 +39,8 @@ class Sidebar extends Component {
             </li>
 
             <li>
-              <a href="" onClick={(e) => { e.preventDefault(); history.push('/forms'); }} >
-                <i className="fa fa-shopping-cart fa-fw" /> &nbsp;Online Shop
+              <a href="" onClick={(e) => { e.preventDefault(); history.push('/onlineStore'); }} >
+                <i className="fa fa-shopping-cart fa-fw" /> &nbsp;Online Shore
               </a>
             </li>
             </ul>

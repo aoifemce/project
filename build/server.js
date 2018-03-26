@@ -116,27 +116,35 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _assets = __webpack_require__(188);
+  var _assets = __webpack_require__(197);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(16);
   
+  var _db = __webpack_require__(198);
+  
+  var _db2 = _interopRequireDefault(_db);
+  
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  // eslint-disable-line import/no-unresolved
+  
+  // import passport from './core/passport';
+  // import models from './data/models';
+  // import schema from './data/schema';
+  var db = __webpack_require__(198);
   
   // import expressGraphQL from 'express-graphql';
   // import jwt from 'jsonwebtoken';
+  
+  
   var app = (0, _express2.default)();
   
   //
   // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
   // user agent is not known.
   // -----------------------------------------------------------------------------
-  // eslint-disable-line import/no-unresolved
-  
-  // import passport from './core/passport';
-  // import models from './data/models';
-  // import schema from './data/schema';
   global.navigator = global.navigator || {};
   global.navigator.userAgent = global.navigator.userAgent || 'all';
   
@@ -286,8 +294,50 @@ module.exports =
     res.send('<!doctype html>' + html);
   });
   
+  var server = __webpack_require__(200).createServer(app);
+  var io = __webpack_require__(201)(server);
+  io.on('connection', function (client) {
+    console.log('The server is running at http://localhost:' + _config.port + '/');
+  });
   app.listen(_config.port, function () {
     console.log('The server is running at http://localhost:' + _config.port + '/');
+  });
+  
+  app.post('/getMessage', function (req, res) {
+    io.emit('sendMessage', req.body);
+  });
+  
+  app.post('/createClub', function (req, res) {
+  
+    var clubName = req.body.clubName;
+    var typeOfClub = req.body.clubType;
+    var town = req.body.town;
+    var county = req.body.county;
+    var name = req.body.name;
+    var email = req.body.email;
+    var password = req.body.password;
+    var clubPost = { clubName: clubName, typeOfClub: typeOfClub, town: town, county: county };
+  
+    _db2.default.query('INSERT INTO tbl_clubs SET?', clubPost, function (err, result) {
+      if (err) throw err;
+  
+      console.log("1 record inserted");
+      var clubId = result.insertId;
+      var userPost = { name: name, email: email, password: password };
+      _db2.default.query('INSERT INTO tbl_users SET?', userPost, function (err, result) {
+        if (err) throw err;
+  
+        console.log("1 record inserted");
+        var userId = result.insertId;
+        var clubAdminPost = { clubId: clubId, userId: userId };
+        _db2.default.query('INSERT INTO tbl_clubAdmins SET?', clubAdminPost, function (err, result) {
+          if (err) throw err;
+  
+          console.log("1 record inserted");
+          var userId = result.insertId;
+        });
+      });
+    });
   });
   
   //
@@ -939,39 +989,53 @@ module.exports =
   
   var _grid2 = _interopRequireDefault(_grid);
   
-  var _icons = __webpack_require__(170);
+  var _onlinestore = __webpack_require__(170);
   
-  var _icons2 = _interopRequireDefault(_icons);
+  var _onlinestore2 = _interopRequireDefault(_onlinestore);
   
-  var _morrisjsCharts = __webpack_require__(172);
+  var _morrisjsCharts = __webpack_require__(173);
   
   var _morrisjsCharts2 = _interopRequireDefault(_morrisjsCharts);
   
-  var _notification = __webpack_require__(174);
+  var _notification = __webpack_require__(175);
   
   var _notification2 = _interopRequireDefault(_notification);
   
-  var _membershipReg = __webpack_require__(181);
+  var _membershipReg = __webpack_require__(182);
   
   var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
-  var _chat = __webpack_require__(189);
+  var _chat = __webpack_require__(184);
   
   var _chat2 = _interopRequireDefault(_chat);
   
-  var _resultsFixtures = __webpack_require__(185);
+  var _resultsFixtures = __webpack_require__(190);
   
   var _resultsFixtures2 = _interopRequireDefault(_resultsFixtures);
   
-  var _error = __webpack_require__(187);
+  var _error = __webpack_require__(192);
   
   var _error2 = _interopRequireDefault(_error);
+  
+  var _clubs = __webpack_require__(193);
+  
+  var _clubs2 = _interopRequireDefault(_clubs);
   
   var _Header = __webpack_require__(37);
   
   var _Header2 = _interopRequireDefault(_Header);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  // Child routes
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
   
   exports.default = [{
     path: '/login',
@@ -1022,7 +1086,7 @@ module.exports =
     // keep in mind, routes are evaluated in order
     children: [_home2.default,
     // contact,
-    _tables2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _icons2.default, _morrisjsCharts2.default, _notification2.default, _membershipReg2.default, _chat2.default,
+    _tables2.default, _clubs2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _onlinestore2.default, _morrisjsCharts2.default, _notification2.default, _membershipReg2.default, _chat2.default,
     // register,
     _resultsFixtures2.default,
   
@@ -1123,16 +1187,6 @@ module.exports =
       }))();
     }
   }];
-  
-  // Child routes
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
 
 /***/ }),
 /* 28 */
@@ -1374,13 +1428,13 @@ module.exports =
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
   var logo = __webpack_require__(47); /**
-                                     * React Starter Kit (https://www.reactstarterkit.com/)
-                                     *
-                                     * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-                                     *
-                                     * This source code is licensed under the MIT license found in the
-                                     * LICENSE.txt file in the root directory of this source tree.
-                                     */
+                                      * React Starter Kit (https://www.reactstarterkit.com/)
+                                      *
+                                      * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+                                      *
+                                      * This source code is licensed under the MIT license found in the
+                                      * LICENSE.txt file in the root directory of this source tree.
+                                      */
   
   function Header() {
     return _react2.default.createElement(
@@ -1638,10 +1692,10 @@ module.exports =
                 _react2.default.createElement(
                   'a',
                   { href: '', onClick: function onClick(e) {
-                      e.preventDefault();_history2.default.push('/forms');
+                      e.preventDefault();_history2.default.push('/onlineStore');
                     } },
                   _react2.default.createElement('i', { className: 'fa fa-shopping-cart fa-fw' }),
-                  ' \xA0Online Shop'
+                  ' \xA0Online Shore'
                 )
               )
             )
@@ -1662,9 +1716,9 @@ module.exports =
 
 /***/ }),
 /* 47 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-  module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACoAAAAmCAYAAACyAQkgAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpGODdGMTE3NDA3MjA2ODExODA4M0E3MjY3MTQwRTY5RSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo1RTIzNTA3RUM5OEExMUU0QjRCOUUwQTIyNkYzQTlCNiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo1RTIzNTA3REM5OEExMUU0QjRCOUUwQTIyNkYzQTlCNiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6Rjk3RjExNzQwNzIwNjgxMTgwODNBNzI2NzE0MEU2OUUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6Rjg3RjExNzQwNzIwNjgxMTgwODNBNzI2NzE0MEU2OUUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5xbRMYAAAIAklEQVR42qyZC5BNdRzH//9zd++6a1msRwi7SCrPXmZkSjU1pSmPEnrNoEQhjGEKq2xEKZRJHiEkRNIMkple8kiZyGu9GcZrsezL7tp7/n1/Z7+X47rn3mu2/8xnz7nnnP///M7v/3v9/6uNMSo3qFTOFaV8Wnk2A3A7GYem/HkEFKiba5VABo+HMcgleaWNk/p+DG55d0yQP5vzjPo6x1aB6JL2gqQTcJbOK6fBcjAd7IshYH0wALxAQaWdxZgTMOa0Ukg6vL5PtUr2HsAKaasMf4Le9ASLQXWwAMwHl8FAsAtMBIEI/SwwFGSDUXxGxpkDysBUMFKeNTG+NOGqxFCm1p7TNQ6U4OsfwnGHq+9T4AMwEjwOerm0Wwcs4PWTYDD4BhTzfj2wBWOOwXsX8pnoGo3R7gW3gbkuIaWVgVXgbjANtAWbQHvQBPxBIZeClmCeS0hFwaaCyuCRWELEI+hdPG7wuC8vHwJ6g1SwGmyk040GPcEFj76beWyj4p36KK22y3mitfkUdCp/i5bHx+hzLuwdFdJovO1W0J/nQXp42/9r8HgEzeWxRpRnAnSU5mAYp7sW+BbcEqVfatg74hDUGC9O8Jge5ZkpoAOYyvPlYChoAuYC7dGvAY/HYgWoazaqPePTQR5bq+tvJ1GTEpJep739CboBHzgE9oMnwfvgY3CZhFoLZ0ytspXSFXamw+AU6AD6gvtBK2aoFIYXaTU5/ZHaO4wMknKPg92MIk8w3+yuiNcHGN+eB9X4ew7vFYGjFE5U8SXYw+v5dCZJFFVAY6ZPSZDHGLbuAa9wLNvSesr2QrPkYlCvu2LUpZAAkrEaoga4IxBZ0FRO5SB6snzxeQq6iNN4kFMuGWUlUvWrutx6fM50loebU0pSJxKDT8bQaiiuLWZ/SQj9wAhwMVGrZ9bn2l0h2AU8N5sh7rTk6E41LAhq3eD1z1IzkzilnzLEPMj7aUyR8jETHQ0aNaKKz6l8bodfyBRuB+twfSfS8uFqPlUVxzH4LSaUychwiBqW1h2aaOb36axAgr6MwmgkyAYDpEhKpN+4Bc1iNSTTPIZT9hbT5l7wCx2jHq/Xx8vHlRpzsE9tS92VrCfiXEJSO8nzmML2df1qdGYDqxAfUhgst9NEji2z04P2v5HHTKbqN0Ap+Jxp2+fY6Hlk7P2XzYAE7aS7XfKFIDuCScg0P8wiRIqRAyzxFPqqgqBJ10rLR23l8znQwmbMWsifJee/RpMpYJyd6RQ715pEhBliTmJmGLf38VKTc7xUj7T2FJlaWwvMGL+lc3Czk4eQigXISTpBGm2tUG74IUzzZL3aVkY+5F3ej9Sy6Hz9KOBij+ckXXeBTDsg3/Ct+XYLC1LfB2OuC/uaxdDh1aSw+Irnf9OxrraGSVqE+AKMlaIYEX6hT5n0sDF+A9/xfCVNyqsVwHanwUwt2OlDbhvVccRU7TqGP1/CMCS2PV5r3R3h5ue8oEqzdMQxrJt4n/PwVk6pTEejKJ3SXLFP4uBLHs/JWioTmnji7BWTsbfIPOy/JmhH0JXnncGdUd5XhUlCYvKvFlNfFoP3GnCHR8fO9Pj57DM6lJUQR60iaE5fr+UEGTzJUsWuLC4eb9NEJAW/6PGuuuAHFtwfSeYKqV86vscv3EY7C6+WXnalw+nMMIORVdSFMpW0JtfekqC1xOBlYC1i9bo6fr2xSUCvL7Wdfj2Z6STNDnUWd+URIMn1DomtA8FOal8y3ijHBjbl2WrGaRshxtFHF1z7jBnpEh1mrmN/WMTh/hqGpuqMrzVxvVWKTx0sstVL0OwzeEayUjGc8ydEg9lVfSo/t0xVw71/cK8e64R9TjIxyH5aPcZ03IerBCkLL3IdNqsEHXukWTek0O/Bz4x3shh7k1xw1Y13sip62/kQrSbDYbpY5eeL3MWYaPKs7UTssbiXTnPZx8AeWj8tw6NVS4LGh1k4h+fGU1lnHA+FoGX46nCNhq8+O7Io6YmvD7juF1MLTVnYzGPqlYxyhfVBIqe1ASt/P4WsR0cJ7WoEsVRf+WiqXppeySlK8t1CSGHSrFL06kmE+RH8ztR5ik7XjkaewUySwimL1QqYnrOZATewbGxvGzO8TWXrWOvkitWjjWk3C+jx83ndT633ojOeZ54u4bjyoZ+AZq7CuThsySw7KA9wpXss9lLEe4khNOXx37DrpSAPzAQzQBqXI6vACtAcNAOrQSa4CIrDxtjFY/P4liKhZUjk3NTgaiD3zl3DqJVB1MwJMJmFS1/lLcVx5rhG/8dSpFocK8VimsB6CmgzTnYPea9Hy4tjhevaJIsy8y5dxKoFJA3Pdo27JGwLyHuj0CgTa5fMSXOonpyaMpIo6H82eG3TK1rrS4fJpYYH08HGRekjaVv2Zc9YMdSQ0CZFq0kZvogr5SRc21agds85YysUFg96rDKlWv+QqU9qgKc53euYlluyqjoXoW/7YgT0bmnWjpbJMaZehKkFS63pu5EqUDdS4F+mPBP1CduiSeQafjuF3MadvC2soCTsrAXPMXe/6lonhbaAhmDaC1IsJxtWbEsHQpZgsEzgB7+CRWABOABWgAwwAXTgtZB954CngAhTGcwGR8ASMBf8BW4FWbH2RuPyelTqytL2Uqs8fE1wlWYnuUqdzjDktfU/jXtQ/dm3B++dKa++zGdxVezGRHe3QgSaU6VXw2yAqdMwXhbd5KacnzssUgMcxSD58o+G2jCiVF/0jv8JMABBEldD7PKL3QAAAABJRU5ErkJggg=="
+  module.exports = __webpack_require__.p + "components/Header/logo1.png?8a2775b651bd94385e39b7025ca10ce3";
 
 /***/ }),
 /* 48 */
@@ -1783,505 +1837,60 @@ module.exports =
           _react2.default.createElement(
             _reactBootstrap.PageHeader,
             null,
-            'Dashboard'
+            'Welcome to ClubConnect'
           )
         )
       ),
       _react2.default.createElement(
         'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-3 col-md-6' },
-          _react2.default.createElement(_Widget2.default, {
-            style: 'panel-primary',
-            icon: 'fa fa-comments fa-5x',
-            count: '26',
-            headerText: 'New Comments!',
-            footerText: 'View Details',
-            linkTo: '/'
-          })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-3 col-md-6' },
-          _react2.default.createElement(_Widget2.default, {
-            style: 'panel-green',
-            icon: 'fa fa-tasks fa-5x',
-            count: '12',
-            headerText: 'New Tasks!',
-            footerText: 'View Details',
-            linkTo: '/'
-          })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-3 col-md-6' },
-          _react2.default.createElement(_Widget2.default, {
-            style: 'panel-yellow',
-            icon: 'fa fa-shopping-cart fa-5x',
-            count: '124',
-            headerText: 'New Orders!',
-            footerText: 'View Details',
-            linkTo: '/'
-          })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-3 col-md-6' },
-          _react2.default.createElement(_Widget2.default, {
-            style: 'panel-red',
-            icon: 'fa fa-support fa-5x',
-            count: '13',
-            headerText: 'Support Tickets!',
-            footerText: 'View Details',
-            linkTo: '/'
-          })
-        )
+        { className: 'col-lg-8 col-md-6' },
+        _react2.default.createElement(_Widget2.default, {
+          style: 'panel-green',
+          icon: 'fa fa-tasks fa-5x',
+          count: '12',
+          headerText: 'All clubs signed up',
+          footerText: 'View Clubs',
+          linkTo: '/forms'
+        })
       ),
       _react2.default.createElement(
         'div',
-        { className: 'row' },
+        { className: 'col-lg-4' },
         _react2.default.createElement(
-          'div',
-          { className: 'col-lg-8' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('i', { className: 'fa fa-bar-chart-o fa-fw' }),
-                ' Area Chart Example',
-                _react2.default.createElement(
-                  'div',
-                  { className: 'pull-right' },
-                  _react2.default.createElement(
-                    _reactBootstrap.DropdownButton,
-                    { title: 'Dropdown', bsSize: 'xs', pullRight: true, id: 'dropdownButton1' },
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '1' },
-                      'Action'
-                    ),
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '2' },
-                      'Another action'
-                    ),
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '3' },
-                      'Something else here'
-                    ),
-                    _react2.default.createElement(_reactBootstrap.MenuItem, { divider: true }),
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '4' },
-                      'Separated link'
-                    )
-                  )
-                )
-              )
-            },
-            _react2.default.createElement(
-              'div',
+          _reactBootstrap.Panel,
+          {
+            header: _react2.default.createElement(
+              'span',
               null,
-              _react2.default.createElement(
-                _recharts.ResponsiveContainer,
-                { width: '100%', aspect: 2 },
-                _react2.default.createElement(
-                  _recharts.AreaChart,
-                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
-                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
-                  _react2.default.createElement(_recharts.YAxis, null),
-                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
-                  _react2.default.createElement(_recharts.Tooltip, null),
-                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'uv', stackId: '1', stroke: '#8884d8', fill: '#8884d8' }),
-                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'pv', stackId: '1', stroke: '#82ca9d', fill: '#82ca9d' }),
-                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'amt', stackId: '1', stroke: '#ffc658', fill: '#ffc658' })
-                )
-              )
+              _react2.default.createElement('i', { className: 'fa fa-bell fa-fw' }),
+              ' All clubs'
             )
-          ),
+          },
           _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('i', { className: 'fa fa-bar-chart-o fa-fw' }),
-                ' Bar Chart Example',
-                _react2.default.createElement(
-                  'div',
-                  { className: 'pull-right' },
-                  _react2.default.createElement(
-                    _reactBootstrap.DropdownButton,
-                    { title: 'Dropdown', bsSize: 'xs', pullRight: true, id: 'dropdownButton2' },
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '1' },
-                      'Action'
-                    ),
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '2' },
-                      'Another action'
-                    ),
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '3' },
-                      'Something else here'
-                    ),
-                    _react2.default.createElement(_reactBootstrap.MenuItem, { divider: true }),
-                    _react2.default.createElement(
-                      _reactBootstrap.MenuItem,
-                      { eventKey: '4' },
-                      'Separated link'
-                    )
-                  )
-                )
-              )
-            },
+            _reactBootstrap.ListGroup,
+            null,
             _react2.default.createElement(
-              'div',
-              null,
+              _reactBootstrap.ListGroupItem,
+              { href: '', onClick: function onClick(e) {
+                  e.preventDefault();
+                } },
+              _react2.default.createElement('i', { className: 'fa fa-comment fa-fw' }),
+              ' New Comment',
               _react2.default.createElement(
-                _recharts.ResponsiveContainer,
-                { width: '100%', aspect: 2 },
-                _react2.default.createElement(
-                  _recharts.BarChart,
-                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
-                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
-                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
-                  _react2.default.createElement(_recharts.YAxis, null),
-                  _react2.default.createElement(_recharts.Tooltip, null),
-                  _react2.default.createElement(_recharts.Bar, { dataKey: 'pv', stackId: '1', fill: '#8884d8' }),
-                  _react2.default.createElement(_recharts.Bar, { dataKey: 'uv', stackId: '1', fill: '#82ca9d' }),
-                  _react2.default.createElement(_recharts.Bar, { type: 'monotone', dataKey: 'amt', fill: '#ffc658' })
-                )
-              )
-            )
-          ),
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
                 'span',
-                null,
-                _react2.default.createElement('i', { className: 'fa fa-clock-o fa-fw' }),
-                ' Responsive Timeline'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'ul',
-                { className: 'timeline' },
+                { className: 'pull-right text-muted small' },
                 _react2.default.createElement(
-                  'li',
+                  'em',
                   null,
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'timeline-badge' },
-                    _react2.default.createElement('i', { className: 'fa fa-check' })
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'timeline-panel' },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'timeline-heading' },
-                      _react2.default.createElement(
-                        'h4',
-                        { className: 'timeline-title' },
-                        'Lorem ipsum dolor'
-                      ),
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        _react2.default.createElement(
-                          'small',
-                          { className: 'text-muted' },
-                          _react2.default.createElement('i', { className: 'fa fa-clock-o' }),
-                          ' 11 hours ago via Twitter'
-                        )
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'timeline-body' },
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero laboriosam dolor perspiciatis omnis exercitationem. Beatae, officia pariatur? Est cum veniam excepturi. Maiores praesentium, porro voluptas suscipit facere rem dicta, debitis.'
-                      )
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  'li',
-                  { className: 'timeline-inverted' },
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'timeline-badge warning' },
-                    _react2.default.createElement('i', { className: 'fa fa-credit-card' })
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'timeline-panel' },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'timeline-heading' },
-                      _react2.default.createElement(
-                        'h4',
-                        { className: 'timeline-title' },
-                        'Lorem ipsum dolor'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'timeline-body' },
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem dolorem quibusdam, tenetur commodi provident cumque magni voluptatem libero, quis rerum. Fugiat esse debitis optio, tempore. Animi officiis alias, officia repellendus.'
-                      ),
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium maiores odit qui est tempora eos, nostrum provident explicabo dignissimos debitis vel! Adipisci eius voluptates, ad aut recusandae minus eaque facere.'
-                      )
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  'li',
-                  null,
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'timeline-badge danger' },
-                    _react2.default.createElement('i', { className: 'fa fa-bomb' })
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'timeline-panel' },
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'timeline-heading' },
-                      _react2.default.createElement(
-                        'h4',
-                        { className: 'timeline-title' },
-                        'Lorem ipsum dolor'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'timeline-body' },
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus numquam facilis enim eaque, tenetur nam id qui vel velit similique nihil iure molestias aliquam, voluptatem totam quaerat, magni commodi quisquam.'
-                      )
-                    )
-                  )
+                  '4 minutes ago'
                 )
               )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('i', { className: 'fa fa-bell fa-fw' }),
-                ' Notifications Panel'
-              )
-            },
-            _react2.default.createElement(
-              _reactBootstrap.ListGroup,
-              null,
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-comment fa-fw' }),
-                ' New Comment',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '4 minutes ago'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-twitter fa-fw' }),
-                ' 3 New Followers',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '12 minutes ago'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-envelope fa-fw' }),
-                ' Message Sent',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '27 minutes ago'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-tasks fa-fw' }),
-                ' New Task',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '43 minutes ago'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-upload fa-fw' }),
-                ' Server Rebooted',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '11:32 AM'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-bolt fa-fw' }),
-                ' Server Crashed!',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '11:13 AM'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-warning fa-fw' }),
-                ' Server Not Responding',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '10:57 AM'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-shopping-cart fa-fw' }),
-                ' New Order Placed',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    '9:49 AM'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.ListGroupItem,
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                _react2.default.createElement('i', { className: 'fa fa-money fa-fw' }),
-                ' Payment Received',
-                _react2.default.createElement(
-                  'span',
-                  { className: 'pull-right text-muted small' },
-                  _react2.default.createElement(
-                    'em',
-                    null,
-                    'Yesterday'
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              _reactBootstrap.Button,
-              { block: true },
-              'View All Alerts'
             )
           ),
           _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('i', { className: 'fa fa-bar-chart-o fa-fw' }),
-                ' Donut Chart Example'
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(_Donut2.default, { data: data, color: '#8884d8', innerRadius: '70%', outerRadius: '90%' })
-            )
+            _reactBootstrap.Button,
+            { block: true },
+            'View All Alerts'
           )
         )
       )
@@ -20122,6 +19731,8 @@ module.exports =
     _history2.default.push('/');
   }
   
+  function register() {}
+  
   function Login(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
@@ -20155,10 +19766,10 @@ module.exports =
               'div',
               { className: 'form-group' },
               _react2.default.createElement(_reactBootstrap.FormControl, {
-                type: 'text',
+                type: 'email',
                 className: 'form-control',
-                placeholder: 'Username',
-                name: 'name'
+                placeholder: 'Email',
+                name: 'email'
               })
             ),
             _react2.default.createElement(
@@ -20189,11 +19800,11 @@ module.exports =
         { header: _react2.default.createElement(
             'h3',
             null,
-            'Please Register'
+            'Please Register Your Club'
           ) },
         _react2.default.createElement(
           'form',
-          { role: 'form', onSubmit: function onSubmit(e) {
+          { id: 'register', action: '/createClub', method: 'post', onSubmit: function onSubmit(e) {
               submitHandler(e);
             } },
           _react2.default.createElement(
@@ -20205,7 +19816,7 @@ module.exports =
               _react2.default.createElement(_reactBootstrap.FormControl, {
                 type: 'text',
                 className: 'form-control',
-                placeholder: 'Username',
+                placeholder: 'Name',
                 name: 'name'
               })
             ),
@@ -20233,16 +19844,7 @@ module.exports =
               'div',
               { className: 'form-group' },
               _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'Town',
-                type: '',
-                name: 'town'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
+                id: 'clubName',
                 className: 'form-control',
                 placeholder: 'Club Name',
                 type: '',
@@ -20257,6 +19859,27 @@ module.exports =
                 placeholder: 'Type of Club',
                 type: '',
                 name: 'clubType'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'County',
+                type: '',
+                name: 'county'
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'form-group' },
+              _react2.default.createElement(_reactBootstrap.FormControl, {
+                className: 'form-control',
+                placeholder: 'Town',
+                type: '',
+                name: 'town',
+                isRequired: true
               })
             ),
             _react2.default.createElement(
@@ -22642,9 +22265,9 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _forms = __webpack_require__(164);
+  var _Forms = __webpack_require__(164);
   
-  var _forms2 = _interopRequireDefault(_forms);
+  var _Forms2 = _interopRequireDefault(_Forms);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
@@ -22653,7 +22276,7 @@ module.exports =
     path: '/forms',
   
     action: function action() {
-      return _react2.default.createElement(_forms2.default, null);
+      return _react2.default.createElement(_Forms2.default, null);
     }
   };
 
@@ -24115,18 +23738,18 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Icons = __webpack_require__(171);
+  var _onlineStore = __webpack_require__(171);
   
-  var _Icons2 = _interopRequireDefault(_Icons);
+  var _onlineStore2 = _interopRequireDefault(_onlineStore);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
   exports.default = {
   
-    path: '/icons',
+    path: '/onlineStore',
   
     action: function action() {
-      return _react2.default.createElement(_Icons2.default, null);
+      return _react2.default.createElement(_onlineStore2.default, null);
     }
   };
 
@@ -24144,19 +23767,20 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Panel = __webpack_require__(151);
-  
-  var _Panel2 = _interopRequireDefault(_Panel);
-  
-  var _PageHeader = __webpack_require__(157);
-  
-  var _PageHeader2 = _interopRequireDefault(_PageHeader);
+  var _reactBootstrap = __webpack_require__(38);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
-  var title = 'Icons';
+  var title = 'Online Store';
   
-  function displayIcons(props, context) {
+  var buttonStyle = {
+    float: 'right',
+    margin: '-7px -10px 0px 0px'
+  };
+  
+  var logo = __webpack_require__(172);
+  
+  function displayOnlineStore(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
       'div',
@@ -24165,3059 +23789,166 @@ module.exports =
         'div',
         { className: 'col-lg-12' },
         _react2.default.createElement(
-          _PageHeader2.default,
+          _reactBootstrap.PageHeader,
           null,
-          'Icons'
+          'Online Store',
+          _react2.default.createElement('i', { className: 'fa fa-shopping-cart fa-fw' })
         )
       ),
       _react2.default.createElement(
         'div',
-        { className: 'col-lg-12' },
+        { className: 'row' },
         _react2.default.createElement(
-          _Panel2.default,
-          { header: _react2.default.createElement(
-              'span',
-              null,
-              'All available icons'
-            ) },
+          'div',
+          { className: 'col-lg-4' },
           _react2.default.createElement(
-            'div',
-            { className: 'row' },
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                'Club Jersey'
+              ), className: 'panel-success',
+  
+              footer: _react2.default.createElement(
+                'span',
+                null,
+                '\xA330',
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'primary', style: buttonStyle },
+                  'Add to Basket'
+                )
+              )
+            },
             _react2.default.createElement(
               'div',
-              { className: 'fa col-lg-3' },
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-glass' },
-                ' fa-glass '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-music' },
-                ' fa-music '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-search' },
-                ' fa-search '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-envelope-o' },
-                ' fa-envelope-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-heart' },
-                ' fa-heart '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-star' },
-                ' fa-star '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-star-o' },
-                ' fa-star-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-user' },
-                ' fa-user '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-film' },
-                ' fa-film '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-th-large' },
-                ' fa-th-large '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-th' },
-                ' fa-th '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-th-list' },
-                ' fa-th-list '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-check' },
-                ' fa-check '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-times' },
-                ' fa-times '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-search-plus' },
-                ' fa-search-plus '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-search-minus' },
-                ' fa-search-minus '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-power-off' },
-                ' fa-power-off '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-signal' },
-                ' fa-signal '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gear' },
-                ' fa-gear '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cog' },
-                ' fa-cog '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-trash-o' },
-                ' fa-trash-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-home' },
-                ' fa-home '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-o' },
-                ' fa-file-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-clock-o' },
-                ' fa-clock-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-road' },
-                ' fa-road '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-download' },
-                ' fa-download '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-o-down' },
-                ' fa-arrow-circle-o-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-o-up' },
-                ' fa-arrow-circle-o-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-inbox' },
-                ' fa-inbox '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-play-circle-o' },
-                ' fa-play-circle-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rotate-right' },
-                ' fa-rotate-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-repeat' },
-                ' fa-repeat '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-refresh' },
-                ' fa-refresh '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-list-alt' },
-                ' fa-list-alt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-lock' },
-                ' fa-lock '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-flag' },
-                ' fa-flag '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-headphones' },
-                ' fa-headphones '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-volume-off' },
-                ' fa-volume-off '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-volume-down' },
-                ' fa-volume-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-volume-up' },
-                ' fa-volume-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-qrcode' },
-                ' fa-qrcode '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-barcode' },
-                ' fa-barcode '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tag' },
-                ' fa-tag '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tags' },
-                ' fa-tags '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-book' },
-                ' fa-book '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bookmark' },
-                ' fa-bookmark '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-print' },
-                ' fa-print '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-camera' },
-                ' fa-camera '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-font' },
-                ' fa-font '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bold' },
-                ' fa-bold '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-italic' },
-                ' fa-italic '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-text-height' },
-                ' fa-text-height '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-text-width' },
-                ' fa-text-width '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-align-left' },
-                ' fa-align-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-align-center' },
-                ' fa-align-center '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-align-right' },
-                ' fa-align-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-align-justify' },
-                ' fa-align-justify '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-list' },
-                ' fa-list '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-dedent' },
-                ' fa-dedent '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-outdent' },
-                ' fa-outdent '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-indent' },
-                ' fa-indent '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-video-camera' },
-                ' fa-video-camera '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-photo' },
-                ' fa-photo '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-image' },
-                ' fa-image '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-picture-o' },
-                ' fa-picture-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pencil' },
-                ' fa-pencil '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-map-marker' },
-                ' fa-map-marker '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-adjust' },
-                ' fa-adjust '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tint' },
-                ' fa-tint '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-edit' },
-                ' fa-edit '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pencil-square-o' },
-                ' fa-pencil-square-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-share-square-o' },
-                ' fa-share-square-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-check-square-o' },
-                ' fa-check-square-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrows' },
-                ' fa-arrows '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-step-backward' },
-                ' fa-step-backward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-fast-backward' },
-                ' fa-fast-backward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-backward' },
-                ' fa-backward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-play' },
-                ' fa-play '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pause' },
-                ' fa-pause '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-stop' },
-                ' fa-stop '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-forward' },
-                ' fa-forward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-fast-forward' },
-                ' fa-fast-forward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-step-forward' },
-                ' fa-step-forward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-eject' },
-                ' fa-eject '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-left' },
-                ' fa-chevron-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-right' },
-                ' fa-chevron-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-plus-circle' },
-                ' fa-plus-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-minus-circle' },
-                ' fa-minus-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-times-circle' },
-                ' fa-times-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-check-circle' },
-                ' fa-check-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-question-circle' },
-                ' fa-question-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-info-circle' },
-                ' fa-info-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-crosshairs' },
-                ' fa-crosshairs '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-times-circle-o' },
-                ' fa-times-circle-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-check-circle-o' },
-                ' fa-check-circle-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ban' },
-                ' fa-ban '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-left' },
-                ' fa-arrow-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-right' },
-                ' fa-arrow-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-up' },
-                ' fa-arrow-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-down' },
-                ' fa-arrow-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-mail-forward' },
-                ' fa-mail-forward '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-share' },
-                ' fa-share '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-expand' },
-                ' fa-expand '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-compress' },
-                ' fa-compress '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-plus' },
-                ' fa-plus '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-minus' },
-                ' fa-minus '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-asterisk' },
-                ' fa-asterisk '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-exclamation-circle' },
-                ' fa-exclamation-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gift' },
-                ' fa-gift '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-leaf' },
-                ' fa-leaf '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-fire' },
-                ' fa-fire '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-eye' },
-                ' fa-eye '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-eye-slash' },
-                ' fa-eye-slash '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-warning' },
-                ' fa-warning '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-exclamation-triangle' },
-                ' fa-exclamation-triangle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-plane' },
-                ' fa-plane '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-calendar' },
-                ' fa-calendar '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-random' },
-                ' fa-random '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-comment' },
-                ' fa-comment '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-magnet' },
-                ' fa-magnet '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-up' },
-                ' fa-chevron-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-down' },
-                ' fa-chevron-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-retweet' },
-                ' fa-retweet '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-shopping-cart' },
-                ' fa-shopping-cart '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-folder' },
-                ' fa-folder '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-folder-open' },
-                ' fa-folder-open '
-              ),
-              _react2.default.createElement('br', null),
-              ' '
-            ),
+              null,
+              _react2.default.createElement('img', { src: logo, alt: 'Club Connect', title: 'ClubConnect' }),
+              _react2.default.createElement(
+                'p',
+                null,
+                '17 and above for all sports'
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.FormGroup,
+                { controlId: 'formControlsSelect' },
+                _react2.default.createElement(
+                  _reactBootstrap.ControlLabel,
+                  null,
+                  'Size'
+                ),
+                _react2.default.createElement(
+                  _reactBootstrap.FormControl,
+                  { componentClass: 'select', placeholder: 'select' },
+                  _react2.default.createElement(
+                    'option',
+                    { value: '1' },
+                    '7-8'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '2' },
+                    '9-10'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '3' },
+                    '11-12'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '4' },
+                    '13-14'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '5' },
+                    'Small'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '5' },
+                    'Medium'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '5' },
+                    'Large'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.FormGroup,
+                { controlId: 'formControlsSelect' },
+                _react2.default.createElement(
+                  _reactBootstrap.ControlLabel,
+                  null,
+                  'Quantity'
+                ),
+                _react2.default.createElement(
+                  _reactBootstrap.FormControl,
+                  { componentClass: 'select', placeholder: 'select' },
+                  _react2.default.createElement(
+                    'option',
+                    { value: '1' },
+                    '1'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '2' },
+                    '2'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '3' },
+                    '3'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '4' },
+                    '4'
+                  ),
+                  _react2.default.createElement(
+                    'option',
+                    { value: '5' },
+                    '5'
+                  )
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-4' },
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('i', { className: 'fa fa-shopping-basket fa-fw' }),
+                'Basket'
+              ), className: 'panel-primary',
+              footer: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { bsStyle: 'success' },
+                  'Buy Now'
+                )
+              )
+            },
             _react2.default.createElement(
               'div',
-              { className: 'fa col-lg-3' },
+              null,
               _react2.default.createElement(
                 'p',
-                { className: 'fa fa-arrows-v' },
-                ' fa-arrows-v '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrows-h' },
-                ' fa-arrows-h '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bar-chart-o' },
-                ' fa-bar-chart-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-twitter-square' },
-                ' fa-twitter-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-facebook-square' },
-                ' fa-facebook-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-camera-retro' },
-                ' fa-camera-retro '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-key' },
-                ' fa-key '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gears' },
-                ' fa-gears '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cogs' },
-                ' fa-cogs '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-comments' },
-                ' fa-comments '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-thumbs-o-up' },
-                ' fa-thumbs-o-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-thumbs-o-down' },
-                ' fa-thumbs-o-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-star-half' },
-                ' fa-star-half '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-heart-o' },
-                ' fa-heart-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sign-out' },
-                ' fa-sign-out '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-linkedin-square' },
-                ' fa-linkedin-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-thumb-tack' },
-                ' fa-thumb-tack '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-external-link' },
-                ' fa-external-link '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sign-in' },
-                ' fa-sign-in '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-trophy' },
-                ' fa-trophy '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-github-square' },
-                ' fa-github-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-upload' },
-                ' fa-upload '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-lemon-o' },
-                ' fa-lemon-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-phone' },
-                ' fa-phone '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-square-o' },
-                ' fa-square-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bookmark-o' },
-                ' fa-bookmark-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-phone-square' },
-                ' fa-phone-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-twitter' },
-                ' fa-twitter '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-facebook' },
-                ' fa-facebook '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-github' },
-                ' fa-github '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-unlock' },
-                ' fa-unlock '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-credit-card' },
-                ' fa-credit-card '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rss' },
-                ' fa-rss '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hdd-o' },
-                ' fa-hdd-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bullhorn' },
-                ' fa-bullhorn '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bell' },
-                ' fa-bell '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-certificate' },
-                ' fa-certificate '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hand-o-right' },
-                ' fa-hand-o-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hand-o-left' },
-                ' fa-hand-o-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hand-o-up' },
-                ' fa-hand-o-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hand-o-down' },
-                ' fa-hand-o-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-left' },
-                ' fa-arrow-circle-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-right' },
-                ' fa-arrow-circle-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-up' },
-                ' fa-arrow-circle-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-down' },
-                ' fa-arrow-circle-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-globe' },
-                ' fa-globe '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-wrench' },
-                ' fa-wrench '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tasks' },
-                ' fa-tasks '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-filter' },
-                ' fa-filter '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-briefcase' },
-                ' fa-briefcase '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrows-alt' },
-                ' fa-arrows-alt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-group' },
-                ' fa-group '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-users' },
-                ' fa-users '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chain' },
-                ' fa-chain '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-link' },
-                ' fa-link '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cloud' },
-                ' fa-cloud '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-flask' },
-                ' fa-flask '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cut' },
-                ' fa-cut '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-scissors' },
-                ' fa-scissors '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-copy' },
-                ' fa-copy '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-files-o' },
-                ' fa-files-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-paperclip' },
-                ' fa-paperclip '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-save' },
-                ' fa-save '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-floppy-o' },
-                ' fa-floppy-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-square' },
-                ' fa-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-navicon' },
-                ' fa-navicon '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-reorder' },
-                ' fa-reorder '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bars' },
-                ' fa-bars '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-list-ul' },
-                ' fa-list-ul '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-list-ol' },
-                ' fa-list-ol '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-strikethrough' },
-                ' fa-strikethrough '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-underline' },
-                ' fa-underline '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-table' },
-                ' fa-table '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-magic' },
-                ' fa-magic '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-truck' },
-                ' fa-truck '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pinterest' },
-                ' fa-pinterest '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pinterest-square' },
-                ' fa-pinterest-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-google-plus-square' },
-                ' fa-google-plus-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-google-plus' },
-                ' fa-google-plus '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-money' },
-                ' fa-money '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-down' },
-                ' fa-caret-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-up' },
-                ' fa-caret-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-left' },
-                ' fa-caret-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-right' },
-                ' fa-caret-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-columns' },
-                ' fa-columns '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-unsorted' },
-                ' fa-unsorted '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort' },
-                ' fa-sort '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-down' },
-                ' fa-sort-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-desc' },
-                ' fa-sort-desc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-up' },
-                ' fa-sort-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-asc' },
-                ' fa-sort-asc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-envelope' },
-                ' fa-envelope '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-linkedin' },
-                ' fa-linkedin '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rotate-left' },
-                ' fa-rotate-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-undo' },
-                ' fa-undo '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-legal' },
-                ' fa-legal '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gavel' },
-                ' fa-gavel '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-dashboard' },
-                ' fa-dashboard '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tachometer' },
-                ' fa-tachometer '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-comment-o' },
-                ' fa-comment-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-comments-o' },
-                ' fa-comments-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-flash' },
-                ' fa-flash '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bolt' },
-                ' fa-bolt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sitemap' },
-                ' fa-sitemap '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-umbrella' },
-                ' fa-umbrella '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-paste' },
-                ' fa-paste '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-clipboard' },
-                ' fa-clipboard '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-lightbulb-o' },
-                ' fa-lightbulb-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-exchange' },
-                ' fa-exchange '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cloud-download' },
-                ' fa-cloud-download '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cloud-upload' },
-                ' fa-cloud-upload '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-user-md' },
-                ' fa-user-md '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-stethoscope' },
-                ' fa-stethoscope '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-suitcase' },
-                ' fa-suitcase '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bell-o' },
-                ' fa-bell-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-coffee' },
-                ' fa-coffee '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cutlery' },
-                ' fa-cutlery '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-text-o' },
-                ' fa-file-text-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-building-o' },
-                ' fa-building-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hospital-o' },
-                ' fa-hospital-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ambulance' },
-                ' fa-ambulance '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-medkit' },
-                ' fa-medkit '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-fighter-jet' },
-                ' fa-fighter-jet '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-beer' },
-                ' fa-beer '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-h-square' },
-                ' fa-h-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-plus-square' },
-                ' fa-plus-square '
-              ),
-              _react2.default.createElement('br', null)
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'fa col-lg-3' },
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-double-left' },
-                ' fa-angle-double-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-double-right' },
-                ' fa-angle-double-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-double-up' },
-                ' fa-angle-double-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-double-down' },
-                ' fa-angle-double-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-left' },
-                ' fa-angle-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-right' },
-                ' fa-angle-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-up' },
-                ' fa-angle-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-angle-down' },
-                ' fa-angle-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-desktop' },
-                ' fa-desktop '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-laptop' },
-                ' fa-laptop '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tablet' },
-                ' fa-tablet '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-mobile-phone' },
-                ' fa-mobile-phone '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-mobile' },
-                ' fa-mobile '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-circle-o' },
-                ' fa-circle-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-quote-left' },
-                ' fa-quote-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-quote-right' },
-                ' fa-quote-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-spinner' },
-                ' fa-spinner '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-circle' },
-                ' fa-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-mail-reply' },
-                ' fa-mail-reply '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-reply' },
-                ' fa-reply '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-github-alt' },
-                ' fa-github-alt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-folder-o' },
-                ' fa-folder-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-folder-open-o' },
-                ' fa-folder-open-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-smile-o' },
-                ' fa-smile-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-frown-o' },
-                ' fa-frown-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-meh-o' },
-                ' fa-meh-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gamepad' },
-                ' fa-gamepad '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-keyboard-o' },
-                ' fa-keyboard-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-flag-o' },
-                ' fa-flag-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-flag-checkered' },
-                ' fa-flag-checkered '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-terminal' },
-                ' fa-terminal '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-code' },
-                ' fa-code '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-mail-reply-all' },
-                ' fa-mail-reply-all '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-reply-all' },
-                ' fa-reply-all '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-star-half-empty' },
-                ' fa-star-half-empty '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-star-half-full' },
-                ' fa-star-half-full '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-star-half-o' },
-                ' fa-star-half-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-location-arrow' },
-                ' fa-location-arrow '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-crop' },
-                ' fa-crop '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-code-fork' },
-                ' fa-code-fork '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-unlink' },
-                ' fa-unlink '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chain-broken' },
-                ' fa-chain-broken '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-question' },
-                ' fa-question '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-info' },
-                ' fa-info '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-exclamation' },
-                ' fa-exclamation '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-superscript' },
-                ' fa-superscript '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-subscript' },
-                ' fa-subscript '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-eraser' },
-                ' fa-eraser '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-puzzle-piece' },
-                ' fa-puzzle-piece '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-microphone' },
-                ' fa-microphone '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-microphone-slash' },
-                ' fa-microphone-slash '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-shield' },
-                ' fa-shield '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-calendar-o' },
-                ' fa-calendar-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-fire-extinguisher' },
-                ' fa-fire-extinguisher '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rocket' },
-                ' fa-rocket '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-maxcdn' },
-                ' fa-maxcdn '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-circle-left' },
-                ' fa-chevron-circle-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-circle-right' },
-                ' fa-chevron-circle-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-circle-up' },
-                ' fa-chevron-circle-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-chevron-circle-down' },
-                ' fa-chevron-circle-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-html5' },
-                ' fa-html5 '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-css3' },
-                ' fa-css3 '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-anchor' },
-                ' fa-anchor '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-unlock-alt' },
-                ' fa-unlock-alt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bullseye' },
-                ' fa-bullseye '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ellipsis-h' },
-                ' fa-ellipsis-h '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ellipsis-v' },
-                ' fa-ellipsis-v '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rss-square' },
-                ' fa-rss-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-play-circle' },
-                ' fa-play-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ticket' },
-                ' fa-ticket '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-minus-square' },
-                ' fa-minus-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-minus-square-o' },
-                ' fa-minus-square-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-level-up' },
-                ' fa-level-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-level-down' },
-                ' fa-level-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-check-square' },
-                ' fa-check-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pencil-square' },
-                ' fa-pencil-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-external-link-square' },
-                ' fa-external-link-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-share-square' },
-                ' fa-share-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-compass' },
-                ' fa-compass '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-toggle-down' },
-                ' fa-toggle-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-square-o-down' },
-                ' fa-caret-square-o-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-toggle-up' },
-                ' fa-toggle-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-square-o-up' },
-                ' fa-caret-square-o-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-toggle-right' },
-                ' fa-toggle-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-square-o-right' },
-                ' fa-caret-square-o-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-euro' },
-                ' fa-euro '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-eur' },
-                ' fa-eur '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gbp' },
-                ' fa-gbp '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-dollar' },
-                ' fa-dollar '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-usd' },
-                ' fa-usd '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rupee' },
-                ' fa-rupee '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-inr' },
-                ' fa-inr '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cny' },
-                ' fa-cny '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rmb' },
-                ' fa-rmb '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-yen' },
-                ' fa-yen '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-jpy' },
-                ' fa-jpy '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ruble' },
-                ' fa-ruble '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rouble' },
-                ' fa-rouble '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rub' },
-                ' fa-rub '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-won' },
-                ' fa-won '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-krw' },
-                ' fa-krw '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bitcoin' },
-                ' fa-bitcoin '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-btc' },
-                ' fa-btc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file' },
-                ' fa-file '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-text' },
-                ' fa-file-text '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-alpha-asc' },
-                ' fa-sort-alpha-asc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-alpha-desc' },
-                ' fa-sort-alpha-desc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-amount-asc' },
-                ' fa-sort-amount-asc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-amount-desc' },
-                ' fa-sort-amount-desc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-numeric-asc' },
-                ' fa-sort-numeric-asc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sort-numeric-desc' },
-                ' fa-sort-numeric-desc '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-thumbs-up' },
-                ' fa-thumbs-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-thumbs-down' },
-                ' fa-thumbs-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-youtube-square' },
-                ' fa-youtube-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-youtube' },
-                ' fa-youtube '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-xing' },
-                ' fa-xing '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-xing-square' },
-                ' fa-xing-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-youtube-play' },
-                ' fa-youtube-play '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-dropbox' },
-                ' fa-dropbox '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-stack-overflow' },
-                ' fa-stack-overflow '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-instagram' },
-                ' fa-instagram '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-flickr' },
-                ' fa-flickr '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-adn' },
-                ' fa-adn '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bitbucket' },
-                ' fa-bitbucket '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bitbucket-square' },
-                ' fa-bitbucket-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tumblr' },
-                ' fa-tumblr '
-              ),
-              _react2.default.createElement('br', null),
-              ' '
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'fa col-lg-3' },
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tumblr-square' },
-                ' fa-tumblr-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-long-arrow-down' },
-                ' fa-long-arrow-down '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-long-arrow-up' },
-                ' fa-long-arrow-up '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-long-arrow-left' },
-                ' fa-long-arrow-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-long-arrow-right' },
-                ' fa-long-arrow-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-apple' },
-                ' fa-apple '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-windows' },
-                ' fa-windows '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-android' },
-                ' fa-android '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-linux' },
-                ' fa-linux '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-dribbble' },
-                ' fa-dribbble '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-skype' },
-                ' fa-skype '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-foursquare' },
-                ' fa-foursquare '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-trello' },
-                ' fa-trello '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-female' },
-                ' fa-female '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-male' },
-                ' fa-male '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-gittip' },
-                ' fa-gittip '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sun-o' },
-                ' fa-sun-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-moon-o' },
-                ' fa-moon-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-archive' },
-                ' fa-archive '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bug' },
-                ' fa-bug '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-vk' },
-                ' fa-vk '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-weibo' },
-                ' fa-weibo '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-renren' },
-                ' fa-renren '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pagelines' },
-                ' fa-pagelines '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-stack-exchange' },
-                ' fa-stack-exchange '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-o-right' },
-                ' fa-arrow-circle-o-right '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-arrow-circle-o-left' },
-                ' fa-arrow-circle-o-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-toggle-left' },
-                ' fa-toggle-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-caret-square-o-left' },
-                ' fa-caret-square-o-left '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-dot-circle-o' },
-                ' fa-dot-circle-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-wheelchair' },
-                ' fa-wheelchair '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-vimeo-square' },
-                ' fa-vimeo-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-turkish-lira' },
-                ' fa-turkish-lira '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-try' },
-                ' fa-try '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-plus-square-o' },
-                ' fa-plus-square-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-space-shuttle' },
-                ' fa-space-shuttle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-slack' },
-                ' fa-slack '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-envelope-square' },
-                ' fa-envelope-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-wordpress' },
-                ' fa-wordpress '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-openid' },
-                ' fa-openid '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-institution' },
-                ' fa-institution '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bank' },
-                ' fa-bank '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-university' },
-                ' fa-university '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-mortar-board' },
-                ' fa-mortar-board '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-graduation-cap' },
-                ' fa-graduation-cap '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-yahoo' },
-                ' fa-yahoo '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-google' },
-                ' fa-google '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-reddit' },
-                ' fa-reddit '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-reddit-square' },
-                ' fa-reddit-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-stumbleupon-circle' },
-                ' fa-stumbleupon-circle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-stumbleupon' },
-                ' fa-stumbleupon '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-delicious' },
-                ' fa-delicious '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-digg' },
-                ' fa-digg '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pied-piper-square' },
-                ' fa-pied-piper-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pied-piper' },
-                ' fa-pied-piper '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-pied-piper-alt' },
-                ' fa-pied-piper-alt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-drupal' },
-                ' fa-drupal '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-joomla' },
-                ' fa-joomla '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-language' },
-                ' fa-language '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-fax' },
-                ' fa-fax '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-building' },
-                ' fa-building '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-child' },
-                ' fa-child '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-paw' },
-                ' fa-paw '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-spoon' },
-                ' fa-spoon '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cube' },
-                ' fa-cube '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cubes' },
-                ' fa-cubes '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-behance' },
-                ' fa-behance '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-behance-square' },
-                ' fa-behance-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-steam' },
-                ' fa-steam '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-steam-square' },
-                ' fa-steam-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-recycle' },
-                ' fa-recycle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-automobile' },
-                ' fa-automobile '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-car' },
-                ' fa-car '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-cab' },
-                ' fa-cab '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-taxi' },
-                ' fa-taxi '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tree' },
-                ' fa-tree '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-spotify' },
-                ' fa-spotify '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-deviantart' },
-                ' fa-deviantart '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-soundcloud' },
-                ' fa-soundcloud '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-database' },
-                ' fa-database '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-pdf-o' },
-                ' fa-file-pdf-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-word-o' },
-                ' fa-file-word-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-excel-o' },
-                ' fa-file-excel-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-powerpoint-o' },
-                ' fa-file-powerpoint-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-photo-o' },
-                ' fa-file-photo-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-picture-o' },
-                ' fa-file-picture-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-image-o' },
-                ' fa-file-image-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-zip-o' },
-                ' fa-file-zip-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-archive-o' },
-                ' fa-file-archive-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-sound-o' },
-                ' fa-file-sound-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-audio-o' },
-                ' fa-file-audio-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-movie-o' },
-                ' fa-file-movie-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-video-o' },
-                ' fa-file-video-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-file-code-o' },
-                ' fa-file-code-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-vine' },
-                ' fa-vine '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-codepen' },
-                ' fa-codepen '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-jsfiddle' },
-                ' fa-jsfiddle '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-life-bouy' },
-                ' fa-life-bouy '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-life-saver' },
-                ' fa-life-saver '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-support' },
-                ' fa-support '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-life-ring' },
-                ' fa-life-ring '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-circle-o-notch' },
-                ' fa-circle-o-notch '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ra' },
-                ' fa-ra '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-rebel' },
-                ' fa-rebel '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-ge' },
-                ' fa-ge '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-empire' },
-                ' fa-empire '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-git-square' },
-                ' fa-git-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-git' },
-                ' fa-git '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-hacker-news' },
-                ' fa-hacker-news '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-tencent-weibo' },
-                ' fa-tencent-weibo '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-qq' },
-                ' fa-qq '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-wechat' },
-                ' fa-wechat '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-weixin' },
-                ' fa-weixin '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-send' },
-                ' fa-send '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-paper-plane' },
-                ' fa-paper-plane '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-send-o' },
-                ' fa-send-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-paper-plane-o' },
-                ' fa-paper-plane-o '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-history' },
-                ' fa-history '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-circle-thin' },
-                ' fa-circle-thin '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-header' },
-                ' fa-header '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-paragraph' },
-                ' fa-paragraph '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-sliders' },
-                ' fa-sliders '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-share-alt' },
-                ' fa-share-alt '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-share-alt-square' },
-                ' fa-share-alt-square '
-              ),
-              _react2.default.createElement('br', null),
-              _react2.default.createElement(
-                'p',
-                { className: 'fa fa-bomb' },
-                ' fa-bomb '
-              ),
-              _react2.default.createElement('br', null)
+                null,
+                '() items in basket'
+              )
             )
           )
         )
@@ -27225,12 +23956,18 @@ module.exports =
     );
   }
   
-  displayIcons.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+  displayOnlineStore.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
   
-  exports.default = displayIcons;
+  exports.default = displayOnlineStore;
 
 /***/ }),
 /* 172 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  module.exports = __webpack_require__.p + "routes/dashboardPages/onlinestore/logo1.png?8a2775b651bd94385e39b7025ca10ce3";
+
+/***/ }),
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -27243,7 +23980,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _MorrisjsCharts = __webpack_require__(173);
+  var _MorrisjsCharts = __webpack_require__(174);
   
   var _MorrisjsCharts2 = _interopRequireDefault(_MorrisjsCharts);
   
@@ -27259,7 +23996,7 @@ module.exports =
   };
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -27470,7 +24207,7 @@ module.exports =
   exports.default = displayMorrisjsCharts;
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -27483,7 +24220,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Notification = __webpack_require__(175);
+  var _Notification = __webpack_require__(176);
   
   var _Notification2 = _interopRequireDefault(_Notification);
   
@@ -27499,7 +24236,7 @@ module.exports =
   };
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -27536,7 +24273,7 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _Alert = __webpack_require__(176);
+  var _Alert = __webpack_require__(177);
   
   var _Alert2 = _interopRequireDefault(_Alert);
   
@@ -27544,19 +24281,19 @@ module.exports =
   
   var _Button2 = _interopRequireDefault(_Button);
   
-  var _OverlayTrigger = __webpack_require__(177);
+  var _OverlayTrigger = __webpack_require__(178);
   
   var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
   
-  var _Tooltip = __webpack_require__(178);
+  var _Tooltip = __webpack_require__(179);
   
   var _Tooltip2 = _interopRequireDefault(_Tooltip);
   
-  var _Popover = __webpack_require__(179);
+  var _Popover = __webpack_require__(180);
   
   var _Popover2 = _interopRequireDefault(_Popover);
   
-  var _Modal = __webpack_require__(180);
+  var _Modal = __webpack_require__(181);
   
   var _Modal2 = _interopRequireDefault(_Modal);
   
@@ -28059,37 +24796,37 @@ module.exports =
   exports.default = Notification;
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Alert");
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/OverlayTrigger");
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Tooltip");
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Popover");
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Modal");
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28102,7 +24839,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _membershipReg = __webpack_require__(182);
+  var _membershipReg = __webpack_require__(183);
   
   var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
@@ -28118,7 +24855,7 @@ module.exports =
   };
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28301,9 +25038,7 @@ module.exports =
   exports.default = displayMembershipRegistration;
 
 /***/ }),
-/* 183 */,
-/* 184 */,
-/* 185 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28316,7 +25051,359 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _resultsFixtures = __webpack_require__(186);
+  var _chat = __webpack_require__(185);
+  
+  var _chat2 = _interopRequireDefault(_chat);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  exports.default = {
+  
+    path: '/chat',
+  
+    action: function action() {
+      return _react2.default.createElement(_chat2.default, null);
+    }
+  };
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _Panel = __webpack_require__(151);
+  
+  var _Panel2 = _interopRequireDefault(_Panel);
+  
+  var _PageHeader = __webpack_require__(157);
+  
+  var _PageHeader2 = _interopRequireDefault(_PageHeader);
+  
+  var _MessageList = __webpack_require__(186);
+  
+  var _MessageList2 = _interopRequireDefault(_MessageList);
+  
+  var _firebase = __webpack_require__(187);
+  
+  var _firebase2 = _interopRequireDefault(_firebase);
+  
+  var _MessageBox = __webpack_require__(188);
+  
+  var _MessageBox2 = _interopRequireDefault(_MessageBox);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var title = 'Chat';
+  
+  var Chat = function (_Component) {
+    (0, _inherits3.default)(Chat, _Component);
+  
+    function Chat(props) {
+      (0, _classCallCheck3.default)(this, Chat);
+  
+      var _this = (0, _possibleConstructorReturn3.default)(this, (Chat.__proto__ || (0, _getPrototypeOf2.default)(Chat)).call(this, props));
+  
+      var config = {
+        apiKey: "AIzaSyCOgQiq1Tq6Cdgx60UVZ6a2mp-42T9XNJ0",
+        authDomain: "clubconnect-c4852.firebaseapp.com",
+        databaseURL: "https://clubconnect-c4852.firebaseio.com",
+        projectId: "clubconnect-c4852",
+        storageBucket: "clubconnect-c4852.appspot.com",
+        messagingSenderId: "270307080443"
+      };
+      _firebase2.default.initializeApp(config);
+      return _this;
+    }
+  
+    (0, _createClass3.default)(Chat, [{
+      key: 'render',
+      value: function render() {
+        return _react2.default.createElement(
+          'div',
+          { className: 'container' },
+          _react2.default.createElement(
+            'div',
+            { className: 'columns' },
+            _react2.default.createElement('div', { className: 'column is-3' }),
+            _react2.default.createElement(
+              'div',
+              { className: 'column is-6' },
+              _react2.default.createElement(_MessageList2.default, { db: _firebase2.default })
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'columns' },
+            _react2.default.createElement('div', { className: 'column is-3' }),
+            _react2.default.createElement(
+              'div',
+              { className: 'column is-6' },
+              _react2.default.createElement(_MessageBox2.default, { db: _firebase2.default })
+            )
+          )
+        );
+      }
+    }]);
+    return Chat;
+  }(_react.Component);
+  
+  exports.default = Chat;
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _Message = __webpack_require__(202);
+  
+  var _Message2 = _interopRequireDefault(_Message);
+  
+  var _lodash = __webpack_require__(203);
+  
+  var _lodash2 = _interopRequireDefault(_lodash);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var MessageList = function (_Component) {
+    (0, _inherits3.default)(MessageList, _Component);
+  
+    function MessageList(props) {
+      (0, _classCallCheck3.default)(this, MessageList);
+  
+      var _this = (0, _possibleConstructorReturn3.default)(this, (MessageList.__proto__ || (0, _getPrototypeOf2.default)(MessageList)).call(this, props));
+  
+      _this.state = {
+        messages: []
+      };
+      var app = _this.props.db.database().ref('messages');
+      app.on('value', function (snapshot) {
+        _this.getData(snapshot.val());
+      });
+      return _this;
+    }
+  
+    (0, _createClass3.default)(MessageList, [{
+      key: 'getData',
+      value: function getData(values) {
+        var messagesVal = values;
+        var messages = (0, _lodash2.default)(messagesVal).keys().map(function (messageKey) {
+          var cloned = _lodash2.default.clone(messagesVal[messageKey]);
+          cloned.key = messageKey;
+          return cloned;
+        }).value();
+        this.setState({
+          messages: messages
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var messageNodes = this.state.messages.map(function (message) {
+          return _react2.default.createElement(
+            'div',
+            { className: 'card' },
+            _react2.default.createElement(
+              'div',
+              { className: 'card-content' },
+              _react2.default.createElement(_Message2.default, { message: message.message })
+            )
+          );
+        });
+        return _react2.default.createElement(
+          'div',
+          null,
+          messageNodes
+        );
+      }
+    }]);
+    return MessageList;
+  }(_react.Component);
+  
+  exports.default = MessageList;
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports) {
+
+  module.exports = require("firebase");
+
+/***/ }),
+/* 188 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _trim = __webpack_require__(189);
+  
+  var _trim2 = _interopRequireDefault(_trim);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var MessageBox = function (_Component) {
+    (0, _inherits3.default)(MessageBox, _Component);
+  
+    function MessageBox(props) {
+      (0, _classCallCheck3.default)(this, MessageBox);
+  
+      var _this = (0, _possibleConstructorReturn3.default)(this, (MessageBox.__proto__ || (0, _getPrototypeOf2.default)(MessageBox)).call(this, props));
+  
+      _this.onChange = _this.onChange.bind(_this);
+      _this.onKeyup = _this.onKeyup.bind(_this);
+      _this.state = {
+        message: ''
+      };
+      return _this;
+    }
+  
+    (0, _createClass3.default)(MessageBox, [{
+      key: 'onChange',
+      value: function onChange(e) {
+        this.setState({
+          message: e.target.value
+        });
+      }
+    }, {
+      key: 'onKeyup',
+      value: function onKeyup(e) {
+        if (e.keyCode === 13 && (0, _trim2.default)(e.target.value) !== '') {
+          e.preventDefault();
+          var dbCon = this.props.db.database().ref('/messages');
+          dbCon.push({
+            message: (0, _trim2.default)(e.target.value)
+          });
+          this.setState({
+            message: ''
+          });
+        }
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return _react2.default.createElement(
+          'form',
+          null,
+          _react2.default.createElement('textarea', {
+            className: 'textarea',
+            placeholder: 'Type a message',
+            cols: '100',
+            onChange: this.onChange,
+            onKeyUp: this.onKeyup,
+            value: this.state.message })
+        );
+      }
+    }]);
+    return MessageBox;
+  }(_react.Component);
+  
+  exports.default = MessageBox;
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports) {
+
+  module.exports = require("trim");
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _resultsFixtures = __webpack_require__(191);
   
   var _resultsFixtures2 = _interopRequireDefault(_resultsFixtures);
   
@@ -28331,7 +25418,7 @@ module.exports =
   };
 
 /***/ }),
-/* 186 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28466,7 +25553,7 @@ module.exports =
   exports.default = resultsFixtures;
 
 /***/ }),
-/* 187 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28515,13 +25602,7 @@ module.exports =
       */
 
 /***/ }),
-/* 188 */
-/***/ (function(module, exports) {
-
-  module.exports = require("./assets");
-
-/***/ }),
-/* 189 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28534,23 +25615,23 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _chat = __webpack_require__(190);
+  var _clubs = __webpack_require__(194);
   
-  var _chat2 = _interopRequireDefault(_chat);
+  var _clubs2 = _interopRequireDefault(_clubs);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
   exports.default = {
   
-    path: '/chat',
+    path: '/clubs',
   
     action: function action() {
-      return _react2.default.createElement(_chat2.default, null);
+      return _react2.default.createElement(_clubs2.default, null);
     }
   };
 
 /***/ }),
-/* 190 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -28563,76 +25644,726 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Panel = __webpack_require__(151);
+  var _withStyles = __webpack_require__(18);
   
-  var _Panel2 = _interopRequireDefault(_Panel);
+  var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _PageHeader = __webpack_require__(157);
+  var _reactBootstrap = __webpack_require__(38);
   
-  var _PageHeader2 = _interopRequireDefault(_PageHeader);
+  var _clubs = __webpack_require__(195);
+  
+  var _clubs2 = _interopRequireDefault(_clubs);
+  
+  var _Widget = __webpack_require__(52);
+  
+  var _Widget2 = _interopRequireDefault(_Widget);
+  
+  var _Donut = __webpack_require__(57);
+  
+  var _Donut2 = _interopRequireDefault(_Donut);
+  
+  var _recharts = __webpack_require__(100);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
-  var title = 'Chat';
+  var title = 'Club Connect';
   
-  var containerStyle = {
-    fontSize: 'large',
-    color: 'gray',
-    display: 'grid',
-    gridTemplateColumns: '1fr 7fr',
-    gridTemplateAreas: 'sidebar main',
-    width: '100vw',
-    height: '100vh'
-  };
+  var data = [{ name: 'Page A', uv: 4000, pv: 2400, amt: 2400, value: 600 }, { name: 'Page B', uv: 3000, pv: 1398, amt: 2210, value: 300 }, { name: 'Page C', uv: 2000, pv: 9800, amt: 2290, value: 500 }, { name: 'Page D', uv: 2780, pv: 3908, amt: 2000, value: 400 }, { name: 'Page E', uv: 1890, pv: 4800, amt: 2181, value: 200 }, { name: 'Page F', uv: 2390, pv: 3800, amt: 2500, value: 700 }, { name: 'Page G', uv: 3490, pv: 4300, amt: 2100, value: 100 }];
   
-  var newMessageStyle = {
-    position: 'fixed',
-    bottom: '0',
-    width: '100%',
-    padding: '20px',
-    marginLeft: '0px',
-    borderTop: '5px solid dodgerblue'
-  };
-  
-  var messageListStyle = {
-    padding: '10px 0 0 12px'
-  };
-  
-  var sideBarStyle = {
-    padding: '10px 0 0 5px',
-    borderRight: '5px solid dodgerblue',
-    height: '100%'
-  };
-  function displayChat(props, context) {
+  function Clubs(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
       'div',
-      { style: containerStyle, id: 'container' },
+      null,
       _react2.default.createElement(
-        'aside',
-        { style: sideBarStyle, id: 'sidebar' },
-        'Users'
+        'div',
+        { className: 'row' },
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-12' },
+          _react2.default.createElement(
+            _reactBootstrap.PageHeader,
+            null,
+            'Welcome to ClubConnect'
+          )
+        )
       ),
       _react2.default.createElement(
-        'section',
-        { id: 'main' },
+        'div',
+        { className: 'row' },
         _react2.default.createElement(
-          'section',
-          { style: messageListStyle, id: 'messages-list' },
-          'Messages list'
+          'div',
+          { className: 'col-lg-6 col-md-6' },
+          _react2.default.createElement(_Widget2.default, {
+            style: 'panel-primary',
+            icon: 'fa fa-comments fa-5x',
+            count: '26',
+            headerText: 'Group Chat',
+            footerText: 'View chat',
+            linkTo: '/chat'
+          })
         ),
         _react2.default.createElement(
-          'section',
-          { style: newMessageStyle, id: 'new-message' },
-          'New message'
+          'div',
+          { className: 'col-lg-6 col-md-6' },
+          _react2.default.createElement(_Widget2.default, {
+            style: 'panel-green',
+            icon: 'fa fa-user-plus fa-5x',
+            count: '12',
+            headerText: 'Become a member',
+            footerText: 'View Details',
+            linkTo: '/membershipReg'
+          })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-6 col-md-6' },
+          _react2.default.createElement(_Widget2.default, {
+            style: 'panel-yellow',
+            icon: 'fa fa-shopping-cart fa-5x',
+            count: '124',
+            headerText: 'Shop our online store',
+            footerText: 'View Club Gear',
+            linkTo: '/onlineStore'
+          })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-6 col-md-6' },
+          _react2.default.createElement(_Widget2.default, {
+            style: 'panel-red',
+            icon: 'fa fa-tasks fa-5x',
+            count: '13',
+            headerText: 'Results / Fixtures',
+            footerText: 'View Details',
+            linkTo: '/resultsFixtures'
+          })
+        )
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'row' },
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-8' },
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('i', { className: 'fa fa-bar-chart-o fa-fw' }),
+                ' Area Chart Example',
+                _react2.default.createElement(
+                  'div',
+                  { className: 'pull-right' },
+                  _react2.default.createElement(
+                    _reactBootstrap.DropdownButton,
+                    { title: 'Dropdown', bsSize: 'xs', pullRight: true, id: 'dropdownButton1' },
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '1' },
+                      'Action'
+                    ),
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '2' },
+                      'Another action'
+                    ),
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '3' },
+                      'Something else here'
+                    ),
+                    _react2.default.createElement(_reactBootstrap.MenuItem, { divider: true }),
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '4' },
+                      'Separated link'
+                    )
+                  )
+                )
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                _recharts.ResponsiveContainer,
+                { width: '100%', aspect: 2 },
+                _react2.default.createElement(
+                  _recharts.AreaChart,
+                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
+                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
+                  _react2.default.createElement(_recharts.YAxis, null),
+                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
+                  _react2.default.createElement(_recharts.Tooltip, null),
+                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'uv', stackId: '1', stroke: '#8884d8', fill: '#8884d8' }),
+                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'pv', stackId: '1', stroke: '#82ca9d', fill: '#82ca9d' }),
+                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'amt', stackId: '1', stroke: '#ffc658', fill: '#ffc658' })
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('i', { className: 'fa fa-bar-chart-o fa-fw' }),
+                ' Bar Chart Example',
+                _react2.default.createElement(
+                  'div',
+                  { className: 'pull-right' },
+                  _react2.default.createElement(
+                    _reactBootstrap.DropdownButton,
+                    { title: 'Dropdown', bsSize: 'xs', pullRight: true, id: 'dropdownButton2' },
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '1' },
+                      'Action'
+                    ),
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '2' },
+                      'Another action'
+                    ),
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '3' },
+                      'Something else here'
+                    ),
+                    _react2.default.createElement(_reactBootstrap.MenuItem, { divider: true }),
+                    _react2.default.createElement(
+                      _reactBootstrap.MenuItem,
+                      { eventKey: '4' },
+                      'Separated link'
+                    )
+                  )
+                )
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                _recharts.ResponsiveContainer,
+                { width: '100%', aspect: 2 },
+                _react2.default.createElement(
+                  _recharts.BarChart,
+                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
+                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
+                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
+                  _react2.default.createElement(_recharts.YAxis, null),
+                  _react2.default.createElement(_recharts.Tooltip, null),
+                  _react2.default.createElement(_recharts.Bar, { dataKey: 'pv', stackId: '1', fill: '#8884d8' }),
+                  _react2.default.createElement(_recharts.Bar, { dataKey: 'uv', stackId: '1', fill: '#82ca9d' }),
+                  _react2.default.createElement(_recharts.Bar, { type: 'monotone', dataKey: 'amt', fill: '#ffc658' })
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('i', { className: 'fa fa-clock-o fa-fw' }),
+                ' Responsive Timeline'
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'ul',
+                { className: 'timeline' },
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'timeline-badge' },
+                    _react2.default.createElement('i', { className: 'fa fa-check' })
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'timeline-panel' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'timeline-heading' },
+                      _react2.default.createElement(
+                        'h4',
+                        { className: 'timeline-title' },
+                        'Lorem ipsum dolor'
+                      ),
+                      _react2.default.createElement(
+                        'p',
+                        null,
+                        _react2.default.createElement(
+                          'small',
+                          { className: 'text-muted' },
+                          _react2.default.createElement('i', { className: 'fa fa-clock-o' }),
+                          ' 11 hours ago via Twitter'
+                        )
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'timeline-body' },
+                      _react2.default.createElement(
+                        'p',
+                        null,
+                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero laboriosam dolor perspiciatis omnis exercitationem. Beatae, officia pariatur? Est cum veniam excepturi. Maiores praesentium, porro voluptas suscipit facere rem dicta, debitis.'
+                      )
+                    )
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  { className: 'timeline-inverted' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'timeline-badge warning' },
+                    _react2.default.createElement('i', { className: 'fa fa-credit-card' })
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'timeline-panel' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'timeline-heading' },
+                      _react2.default.createElement(
+                        'h4',
+                        { className: 'timeline-title' },
+                        'Lorem ipsum dolor'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'timeline-body' },
+                      _react2.default.createElement(
+                        'p',
+                        null,
+                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem dolorem quibusdam, tenetur commodi provident cumque magni voluptatem libero, quis rerum. Fugiat esse debitis optio, tempore. Animi officiis alias, officia repellendus.'
+                      ),
+                      _react2.default.createElement(
+                        'p',
+                        null,
+                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium maiores odit qui est tempora eos, nostrum provident explicabo dignissimos debitis vel! Adipisci eius voluptates, ad aut recusandae minus eaque facere.'
+                      )
+                    )
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'timeline-badge danger' },
+                    _react2.default.createElement('i', { className: 'fa fa-bomb' })
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'timeline-panel' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'timeline-heading' },
+                      _react2.default.createElement(
+                        'h4',
+                        { className: 'timeline-title' },
+                        'Lorem ipsum dolor'
+                      )
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'timeline-body' },
+                      _react2.default.createElement(
+                        'p',
+                        null,
+                        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus numquam facilis enim eaque, tenetur nam id qui vel velit similique nihil iure molestias aliquam, voluptatem totam quaerat, magni commodi quisquam.'
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col-lg-4' },
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('i', { className: 'fa fa-bell fa-fw' }),
+                ' Notifications Panel'
+              )
+            },
+            _react2.default.createElement(
+              _reactBootstrap.ListGroup,
+              null,
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-comment fa-fw' }),
+                ' New Comment',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '4 minutes ago'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-twitter fa-fw' }),
+                ' 3 New Followers',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '12 minutes ago'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-envelope fa-fw' }),
+                ' Message Sent',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '27 minutes ago'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-tasks fa-fw' }),
+                ' New Task',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '43 minutes ago'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-upload fa-fw' }),
+                ' Server Rebooted',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '11:32 AM'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-bolt fa-fw' }),
+                ' Server Crashed!',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '11:13 AM'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-warning fa-fw' }),
+                ' Server Not Responding',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '10:57 AM'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-shopping-cart fa-fw' }),
+                ' New Order Placed',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    '9:49 AM'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                _reactBootstrap.ListGroupItem,
+                { href: '', onClick: function onClick(e) {
+                    e.preventDefault();
+                  } },
+                _react2.default.createElement('i', { className: 'fa fa-money fa-fw' }),
+                ' Payment Received',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'pull-right text-muted small' },
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    'Yesterday'
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { block: true },
+              'View All Alerts'
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            {
+              header: _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('i', { className: 'fa fa-bar-chart-o fa-fw' }),
+                ' Donut Chart Example'
+              )
+            },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(_Donut2.default, { data: data, color: '#8884d8', innerRadius: '70%', outerRadius: '90%' })
+            )
+          )
         )
       )
     );
   }
   
-  displayChat.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+  Clubs.propTypes = {
+    // news: PropTypes.arrayOf(PropTypes.shape({
+    //   title: PropTypes.string.isRequired,
+    //   link: PropTypes.string.isRequired,
+    //   contentSnippet: PropTypes.string,
+    // })).isRequired,
+  };
+  Clubs.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
   
-  exports.default = displayChat;
+  exports.default = (0, _withStyles2.default)(_clubs2.default)(Clubs);
+
+/***/ }),
+/* 195 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  
+      var content = __webpack_require__(196);
+      var insertCss = __webpack_require__(22);
+  
+      if (typeof content === 'string') {
+        content = [[module.id, content, '']];
+      }
+  
+      module.exports = content.locals || {};
+      module.exports._getCss = function() { return content.toString(); };
+      module.exports._insertCss = function(options) { return insertCss(content, options) };
+    
+      // Hot Module Replacement
+      // https://webpack.github.io/docs/hot-module-replacement
+      // Only activated in browser context
+      if (false) {
+        var removeCss = function() {};
+        module.hot.accept("!!../../../../node_modules/css-loader/index.js?{\"sourceMap\":true,\"modules\":true,\"localIdentName\":\"[name]_[local]_[hash:base64:3]\",\"minimize\":false}!../../../../node_modules/postcss-loader/index.js?pack=default!./clubs.css", function() {
+          content = require("!!../../../../node_modules/css-loader/index.js?{\"sourceMap\":true,\"modules\":true,\"localIdentName\":\"[name]_[local]_[hash:base64:3]\",\"minimize\":false}!../../../../node_modules/postcss-loader/index.js?pack=default!./clubs.css");
+  
+          if (typeof content === 'string') {
+            content = [[module.id, content, '']];
+          }
+  
+          removeCss = insertCss(content, { replace: true });
+        });
+        module.hot.dispose(function() { removeCss(); });
+      }
+    
+
+/***/ }),
+/* 196 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  exports = module.exports = __webpack_require__(21)();
+  // imports
+  
+  
+  // module
+  exports.push([module.id, "/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n:root {\n  /*\n   * Typography\n   * ======================================================================== */\n\n  /*\n   * Layout\n   * ======================================================================== */\n\n  /*\n   * Media queries breakpoints\n   * ======================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n}\n\n.clubs_root_pKm {\n  padding-left: 20px;\n  padding-right: 20px;\n}\n\n.clubs_container_2uC {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 1000px;\n}\n\n.clubs_news__Qo {\n  padding: 0;\n}\n\n.clubs_newsItem_2aO {\n  list-style-type: none;\n  padding-bottom: 6px;\n}\n\n.clubs_newsTitle_H8E {\n  font-size: 1.125em;\n}\n\n.clubs_newsTitle_H8E,\n.clubs_newsDesc_3il {\n  display: block;\n}\n", "", {"version":3,"sources":["/./routes/dashboardPages/clubs/clubs.css","/./components/variables.css"],"names":[],"mappings":"AAAA;;;;;;;GAOG;;ACPH;;;;;;;GAOG;;AAEH;EACE;;gFAE8E;;EAI9E;;gFAE8E;;EAI9E;;gFAE8E,EAErD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;CAC3D;;ADnBD;EACE,mBAAmB;EACnB,oBAAoB;CACrB;;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,kBAAoC;CACrC;;AAED;EACE,WAAW;CACZ;;AAED;EACE,sBAAsB;EACtB,oBAAoB;CACrB;;AAED;EACE,mBAAmB;CACpB;;AAED;;EAEE,eAAe;CAChB","file":"clubs.css","sourcesContent":["/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n@import '../../../components/variables.css';\n\n.root {\n  padding-left: 20px;\n  padding-right: 20px;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: var(--max-content-width);\n}\n\n.news {\n  padding: 0;\n}\n\n.newsItem {\n  list-style-type: none;\n  padding-bottom: 6px;\n}\n\n.newsTitle {\n  font-size: 1.125em;\n}\n\n.newsTitle,\n.newsDesc {\n  display: block;\n}\n","/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n:root {\n  /*\n   * Typography\n   * ======================================================================== */\n\n  --font-family-base: 'Segoe UI', 'HelveticaNeue-Light', sans-serif;\n\n  /*\n   * Layout\n   * ======================================================================== */\n\n  --max-content-width: 1000px;\n\n  /*\n   * Media queries breakpoints\n   * ======================================================================== */\n\n  --screen-xs-min: 480px;  /* Extra small screen / phone */\n  --screen-sm-min: 768px;  /* Small screen / tablet */\n  --screen-md-min: 992px;  /* Medium screen / desktop */\n  --screen-lg-min: 1200px; /* Large screen / wide desktop */\n}\n"],"sourceRoot":"webpack://"}]);
+  
+  // exports
+  exports.locals = {
+  	"root": "clubs_root_pKm",
+  	"container": "clubs_container_2uC",
+  	"news": "clubs_news__Qo",
+  	"newsItem": "clubs_newsItem_2aO",
+  	"newsTitle": "clubs_newsTitle_H8E",
+  	"newsDesc": "clubs_newsDesc_3il"
+  };
+
+/***/ }),
+/* 197 */
+/***/ (function(module, exports) {
+
+  module.exports = require("./assets");
+
+/***/ }),
+/* 198 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  var mysql = __webpack_require__(199);
+  
+  var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: 'clubconnect'
+  });
+  
+  con.connect(function (err) {
+    if (err) throw err;
+  });
+  
+  module.exports = con;
+
+/***/ }),
+/* 199 */
+/***/ (function(module, exports) {
+
+  module.exports = require("mysql");
+
+/***/ }),
+/* 200 */
+/***/ (function(module, exports) {
+
+  module.exports = require("http");
+
+/***/ }),
+/* 201 */
+/***/ (function(module, exports) {
+
+  module.exports = require("socket.io");
+
+/***/ }),
+/* 202 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var Message = function (_Component) {
+    (0, _inherits3.default)(Message, _Component);
+  
+    function Message() {
+      (0, _classCallCheck3.default)(this, Message);
+      return (0, _possibleConstructorReturn3.default)(this, (Message.__proto__ || (0, _getPrototypeOf2.default)(Message)).apply(this, arguments));
+    }
+  
+    (0, _createClass3.default)(Message, [{
+      key: 'render',
+      value: function render() {
+        return _react2.default.createElement(
+          'div',
+          null,
+          this.props.message
+        );
+      }
+    }]);
+    return Message;
+  }(_react.Component);
+  
+  exports.default = Message;
+
+/***/ }),
+/* 203 */
+/***/ (function(module, exports) {
+
+  module.exports = require("lodash");
 
 /***/ })
 /******/ ]);
