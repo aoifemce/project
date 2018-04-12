@@ -193,7 +193,7 @@ app.post('/checkLogin', urlencodedParser, function(req, res){
             if(password==results[0].password){
                console.log("working");
 
-               res.redirect('/');
+               res.redirect('/profile');
 
             }else{
                 console.log("Email and password dont match");

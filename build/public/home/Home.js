@@ -37,10 +37,26 @@ function Home(props, context) {
             count="12"
             headerText="All clubs signed up"
             footerText="View Clubs"
-            linkTo="/clubs"
+            linkTo="/forms"
           />
         </div>
 
+        <div className="col-lg-4">
+           <Panel
+           header={<span>
+           <i className="fa fa-bell fa-fw" /> All clubs
+            </span>}
+            >
+            <ListGroup>
+            <ListGroupItem href="" onClick={(e) => { e.preventDefault(); }}>
+              <i className="fa fa-comment fa-fw" /> New Comment
+              <span className="pull-right text-muted small"><em>4 minutes ago</em></span>
+            </ListGroupItem>
+
+          </ListGroup>
+          <Button block>View All Alerts</Button>
+        </Panel>
+        </div>
     </div>
   );
 }

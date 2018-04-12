@@ -13,7 +13,7 @@ import App from '../components/App';
 // Child routes
 import home from './home';
 import login from './login';
-import table from './dashboardPages/tables';
+import profile from './dashboardPages/profile';
 import button from './dashboardPages/buttons';
 import flotcharts from './dashboardPages/flotCharts';
 import forms from './dashboardPages/forms';
@@ -43,10 +43,19 @@ export default [
       );
     },
   },
-
-
-
-
+   {
+     path: '/home',
+     children: [
+       home,
+     ],
+     async action({ next, render, context }) {
+       const component = await next();
+       if (component === undefined) return component;
+       return render(
+         <App context={context}>{component}</App>
+       );
+     },
+   },
 
   {
     path: '/',
@@ -56,7 +65,7 @@ export default [
       home,
       // contact,
       failed,
-      table,
+      profile,
       clubs,
       button,
       flotcharts,
@@ -66,12 +75,11 @@ export default [
       notification,
       membershipReg,
       chat,
-      // register,
-      resultsFixtures,
+      resultsFixtures
 
       // place new routes before...
       // content,
-      error,
+
     ],
 
     async action({ next, render, context }) {

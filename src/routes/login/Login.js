@@ -27,7 +27,6 @@ function submitHandler(e) {
   history.push('/');
 }
 
-
 class Login extends React.Component {
   constructor () {
     super();
@@ -54,8 +53,6 @@ class Login extends React.Component {
     this.forceUpdate();
     this.email.focus();
   }
-
-
 
   render () {
     const { email, password, valid,  } = this.state;
@@ -93,6 +90,7 @@ class Login extends React.Component {
               />
             </div>
             <Button  type="submit" bsSize="large" bsStyle="success" block>Login</Button>
+            <Button onClick = {(event) => { history.push('/home');}} bsSize="large" bsStyle="primary" block>Continue as guest</Button>
           </fieldset>
         </form>
       </Panel>
