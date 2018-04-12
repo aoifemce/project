@@ -17,9 +17,8 @@ import table from './dashboardPages/tables';
 import button from './dashboardPages/buttons';
 import flotcharts from './dashboardPages/flotCharts';
 import forms from './dashboardPages/forms';
-import grid from './dashboardPages/grid';
 import onlinestore from './dashboardPages/onlinestore';
-import morrisjscharts from './dashboardPages/morrisjsCharts';
+import failed from './dashboardPages/failed';
 import notification from './dashboardPages/notification';
 import membershipReg from './dashboardPages/membershipReg';
 import chat from './dashboardPages/chat';
@@ -46,6 +45,9 @@ export default [
   },
 
 
+
+
+
   {
     path: '/',
 
@@ -53,14 +55,14 @@ export default [
     children: [
       home,
       // contact,
+      failed,
       table,
       clubs,
       button,
       flotcharts,
       forms,
-      grid,
+      failed,
       onlinestore,
-      morrisjscharts,
       notification,
       membershipReg,
       chat,

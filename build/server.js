@@ -116,13 +116,13 @@ module.exports =
   
   var _routes2 = _interopRequireDefault(_routes);
   
-  var _assets = __webpack_require__(197);
+  var _assets = __webpack_require__(209);
   
   var _assets2 = _interopRequireDefault(_assets);
   
   var _config = __webpack_require__(16);
   
-  var _db = __webpack_require__(198);
+  var _db = __webpack_require__(210);
   
   var _db2 = _interopRequireDefault(_db);
   
@@ -133,11 +133,13 @@ module.exports =
   // import passport from './core/passport';
   // import models from './data/models';
   // import schema from './data/schema';
-  var db = __webpack_require__(198);
+  var flash = __webpack_require__(212);
   
   // import expressGraphQL from 'express-graphql';
   // import jwt from 'jsonwebtoken';
   
+  var urlencodedParser = _bodyParser2.default.urlencoded({ extended: false });
+  var db = __webpack_require__(210);
   
   var app = (0, _express2.default)();
   
@@ -155,6 +157,7 @@ module.exports =
   app.use((0, _cookieParser2.default)());
   app.use(_bodyParser2.default.urlencoded({ extended: true }));
   app.use(_bodyParser2.default.json());
+  app.use(flash());
   
   //
   // Authentication
@@ -294,17 +297,8 @@ module.exports =
     res.send('<!doctype html>' + html);
   });
   
-  var server = __webpack_require__(200).createServer(app);
-  var io = __webpack_require__(201)(server);
-  io.on('connection', function (client) {
-    console.log('The server is running at http://localhost:' + _config.port + '/');
-  });
   app.listen(_config.port, function () {
     console.log('The server is running at http://localhost:' + _config.port + '/');
-  });
-  
-  app.post('/getMessage', function (req, res) {
-    io.emit('sendMessage', req.body);
   });
   
   app.post('/createClub', function (req, res) {
@@ -340,9 +334,50 @@ module.exports =
     });
   });
   
+  app.post('/checkLogin', urlencodedParser, function (req, res) {
+    var email = req.body.email;
+    var password = req.body.password;
+    _db2.default.query('SELECT * FROM tbl_users WHERE email = ?', [email], function (error, results, fields, req) {
+      if (error) {
+        console.log("error with query");
+      } else {
+        if (results.length > 0) {
+          if (password == results[0].password) {
+            console.log("working");
+  
+            res.redirect('/');
+          } else {
+            console.log("Email and password dont match");
+            res.redirect('/failed');
+          }
+        } else {
+          console.log("Email does not exist");
+          res.redirect('/failed');
+        }
+      }
+    });
+  });
+  
+  app.post('/createCheckout', function (req, res) {
+    var message = '';
+    var name = req.body.name;
+    var address = req.body.address;
+    var cardName = req.body.cardName;
+    var cardNo = req.body.cardNo;
+    var csv = req.body.csv;
+    var expiryDate = req.body.expiryDate;
+    var checkoutPost = { name: name, address: address, cardName: cardName, cardNumber: cardNo, expiryDate: expiryDate, csv: csv };
+  
+    _db2.default.query('INSERT INTO tbl_checkOut SET?', checkoutPost, function (err, result) {
+      if (err) throw err;
+  
+      console.log("1 record inserted");
+    });
+  });
+  
   //
   // Launch the server
-  // -----------------------------------------------------------------------------
+  // --------------------------------------------------s---------------------------
   /* eslint-disable no-console */
   // models.sync().catch(err => console.error(err.stack)).then(() => {
   //   app.listen(port, () => {
@@ -969,55 +1004,51 @@ module.exports =
   
   var _login2 = _interopRequireDefault(_login);
   
-  var _tables = __webpack_require__(154);
+  var _tables = __webpack_require__(156);
   
   var _tables2 = _interopRequireDefault(_tables);
   
-  var _buttons = __webpack_require__(159);
+  var _buttons = __webpack_require__(161);
   
   var _buttons2 = _interopRequireDefault(_buttons);
   
-  var _flotCharts = __webpack_require__(161);
+  var _flotCharts = __webpack_require__(163);
   
   var _flotCharts2 = _interopRequireDefault(_flotCharts);
   
-  var _forms = __webpack_require__(163);
+  var _forms = __webpack_require__(165);
   
   var _forms2 = _interopRequireDefault(_forms);
-  
-  var _grid = __webpack_require__(168);
-  
-  var _grid2 = _interopRequireDefault(_grid);
   
   var _onlinestore = __webpack_require__(170);
   
   var _onlinestore2 = _interopRequireDefault(_onlinestore);
   
-  var _morrisjsCharts = __webpack_require__(173);
+  var _failed = __webpack_require__(184);
   
-  var _morrisjsCharts2 = _interopRequireDefault(_morrisjsCharts);
+  var _failed2 = _interopRequireDefault(_failed);
   
-  var _notification = __webpack_require__(175);
+  var _notification = __webpack_require__(186);
   
   var _notification2 = _interopRequireDefault(_notification);
   
-  var _membershipReg = __webpack_require__(182);
+  var _membershipReg = __webpack_require__(192);
   
   var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
-  var _chat = __webpack_require__(184);
+  var _chat = __webpack_require__(194);
   
   var _chat2 = _interopRequireDefault(_chat);
   
-  var _resultsFixtures = __webpack_require__(190);
+  var _resultsFixtures = __webpack_require__(202);
   
   var _resultsFixtures2 = _interopRequireDefault(_resultsFixtures);
   
-  var _error = __webpack_require__(192);
+  var _error = __webpack_require__(204);
   
   var _error2 = _interopRequireDefault(_error);
   
-  var _clubs = __webpack_require__(193);
+  var _clubs = __webpack_require__(205);
   
   var _clubs2 = _interopRequireDefault(_clubs);
   
@@ -1026,16 +1057,6 @@ module.exports =
   var _Header2 = _interopRequireDefault(_Header);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-  
-  // Child routes
-  /**
-   * React Starter Kit (https://www.reactstarterkit.com/)
-   *
-   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
-   *
-   * This source code is licensed under the MIT license found in the
-   * LICENSE.txt file in the root directory of this source tree.
-   */
   
   exports.default = [{
     path: '/login',
@@ -1086,7 +1107,7 @@ module.exports =
     // keep in mind, routes are evaluated in order
     children: [_home2.default,
     // contact,
-    _tables2.default, _clubs2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _grid2.default, _onlinestore2.default, _morrisjsCharts2.default, _notification2.default, _membershipReg2.default, _chat2.default,
+    _failed2.default, _tables2.default, _clubs2.default, _buttons2.default, _flotCharts2.default, _forms2.default, _failed2.default, _onlinestore2.default, _notification2.default, _membershipReg2.default, _chat2.default,
     // register,
     _resultsFixtures2.default,
   
@@ -1187,6 +1208,16 @@ module.exports =
       }))();
     }
   }];
+  
+  // Child routes
+  /**
+   * React Starter Kit (https://www.reactstarterkit.com/)
+   *
+   * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.txt file in the root directory of this source tree.
+   */
 
 /***/ }),
 /* 28 */
@@ -1399,6 +1430,26 @@ module.exports =
     value: true
   });
   
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
   var _react = __webpack_require__(11);
   
   var _react2 = _interopRequireDefault(_react);
@@ -1436,72 +1487,85 @@ module.exports =
                                       * LICENSE.txt file in the root directory of this source tree.
                                       */
   
-  function Header() {
-    return _react2.default.createElement(
-      'div',
-      { id: 'wrapper', className: 'content' },
-      _react2.default.createElement(
-        _Navbar2.default,
-        { fluid: true, style: { margin: 0 } },
-        _react2.default.createElement(
-          _Navbar.Brand,
-          null,
+  var Header = function (_React$Component) {
+    (0, _inherits3.default)(Header, _React$Component);
+  
+    function Header(props) {
+      (0, _classCallCheck3.default)(this, Header);
+  
+      var _this = (0, _possibleConstructorReturn3.default)(this, (Header.__proto__ || (0, _getPrototypeOf2.default)(Header)).call(this, props));
+  
+      _this.handleLoginClick = _this.handleLoginClick.bind(_this);
+      _this.handleLogoutClick = _this.handleLogoutClick.bind(_this);
+      _this.state = { isLoggedIn: true };
+      return _this;
+    }
+  
+    (0, _createClass3.default)(Header, [{
+      key: 'handleLoginClick',
+      value: function handleLoginClick() {
+        this.setState({ isLoggedIn: true });
+      }
+    }, {
+      key: 'handleLogoutClick',
+      value: function handleLogoutClick() {
+        this.setState({ isLoggedIn: false });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var isLoggedInStatus = this.state.isLoggedIn;
+  
+        var loginButton;
+        if (isLoggedInStatus) {
+          loginButton = _react2.default.createElement(
+            _reactBootstrap.Button,
+            { className: 'pt button pt-intent-button', onClick: function onClick(event) {
+                _history2.default.push('/login');
+              } },
+            'Logout'
+          );
+        } else {
+          loginButton = _react2.default.createElement(
+            _reactBootstrap.Button,
+            { className: 'pt button pt-intent-button', onClick: function onClick(event) {
+                _history2.default.push('/login');
+              } },
+            'Registration/Login'
+          );
+        }
+        return _react2.default.createElement(
+          'div',
+          { id: 'wrapper', className: 'content' },
           _react2.default.createElement(
-            'span',
-            null,
-            _react2.default.createElement('img', { src: logo, alt: 'Club Connect', title: 'ClubConnect' }),
+            _Navbar2.default,
+            { fluid: true, style: { margin: 0 } },
             _react2.default.createElement(
-              'span',
+              _Navbar.Brand,
               null,
-              '\xA0Club Connect'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'ul',
-          { className: 'nav navbar-top-links navbar-right' },
-          _react2.default.createElement(
-            _reactBootstrap.NavDropdown,
-            { title: _react2.default.createElement('i', { className: 'fa fa-user fa-fw' }), id: 'navDropdown4' },
-            _react2.default.createElement(
-              _reactBootstrap.MenuItem,
-              { eventKey: '4', onClick: function onClick(event) {
-                  _history2.default.push('/login');
-                } },
               _react2.default.createElement(
                 'span',
                 null,
-                ' ',
-                _react2.default.createElement('i', { className: 'fa fa-sign-out fa-fw' }),
-                ' Logout '
+                _react2.default.createElement('img', { src: logo, alt: 'Club Connect', title: 'ClubConnect' }),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  '\xA0Club Connect'
+                )
               )
-            )
-          ),
-          _react2.default.createElement(
-            _reactBootstrap.MenuItem,
-            { eventKey: '4', onClick: function onClick(event) {
-                _history2.default.push('/login');
-              } },
+            ),
             _react2.default.createElement(
-              'span',
-              null,
-              ' ',
-              _react2.default.createElement('div', { className: 'pt button pt-intent-button' }),
-              ' Registration/Login '
-            )
+              'ul',
+              { className: 'nav navbar-top-links navbar-right' },
+              loginButton
+            ),
+            _react2.default.createElement(_Sidebar2.default, null)
           )
-        ),
-        _react2.default.createElement(_Sidebar2.default, null)
-      )
-    );
-  }
-  function toggleMenu() {
-    if ((0, _jquery2.default)(".navbar-collapse").hasClass('collapse')) {
-      (0, _jquery2.default)(".navbar-collapse").removeClass('collapse');
-    } else {
-      (0, _jquery2.default)(".navbar-collapse").addClass('collapse');
-    }
-  }
+        );
+      }
+    }]);
+    return Header;
+  }(_react2.default.Component);
   
   exports.default = Header;
 
@@ -19688,6 +19752,30 @@ module.exports =
     value: true
   });
   
+  var _defineProperty2 = __webpack_require__(53);
+  
+  var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
   var _react = __webpack_require__(11);
   
   var _react2 = _interopRequireDefault(_react);
@@ -19700,15 +19788,21 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
+  var _Modal = __webpack_require__(152);
+  
+  var _Modal2 = _interopRequireDefault(_Modal);
+  
   var _reactBootstrap = __webpack_require__(38);
   
   var _withStyles = __webpack_require__(18);
   
   var _withStyles2 = _interopRequireDefault(_withStyles);
   
-  var _Login = __webpack_require__(152);
+  var _Login = __webpack_require__(153);
   
   var _Login2 = _interopRequireDefault(_Login);
+  
+  var _loginReducer = __webpack_require__(155);
   
   var _history = __webpack_require__(40);
   
@@ -19726,174 +19820,253 @@ module.exports =
                          * LICENSE.txt file in the root directory of this source tree.
                          */
   
+  var message = '';
+  
   function submitHandler(e) {
     e.preventDefault();
     _history2.default.push('/');
   }
   
-  function register() {}
+  var Login = function (_React$Component) {
+    (0, _inherits3.default)(Login, _React$Component);
   
-  function Login(props, context) {
-    context.setTitle(title);
-    return _react2.default.createElement(
-      'div',
-      { className: 'col-md-6 col-md-offset-3' },
-      _react2.default.createElement(
-        'div',
-        { className: 'text-center' },
-        _react2.default.createElement(
-          'h1',
-          { className: 'login-brand-text' },
-          'Club Connect'
-        )
-      ),
-      _react2.default.createElement(
-        _Panel2.default,
-        { header: _react2.default.createElement(
-            'h3',
-            null,
-            'Please Sign In'
-          ) },
-        _react2.default.createElement(
-          'form',
-          { role: 'form', onSubmit: function onSubmit(e) {
-              submitHandler(e);
-            } },
+    function Login() {
+      (0, _classCallCheck3.default)(this, Login);
+  
+      var _this = (0, _possibleConstructorReturn3.default)(this, (Login.__proto__ || (0, _getPrototypeOf2.default)(Login)).call(this));
+  
+      _this.state = {
+        email: '',
+        password: '',
+        isLoggedIn: true,
+        valid: false
+      };
+      _this.handleChange = _this.handleChange.bind(_this);
+      return _this;
+    }
+  
+    (0, _createClass3.default)(Login, [{
+      key: 'handleChange',
+      value: function handleChange(event) {
+        var _setState;
+  
+        var id = event.target.id;
+        var value = event.target.value;
+  
+        this.setState((_setState = {}, (0, _defineProperty3.default)(_setState, id, value), (0, _defineProperty3.default)(_setState, 'valid', this.email.validity.valid && this.password.validity.valid), _setState));
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        this.forceUpdate();
+        this.email.focus();
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this2 = this;
+  
+        var _state = this.state,
+            email = _state.email,
+            password = _state.password,
+            valid = _state.valid;
+  
+  
+        return _react2.default.createElement(
+          'div',
+          { className: 'col-md-6 col-md-offset-3' },
           _react2.default.createElement(
-            'fieldset',
-            null,
+            'div',
+            { className: 'text-center' },
             _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                type: 'email',
-                className: 'form-control',
-                placeholder: 'Email',
-                name: 'email'
-              })
-            ),
+              'h1',
+              { className: 'login-brand-text' },
+              'Club Connect'
+            )
+          ),
+          _react2.default.createElement(
+            _Panel2.default,
+            { header: _react2.default.createElement(
+                'h3',
+                null,
+                'Please Sign In'
+              ) },
             _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'Password',
-                type: 'password',
-                name: 'password'
-              })
-            ),
+              'form',
+              { role: 'form', action: '/checkLogin', method: 'post' },
+              _react2.default.createElement(
+                'fieldset',
+                null,
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    type: 'email',
+                    className: 'form-control',
+                    placeholder: 'Email',
+                    name: 'email',
+                    value: email,
+                    onChange: function onChange(event) {
+                      return _this2.handleChange(event);
+                    },
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'small',
+                  null,
+                  this.email ? this.email.validationMessage : null
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'Password',
+                    type: 'password',
+                    name: 'password',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  _Button2.default,
+                  { type: 'submit', bsSize: 'large', bsStyle: 'success', block: true },
+                  'Login'
+                )
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _Panel2.default,
+            { header: _react2.default.createElement(
+                'h3',
+                null,
+                'Please Register Your Club'
+              ) },
             _react2.default.createElement(
-              _reactBootstrap.Checkbox,
-              { label: 'Remember Me' },
-              ' Remember Me '
-            ),
-            _react2.default.createElement(
-              _Button2.default,
-              { type: 'submit', bsSize: 'large', bsStyle: 'success', block: true },
-              'Login'
+              'form',
+              { id: 'register', action: '/createClub', method: 'post' },
+              _react2.default.createElement(
+                'fieldset',
+                null,
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    type: 'text',
+                    className: 'form-control',
+                    placeholder: 'Name',
+                    name: 'name',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    ref: function ref(email) {
+                      _this2.email = email;
+                    },
+                    className: 'form-control',
+                    placeholder: 'Email',
+                    type: 'email',
+                    name: 'email',
+                    value: email,
+                    onChange: function onChange(event) {
+                      return _this2.handleChange(event);
+                    },
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'small',
+                  null,
+                  this.email ? this.email.validationMessage : null
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    id: 'password',
+                    className: 'form-control',
+                    placeholder: 'Password',
+                    type: 'password',
+                    name: 'password',
+                    value: password,
+                    onChange: function onChange(event) {
+                      return _this2.handleChange(event);
+                    },
+                    minLength: 8,
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'small',
+                  null,
+                  this.password ? this.password.validationMessage : null
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    id: 'clubName',
+                    className: 'form-control',
+                    placeholder: 'Club Name',
+                    type: '',
+                    name: 'clubName',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'Type of Club',
+                    type: '',
+                    name: 'clubType',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'County',
+                    type: '',
+                    name: 'county',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'Town',
+                    type: '',
+                    name: 'town',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  null,
+                  _react2.default.createElement(
+                    _Button2.default,
+                    { type: 'submit', bsSize: 'large', bsStyle: 'primary', block: true },
+                    'Register'
+                  )
+                )
+              )
             )
           )
-        )
-      ),
-      _react2.default.createElement(
-        _Panel2.default,
-        { header: _react2.default.createElement(
-            'h3',
-            null,
-            'Please Register Your Club'
-          ) },
-        _react2.default.createElement(
-          'form',
-          { id: 'register', action: '/createClub', method: 'post', onSubmit: function onSubmit(e) {
-              submitHandler(e);
-            } },
-          _react2.default.createElement(
-            'fieldset',
-            null,
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                type: 'text',
-                className: 'form-control',
-                placeholder: 'Name',
-                name: 'name'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'Email',
-                type: 'email',
-                name: 'email'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'Password',
-                type: 'password',
-                name: 'password'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                id: 'clubName',
-                className: 'form-control',
-                placeholder: 'Club Name',
-                type: '',
-                name: 'clubName'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'Type of Club',
-                type: '',
-                name: 'clubType'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'County',
-                type: '',
-                name: 'county'
-              })
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'form-group' },
-              _react2.default.createElement(_reactBootstrap.FormControl, {
-                className: 'form-control',
-                placeholder: 'Town',
-                type: '',
-                name: 'town',
-                isRequired: true
-              })
-            ),
-            _react2.default.createElement(
-              _Button2.default,
-              { type: 'submit', bsSize: 'large', bsStyle: 'primary', block: true },
-              'Register'
-            )
-          )
-        )
-      )
-    );
-  }
-  
-  Login.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+        );
+      }
+    }]);
+    return Login;
+  }(_react2.default.Component);
   
   exports.default = (0, _withStyles2.default)(_Login2.default)(Login);
 
@@ -19911,10 +20084,16 @@ module.exports =
 
 /***/ }),
 /* 152 */
+/***/ (function(module, exports) {
+
+  module.exports = require("react-bootstrap/lib/Modal");
+
+/***/ }),
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(153);
+      var content = __webpack_require__(154);
       var insertCss = __webpack_require__(22);
   
       if (typeof content === 'string') {
@@ -19944,7 +20123,7 @@ module.exports =
     
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(21)();
@@ -19952,11 +20131,12 @@ module.exports =
   
   
   // module
-  exports.push([module.id, "/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n:root {\n  /*\n   * Typography\n   * ======================================================================== */\n\n  /*\n   * Layout\n   * ======================================================================== */\n\n  /*\n   * Media queries breakpoints\n   * ======================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n}\n.Login_root_rQN {\n  padding-left: 20px;\n  padding-right: 20px;\n}\n.Login_container_2BV {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 380px;\n}\n.Login_lead_1mJ {\n  font-size: 1.25em;\n}\n.Login_formGroup_25T {\n  margin-bottom: 15px;\n}\n.Login_label_2G0 {\n  display: inline-block;\n  margin-bottom: 5px;\n  max-width: 100%;\n  font-weight: 700;\n}\n.Login_input_1bT {\n  display: block;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  padding: 10px 16px;\n  width: 100%;\n  height: 46px;\n  outline: 0;\n  border: 1px solid #ccc;\n  border-radius: 0;\n  background: #fff;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);\n          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);\n  color: #616161;\n  font-size: 18px;\n  line-height: 1.3333333;\n  -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;\n  transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;\n  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;\n  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;\n  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;\n}\n.Login_input_1bT:focus {\n  border-color: #0074c2;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 116, 194, 0.6);\n          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 116, 194, 0.6);\n}\n.Login_button_11e {\n  display: block;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin: 0;\n  padding: 10px 16px;\n  width: 100%;\n  outline: 0;\n  border: 1px solid #373277;\n  border-radius: 0;\n  background: #373277;\n  color: #fff;\n  text-align: center;\n  text-decoration: none;\n  font-size: 18px;\n  line-height: 1.3333333;\n  cursor: pointer;\n}\n.Login_button_11e:hover {\n  background: rgba(54, 50, 119, 0.8);\n}\n.Login_button_11e:focus {\n  border-color: #0074c2;\n  -webkit-box-shadow: 0 0 8px rgba(0, 116, 194, 0.6);\n          box-shadow: 0 0 8px rgba(0, 116, 194, 0.6);\n}\n.Login_facebook_2nZ {\n  border-color: #3b5998;\n  background: #3b5998;\n}\n.Login_facebook_2nZ:hover {\n  background: #2d4373;\n}\n.Login_google_23H {\n  border-color: #dd4b39;\n  background: #dd4b39;\n}\n.Login_google_23H:hover {\n  background: #c23321;\n}\n.Login_twitter_AJd {\n  border-color: #55acee;\n  background: #55acee;\n}\n.Login_twitter_AJd:hover {\n  background: #2795e9;\n}\n.Login_icon_34k {\n  display: inline-block;\n  margin: -2px 12px -2px 0;\n  width: 20px;\n  height: 20px;\n  vertical-align: middle;\n  fill: currentColor;\n}\n.Login_lineThrough_Upb {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin-bottom: 15px;\n  width: 100%;\n  color: #757575;\n  text-align: center;\n  font-size: 80%;\n}\n.Login_lineThrough_Upb::before {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  z-index: -1;\n  margin-top: -5px;\n  margin-left: -20px;\n  width: 40px;\n  height: 10px;\n  background-color: #fff;\n  content: '';\n}\n.Login_lineThrough_Upb::after {\n  position: absolute;\n  top: 49%;\n  z-index: -2;\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid #ddd;\n  content: '';\n}\n", "", {"version":3,"sources":["/./routes/login/Login.css","/./components/variables.css"],"names":[],"mappings":"AAAA;;;;;;;GAOG;ACPH;;;;;;;GAOG;AAEH;EACE;;gFAE8E;;EAI9E;;gFAE8E;;EAI9E;;gFAE8E,EAErD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;CAC3D;ADpBD;EACE,mBAAmB;EACnB,oBAAoB;CACrB;AAED;EACE,eAAe;EACf,kBAAkB;EAClB,iBAAiB;CAClB;AAED;EACE,kBAAkB;CACnB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,mBAAmB;EACnB,gBAAgB;EAChB,iBAAiB;CAClB;AAED;EACE,eAAe;EACf,+BAAuB;UAAvB,uBAAuB;EACvB,mBAAmB;EACnB,YAAY;EACZ,aAAa;EACb,WAAW;EACX,uBAAuB;EACvB,iBAAiB;EACjB,iBAAiB;EACjB,yDAAiD;UAAjD,iDAAiD;EACjD,eAAe;EACf,gBAAgB;EAChB,uBAAuB;EACvB,yFAAyE;EAAzE,iFAAyE;EAAzE,4EAAyE;EAAzE,yEAAyE;EAAzE,+GAAyE;CAC1E;AAED;EACE,sBAAsB;EACtB,yFAAiF;UAAjF,iFAAiF;CAClF;AAED;EACE,eAAe;EACf,+BAAuB;UAAvB,uBAAuB;EACvB,UAAU;EACV,mBAAmB;EACnB,YAAY;EACZ,WAAW;EACX,0BAA0B;EAC1B,iBAAiB;EACjB,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;EACnB,sBAAsB;EACtB,gBAAgB;EAChB,uBAAuB;EACvB,gBAAgB;CACjB;AAED;EACE,mCAAmC;CACpC;AAED;EACE,sBAAsB;EACtB,mDAA2C;UAA3C,2CAA2C;CAC5C;AAED;EACE,sBAAsB;EACtB,oBAAoB;CAErB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,oBAAoB;CAErB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,oBAAoB;CAErB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,yBAAyB;EACzB,YAAY;EACZ,aAAa;EACb,uBAAuB;EACvB,mBAAmB;CACpB;AAED;EACE,mBAAmB;EACnB,WAAW;EACX,eAAe;EACf,oBAAoB;EACpB,YAAY;EACZ,eAAe;EACf,mBAAmB;EACnB,eAAe;CAChB;AAED;EACE,mBAAmB;EACnB,SAAS;EACT,UAAU;EACV,YAAY;EACZ,iBAAiB;EACjB,mBAAmB;EACnB,YAAY;EACZ,aAAa;EACb,uBAAuB;EACvB,YAAY;CACb;AAED;EACE,mBAAmB;EACnB,SAAS;EACT,YAAY;EACZ,eAAe;EACf,YAAY;EACZ,8BAA8B;EAC9B,YAAY;CACb","file":"Login.css","sourcesContent":["/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n@import '../../components/variables.css';\n\n.root {\n  padding-left: 20px;\n  padding-right: 20px;\n}\n\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 380px;\n}\n\n.lead {\n  font-size: 1.25em;\n}\n\n.formGroup {\n  margin-bottom: 15px;\n}\n\n.label {\n  display: inline-block;\n  margin-bottom: 5px;\n  max-width: 100%;\n  font-weight: 700;\n}\n\n.input {\n  display: block;\n  box-sizing: border-box;\n  padding: 10px 16px;\n  width: 100%;\n  height: 46px;\n  outline: 0;\n  border: 1px solid #ccc;\n  border-radius: 0;\n  background: #fff;\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);\n  color: #616161;\n  font-size: 18px;\n  line-height: 1.3333333;\n  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;\n}\n\n.input:focus {\n  border-color: #0074c2;\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 116, 194, 0.6);\n}\n\n.button {\n  display: block;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 10px 16px;\n  width: 100%;\n  outline: 0;\n  border: 1px solid #373277;\n  border-radius: 0;\n  background: #373277;\n  color: #fff;\n  text-align: center;\n  text-decoration: none;\n  font-size: 18px;\n  line-height: 1.3333333;\n  cursor: pointer;\n}\n\n.button:hover {\n  background: rgba(54, 50, 119, 0.8);\n}\n\n.button:focus {\n  border-color: #0074c2;\n  box-shadow: 0 0 8px rgba(0, 116, 194, 0.6);\n}\n\n.facebook {\n  border-color: #3b5998;\n  background: #3b5998;\n  composes: button;\n}\n\n.facebook:hover {\n  background: #2d4373;\n}\n\n.google {\n  border-color: #dd4b39;\n  background: #dd4b39;\n  composes: button;\n}\n\n.google:hover {\n  background: #c23321;\n}\n\n.twitter {\n  border-color: #55acee;\n  background: #55acee;\n  composes: button;\n}\n\n.twitter:hover {\n  background: #2795e9;\n}\n\n.icon {\n  display: inline-block;\n  margin: -2px 12px -2px 0;\n  width: 20px;\n  height: 20px;\n  vertical-align: middle;\n  fill: currentColor;\n}\n\n.lineThrough {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin-bottom: 15px;\n  width: 100%;\n  color: #757575;\n  text-align: center;\n  font-size: 80%;\n}\n\n.lineThrough::before {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  z-index: -1;\n  margin-top: -5px;\n  margin-left: -20px;\n  width: 40px;\n  height: 10px;\n  background-color: #fff;\n  content: '';\n}\n\n.lineThrough::after {\n  position: absolute;\n  top: 49%;\n  z-index: -2;\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid #ddd;\n  content: '';\n}\n","/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n:root {\n  /*\n   * Typography\n   * ======================================================================== */\n\n  --font-family-base: 'Segoe UI', 'HelveticaNeue-Light', sans-serif;\n\n  /*\n   * Layout\n   * ======================================================================== */\n\n  --max-content-width: 1000px;\n\n  /*\n   * Media queries breakpoints\n   * ======================================================================== */\n\n  --screen-xs-min: 480px;  /* Extra small screen / phone */\n  --screen-sm-min: 768px;  /* Small screen / tablet */\n  --screen-md-min: 992px;  /* Medium screen / desktop */\n  --screen-lg-min: 1200px; /* Large screen / wide desktop */\n}\n"],"sourceRoot":"webpack://"}]);
+  exports.push([module.id, "/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n:root {\n  /*\n   * Typography\n   * ======================================================================== */\n\n  /*\n   * Layout\n   * ======================================================================== */\n\n  /*\n   * Media queries breakpoints\n   * ======================================================================== */  /* Extra small screen / phone */  /* Small screen / tablet */  /* Medium screen / desktop */ /* Large screen / wide desktop */\n}\n.Login_root_rQN {\n  padding-left: 20px;\n  padding-right: 20px;\n}\n.Login_backdrop_1uH {\n          position: absolute;\n          top: 0px;\n          left: 0px;\n          width: 100%;\n          height: 100%;\n          z-index: 9998;\n          background: rgba(0, 0, 0, 0.3);\n}\n.Login_container_2BV {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 380px;\n}\n.Login_lead_1mJ {\n  font-size: 1.25em;\n}\n.Login_formGroup_25T {\n  margin-bottom: 15px;\n}\n.Login_label_2G0 {\n  display: inline-block;\n  margin-bottom: 5px;\n  max-width: 100%;\n  font-weight: 700;\n}\n.Login_input_1bT {\n  display: block;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  padding: 10px 16px;\n  width: 100%;\n  height: 46px;\n  outline: 0;\n  border: 1px solid #ccc;\n  border-radius: 0;\n  background: #fff;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);\n          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);\n  color: #616161;\n  font-size: 18px;\n  line-height: 1.3333333;\n  -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;\n  transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;\n  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;\n  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;\n  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;\n}\n.Login_input_1bT:focus {\n  border-color: #0074c2;\n  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 116, 194, 0.6);\n          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 116, 194, 0.6);\n}\n.Login_button_11e {\n  display: block;\n  -webkit-box-sizing: border-box;\n          box-sizing: border-box;\n  margin: 0;\n  padding: 10px 16px;\n  width: 100%;\n  outline: 0;\n  border: 1px solid #373277;\n  border-radius: 0;\n  background: #373277;\n  color: #fff;\n  text-align: center;\n  text-decoration: none;\n  font-size: 18px;\n  line-height: 1.3333333;\n  cursor: pointer;\n}\n.Login_button_11e:hover {\n  background: rgba(54, 50, 119, 0.8);\n}\n.Login_button_11e:focus {\n  border-color: #0074c2;\n  -webkit-box-shadow: 0 0 8px rgba(0, 116, 194, 0.6);\n          box-shadow: 0 0 8px rgba(0, 116, 194, 0.6);\n}\n.Login_facebook_2nZ {\n  border-color: #3b5998;\n  background: #3b5998;\n}\n.Login_facebook_2nZ:hover {\n  background: #2d4373;\n}\n.Login_google_23H {\n  border-color: #dd4b39;\n  background: #dd4b39;\n}\n.Login_google_23H:hover {\n  background: #c23321;\n}\n.Login_twitter_AJd {\n  border-color: #55acee;\n  background: #55acee;\n}\n.Login_twitter_AJd:hover {\n  background: #2795e9;\n}\n.Login_icon_34k {\n  display: inline-block;\n  margin: -2px 12px -2px 0;\n  width: 20px;\n  height: 20px;\n  vertical-align: middle;\n  fill: currentColor;\n}\n.Login_lineThrough_Upb {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin-bottom: 15px;\n  width: 100%;\n  color: #757575;\n  text-align: center;\n  font-size: 80%;\n}\n.Login_lineThrough_Upb::before {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  z-index: -1;\n  margin-top: -5px;\n  margin-left: -20px;\n  width: 40px;\n  height: 10px;\n  background-color: #fff;\n  content: '';\n}\n.Login_lineThrough_Upb::after {\n  position: absolute;\n  top: 49%;\n  z-index: -2;\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid #ddd;\n  content: '';\n}\n.Login_message_2pp {\n  font-size: 25px;\n  margin-top: 10px;\n  text-align: right;\n}\n", "", {"version":3,"sources":["/./routes/login/Login.css","/./components/variables.css"],"names":[],"mappings":"AAAA;;;;;;;GAOG;ACPH;;;;;;;GAOG;AAEH;EACE;;gFAE8E;;EAI9E;;gFAE8E;;EAI9E;;gFAE8E,EAErD,gCAAgC,EAChC,2BAA2B,EAC3B,6BAA6B,CAC7B,iCAAiC;CAC3D;ADpBD;EACE,mBAAmB;EACnB,oBAAoB;CACrB;AACA;UACS,mBAAmB;UACnB,SAAS;UACT,UAAU;UACV,YAAY;UACZ,aAAa;UACb,cAAc;UACd,+BAA+B;CACxC;AACD;EACE,eAAe;EACf,kBAAkB;EAClB,iBAAiB;CAClB;AAED;EACE,kBAAkB;CACnB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,mBAAmB;EACnB,gBAAgB;EAChB,iBAAiB;CAClB;AAED;EACE,eAAe;EACf,+BAAuB;UAAvB,uBAAuB;EACvB,mBAAmB;EACnB,YAAY;EACZ,aAAa;EACb,WAAW;EACX,uBAAuB;EACvB,iBAAiB;EACjB,iBAAiB;EACjB,yDAAiD;UAAjD,iDAAiD;EACjD,eAAe;EACf,gBAAgB;EAChB,uBAAuB;EACvB,yFAAyE;EAAzE,iFAAyE;EAAzE,4EAAyE;EAAzE,yEAAyE;EAAzE,+GAAyE;CAC1E;AAED;EACE,sBAAsB;EACtB,yFAAiF;UAAjF,iFAAiF;CAClF;AAED;EACE,eAAe;EACf,+BAAuB;UAAvB,uBAAuB;EACvB,UAAU;EACV,mBAAmB;EACnB,YAAY;EACZ,WAAW;EACX,0BAA0B;EAC1B,iBAAiB;EACjB,oBAAoB;EACpB,YAAY;EACZ,mBAAmB;EACnB,sBAAsB;EACtB,gBAAgB;EAChB,uBAAuB;EACvB,gBAAgB;CACjB;AAED;EACE,mCAAmC;CACpC;AAED;EACE,sBAAsB;EACtB,mDAA2C;UAA3C,2CAA2C;CAC5C;AAED;EACE,sBAAsB;EACtB,oBAAoB;CAErB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,oBAAoB;CAErB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,oBAAoB;CAErB;AAED;EACE,oBAAoB;CACrB;AAED;EACE,sBAAsB;EACtB,yBAAyB;EACzB,YAAY;EACZ,aAAa;EACb,uBAAuB;EACvB,mBAAmB;CACpB;AAED;EACE,mBAAmB;EACnB,WAAW;EACX,eAAe;EACf,oBAAoB;EACpB,YAAY;EACZ,eAAe;EACf,mBAAmB;EACnB,eAAe;CAChB;AAED;EACE,mBAAmB;EACnB,SAAS;EACT,UAAU;EACV,YAAY;EACZ,iBAAiB;EACjB,mBAAmB;EACnB,YAAY;EACZ,aAAa;EACb,uBAAuB;EACvB,YAAY;CACb;AAED;EACE,mBAAmB;EACnB,SAAS;EACT,YAAY;EACZ,eAAe;EACf,YAAY;EACZ,8BAA8B;EAC9B,YAAY;CACb;AAED;EACE,gBAAgB;EAChB,iBAAiB;EACjB,kBAAkB;CACnB","file":"Login.css","sourcesContent":["/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n@import '../../components/variables.css';\n\n.root {\n  padding-left: 20px;\n  padding-right: 20px;\n}\n .backdrop {\n          position: absolute;\n          top: 0px;\n          left: 0px;\n          width: 100%;\n          height: 100%;\n          z-index: 9998;\n          background: rgba(0, 0, 0, 0.3);\n}\n.container {\n  margin: 0 auto;\n  padding: 0 0 40px;\n  max-width: 380px;\n}\n\n.lead {\n  font-size: 1.25em;\n}\n\n.formGroup {\n  margin-bottom: 15px;\n}\n\n.label {\n  display: inline-block;\n  margin-bottom: 5px;\n  max-width: 100%;\n  font-weight: 700;\n}\n\n.input {\n  display: block;\n  box-sizing: border-box;\n  padding: 10px 16px;\n  width: 100%;\n  height: 46px;\n  outline: 0;\n  border: 1px solid #ccc;\n  border-radius: 0;\n  background: #fff;\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);\n  color: #616161;\n  font-size: 18px;\n  line-height: 1.3333333;\n  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;\n}\n\n.input:focus {\n  border-color: #0074c2;\n  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 116, 194, 0.6);\n}\n\n.button {\n  display: block;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 10px 16px;\n  width: 100%;\n  outline: 0;\n  border: 1px solid #373277;\n  border-radius: 0;\n  background: #373277;\n  color: #fff;\n  text-align: center;\n  text-decoration: none;\n  font-size: 18px;\n  line-height: 1.3333333;\n  cursor: pointer;\n}\n\n.button:hover {\n  background: rgba(54, 50, 119, 0.8);\n}\n\n.button:focus {\n  border-color: #0074c2;\n  box-shadow: 0 0 8px rgba(0, 116, 194, 0.6);\n}\n\n.facebook {\n  border-color: #3b5998;\n  background: #3b5998;\n  composes: button;\n}\n\n.facebook:hover {\n  background: #2d4373;\n}\n\n.google {\n  border-color: #dd4b39;\n  background: #dd4b39;\n  composes: button;\n}\n\n.google:hover {\n  background: #c23321;\n}\n\n.twitter {\n  border-color: #55acee;\n  background: #55acee;\n  composes: button;\n}\n\n.twitter:hover {\n  background: #2795e9;\n}\n\n.icon {\n  display: inline-block;\n  margin: -2px 12px -2px 0;\n  width: 20px;\n  height: 20px;\n  vertical-align: middle;\n  fill: currentColor;\n}\n\n.lineThrough {\n  position: relative;\n  z-index: 1;\n  display: block;\n  margin-bottom: 15px;\n  width: 100%;\n  color: #757575;\n  text-align: center;\n  font-size: 80%;\n}\n\n.lineThrough::before {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  z-index: -1;\n  margin-top: -5px;\n  margin-left: -20px;\n  width: 40px;\n  height: 10px;\n  background-color: #fff;\n  content: '';\n}\n\n.lineThrough::after {\n  position: absolute;\n  top: 49%;\n  z-index: -2;\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid #ddd;\n  content: '';\n}\n\n.message {\n  font-size: 25px;\n  margin-top: 10px;\n  text-align: right;\n}\n","/**\n * React Starter Kit (https://www.reactstarterkit.com/)\n *\n * Copyright © 2014-2016 Kriasoft, LLC. All rights reserved.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE.txt file in the root directory of this source tree.\n */\n\n:root {\n  /*\n   * Typography\n   * ======================================================================== */\n\n  --font-family-base: 'Segoe UI', 'HelveticaNeue-Light', sans-serif;\n\n  /*\n   * Layout\n   * ======================================================================== */\n\n  --max-content-width: 1000px;\n\n  /*\n   * Media queries breakpoints\n   * ======================================================================== */\n\n  --screen-xs-min: 480px;  /* Extra small screen / phone */\n  --screen-sm-min: 768px;  /* Small screen / tablet */\n  --screen-md-min: 992px;  /* Medium screen / desktop */\n  --screen-lg-min: 1200px; /* Large screen / wide desktop */\n}\n"],"sourceRoot":"webpack://"}]);
   
   // exports
   exports.locals = {
   	"root": "Login_root_rQN",
+  	"backdrop": "Login_backdrop_1uH",
   	"container": "Login_container_2BV",
   	"lead": "Login_lead_1mJ",
   	"formGroup": "Login_formGroup_25T",
@@ -19967,11 +20147,112 @@ module.exports =
   	"google": "Login_google_23H Login_button_11e",
   	"twitter": "Login_twitter_AJd Login_button_11e",
   	"icon": "Login_icon_34k",
-  	"lineThrough": "Login_lineThrough_Upb"
+  	"lineThrough": "Login_lineThrough_Upb",
+  	"message": "Login_message_2pp"
   };
 
 /***/ }),
-/* 154 */
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _assign = __webpack_require__(23);
+  
+  var _assign2 = _interopRequireDefault(_assign);
+  
+  exports.login = login;
+  exports.default = reducer;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var SET_LOGIN_PENDING = 'SET_LOGIN_PENDING';
+  var SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS';
+  var SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
+  
+  function login(email, password) {
+    return function (dispatch) {
+      dispatch(setLoginPending(true));
+      dispatch(setLoginSuccess(false));
+      dispatch(setLoginError(null));
+  
+      callLoginApi(email, password, function (error) {
+        dispatch(setLoginPending(false));
+        if (!error) {
+          dispatch(setLoginSuccess(true));
+        } else {
+          dispatch(setLoginError(error));
+        }
+      });
+    };
+  }
+  
+  function setLoginPending(isLoginPending) {
+    return {
+      type: SET_LOGIN_PENDING,
+      isLoginPending: isLoginPending
+    };
+  }
+  
+  function setLoginSuccess(isLoginSuccess) {
+    return {
+      type: SET_LOGIN_SUCCESS,
+      isLoginSuccess: isLoginSuccess
+    };
+  }
+  
+  function setLoginError(loginError) {
+    return {
+      type: SET_LOGIN_ERROR,
+      loginError: loginError
+    };
+  }
+  
+  function callLoginApi(email, password, callback) {
+    setTimeout(function () {
+      if (email === 'admin@example.com' && password === 'admin') {
+        return callback(null);
+      } else {
+        return callback(new Error('Invalid email and password'));
+      }
+    }, 1000);
+  }
+  
+  function reducer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+      isLoginSuccess: false,
+      isLoginPending: false,
+      loginError: null
+    };
+    var action = arguments[1];
+  
+    switch (action.type) {
+      case SET_LOGIN_PENDING:
+        return (0, _assign2.default)({}, state, {
+          isLoginPending: action.isLoginPending
+        });
+  
+      case SET_LOGIN_SUCCESS:
+        return (0, _assign2.default)({}, state, {
+          isLoginSuccess: action.isLoginSuccess
+        });
+  
+      case SET_LOGIN_ERROR:
+        return (0, _assign2.default)({}, state, {
+          loginError: action.loginError
+        });
+  
+      default:
+        return state;
+    }
+  }
+
+/***/ }),
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -19984,7 +20265,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Table = __webpack_require__(155);
+  var _Table = __webpack_require__(157);
   
   var _Table2 = _interopRequireDefault(_Table);
   
@@ -20000,7 +20281,7 @@ module.exports =
   };
 
 /***/ }),
-/* 155 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -20021,15 +20302,15 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _Pagination = __webpack_require__(156);
+  var _Pagination = __webpack_require__(158);
   
   var _Pagination2 = _interopRequireDefault(_Pagination);
   
-  var _PageHeader = __webpack_require__(157);
+  var _PageHeader = __webpack_require__(159);
   
   var _PageHeader2 = _interopRequireDefault(_PageHeader);
   
-  var _Well = __webpack_require__(158);
+  var _Well = __webpack_require__(160);
   
   var _Well2 = _interopRequireDefault(_Well);
   
@@ -21376,25 +21657,25 @@ module.exports =
   exports.default = displayTable;
 
 /***/ }),
-/* 156 */
+/* 158 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Pagination");
 
 /***/ }),
-/* 157 */
+/* 159 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/PageHeader");
 
 /***/ }),
-/* 158 */
+/* 160 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Well");
 
 /***/ }),
-/* 159 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -21407,7 +21688,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Button = __webpack_require__(160);
+  var _Button = __webpack_require__(162);
   
   var _Button2 = _interopRequireDefault(_Button);
   
@@ -21423,7 +21704,7 @@ module.exports =
   };
 
 /***/ }),
-/* 160 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -21444,7 +21725,7 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _PageHeader = __webpack_require__(157);
+  var _PageHeader = __webpack_require__(159);
   
   var _PageHeader2 = _interopRequireDefault(_PageHeader);
   
@@ -21983,7 +22264,7 @@ module.exports =
   exports.default = displayButtons;
 
 /***/ }),
-/* 161 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -21996,7 +22277,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _FlotCharts = __webpack_require__(162);
+  var _FlotCharts = __webpack_require__(164);
   
   var _FlotCharts2 = _interopRequireDefault(_FlotCharts);
   
@@ -22012,7 +22293,7 @@ module.exports =
   };
 
 /***/ }),
-/* 162 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -22033,7 +22314,7 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _PageHeader = __webpack_require__(157);
+  var _PageHeader = __webpack_require__(159);
   
   var _PageHeader2 = _interopRequireDefault(_PageHeader);
   
@@ -22252,7 +22533,7 @@ module.exports =
   exports.default = displayFlotCharts;
 
 /***/ }),
-/* 163 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -22265,7 +22546,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Forms = __webpack_require__(164);
+  var _Forms = __webpack_require__(166);
   
   var _Forms2 = _interopRequireDefault(_Forms);
   
@@ -22281,7 +22562,7 @@ module.exports =
   };
 
 /***/ }),
-/* 164 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -22296,15 +22577,15 @@ module.exports =
   
   var _reactBootstrap = __webpack_require__(38);
   
-  var _FormControlFeedback = __webpack_require__(165);
+  var _FormControlFeedback = __webpack_require__(167);
   
   var _FormControlFeedback2 = _interopRequireDefault(_FormControlFeedback);
   
-  var _FormControlStatic = __webpack_require__(166);
+  var _FormControlStatic = __webpack_require__(168);
   
   var _FormControlStatic2 = _interopRequireDefault(_FormControlStatic);
   
-  var _InputGroupAddon = __webpack_require__(167);
+  var _InputGroupAddon = __webpack_require__(169);
   
   var _InputGroupAddon2 = _interopRequireDefault(_InputGroupAddon);
   
@@ -22790,939 +23071,22 @@ module.exports =
   exports.default = displayForms;
 
 /***/ }),
-/* 165 */
+/* 167 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/FormControlFeedback");
 
 /***/ }),
-/* 166 */
+/* 168 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/FormControlStatic");
 
 /***/ }),
-/* 167 */
+/* 169 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/InputGroupAddon");
-
-/***/ }),
-/* 168 */
-/***/ (function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  
-  var _react = __webpack_require__(11);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _Grid = __webpack_require__(169);
-  
-  var _Grid2 = _interopRequireDefault(_Grid);
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-  
-  exports.default = {
-  
-    path: '/grid',
-  
-    action: function action() {
-      return _react2.default.createElement(_Grid2.default, null);
-    }
-  };
-
-/***/ }),
-/* 169 */
-/***/ (function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  
-  var _react = __webpack_require__(11);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  var _Panel = __webpack_require__(151);
-  
-  var _Panel2 = _interopRequireDefault(_Panel);
-  
-  var _PageHeader = __webpack_require__(157);
-  
-  var _PageHeader2 = _interopRequireDefault(_PageHeader);
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-  
-  var title = 'Grid';
-  
-  function displayGrid(props, context) {
-    context.setTitle(title);
-    return _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _PageHeader2.default,
-            null,
-            'Grid'
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              'Grid options'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'See how aspects of the Bootstrap grid system work across multiple devices with a handy table.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'table-responsive' },
-              _react2.default.createElement(
-                'table',
-                { className: 'table table-bordered table-striped' },
-                _react2.default.createElement(
-                  'thead',
-                  null,
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement('th', null),
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Extra small devices',
-                      _react2.default.createElement(
-                        'small',
-                        null,
-                        'Phones (<768px)'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Small devices',
-                      _react2.default.createElement(
-                        'small',
-                        null,
-                        'Tablets (\u2265768px)'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Medium devices',
-                      _react2.default.createElement(
-                        'small',
-                        null,
-                        'Desktops (\u2265992px)'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Large devices',
-                      _react2.default.createElement(
-                        'small',
-                        null,
-                        'Desktops (\u22651200px)'
-                      )
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  'tbody',
-                  null,
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Grid behavior'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      'Horizontal at all times'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { colSpan: '3' },
-                      'Collapsed to start, horizontal above breakpoints'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Max container width'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      'None (auto)'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      '750px'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      '970px'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      '1170px'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Class prefix'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      _react2.default.createElement(
-                        'code',
-                        null,
-                        '.col-xs-'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      _react2.default.createElement(
-                        'code',
-                        null,
-                        '.col-sm-'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      _react2.default.createElement(
-                        'code',
-                        null,
-                        '.col-md-'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      _react2.default.createElement(
-                        'code',
-                        null,
-                        '.col-lg-'
-                      )
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      '# of columns'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { colSpan: '4' },
-                      '12'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Max column width'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { className: 'text-muted' },
-                      'Auto'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      '60px'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      '78px'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      null,
-                      '95px'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Gutter width'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { colSpan: '4' },
-                      '30px (15px on each side of a column)'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Nestable'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { colSpan: '4' },
-                      'Yes'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Offsets'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { colSpan: '4' },
-                      'Yes'
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'tr',
-                    null,
-                    _react2.default.createElement(
-                      'th',
-                      null,
-                      'Column ordering'
-                    ),
-                    _react2.default.createElement(
-                      'td',
-                      { colSpan: '4' },
-                      'Yes'
-                    )
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Grid classes apply to devices with screen widths greater than or equal to the breakpoint sizes, and override grid classes targeted at smaller devices. Therefore, applying any',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-'
-              ),
-              ' class to an element will not only affect its styling on medium devices but also on large devices if a',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-lg-'
-              ),
-              ' class is not present.'
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              'Example: Stacked-to-horizontal'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Using a single set of',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-*'
-              ),
-              ' grid classes, you can create a default grid system that starts out stacked on mobile devices and tablet devices (the extra small to small range) before becoming horizontal on desktop (medium) devices. Place grid columns in any',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.row'
-              ),
-              '.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-1' },
-                '.col-md-1'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-8' },
-                '.col-md-8'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-4' },
-                '.col-md-4'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-4' },
-                '.col-md-4'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-4' },
-                '.col-md-4'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-4' },
-                '.col-md-4'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-6' },
-                '.col-md-6'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-6' },
-                '.col-md-6'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              'Example: Mobile and desktop'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Dont want your columns to simply stack in smaller devices? Use the extra small and medium device grid classes by adding ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-xs-*'
-              ),
-              ' ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-*'
-              ),
-              ' to your columns. See the example below for a better idea of how it all works.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-12 col-md-8' },
-                '.col-xs-12 .col-md-8'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-md-4' },
-                '.col-xs-6 .col-md-4'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-md-4' },
-                '.col-xs-6 .col-md-4'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-md-4' },
-                '.col-xs-6 .col-md-4'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-md-4' },
-                '.col-xs-6 .col-md-4'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6' },
-                '.col-xs-6'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6' },
-                '.col-xs-6'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              null,
-              'Example: Mobile, tablet, desktops'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Build on the previous example by creating even more dynamic and powerful layouts with tablet ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-sm-*'
-              ),
-              ' classes.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-12 col-sm-6 col-md-8' },
-                '.col-xs-12 .col-sm-6 .col-md-8'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-md-4' },
-                '.col-xs-6 .col-md-4'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-4' },
-                '.col-xs-6 .col-sm-4'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-4' },
-                '.col-xs-6 .col-sm-4'
-              ),
-              _react2.default.createElement('div', { className: 'clearfix visible-xs' }),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-4' },
-                '.col-xs-6 .col-sm-4'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              { id: 'grid-responsive-resets' },
-              'Responsive column resets'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'With the four tiers of grids available you\'re bound to run into issues where, at certain breakpoints, your columns don\'t clear quite right as one is taller than the other. To fix that, use a combination of a ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.clearfix'
-              ),
-              ' and our',
-              _react2.default.createElement(
-                'a',
-                { href: '', onClick: function onClick(e) {
-                    e.preventDefault();
-                  } },
-                'responsive utility classes'
-              ),
-              '.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-3' },
-                '.col-xs-6 .col-sm-3',
-                _react2.default.createElement('br', null),
-                'Resize your viewport or check it out on your phone for an example.'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-3' },
-                '.col-xs-6 .col-sm-3'
-              ),
-              _react2.default.createElement('div', { className: 'clearfix visible-xs' }),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-3' },
-                '.col-xs-6 .col-sm-3'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-xs-6 col-sm-3' },
-                '.col-xs-6 .col-sm-3'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              { id: 'grid-offsetting' },
-              'Offsetting columns'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Move columns to the right using ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-offset-*'
-              ),
-              ' classes. These classes increase the left margin of a column by ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '*'
-              ),
-              ' columns. For example, ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-offset-4'
-              ),
-              ' moves ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-4'
-              ),
-              ' over four columns.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-4' },
-                '.col-md-4'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-4 col-md-offset-4' },
-                '.col-md-4 .col-md-offset-4'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-3 col-md-offset-3' },
-                '.col-md-3 .col-md-offset-3'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-3 col-md-offset-3' },
-                '.col-md-3 .col-md-offset-3'
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-6 col-md-offset-3' },
-                '.col-md-6 .col-md-offset-3'
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              { id: 'grid-nesting' },
-              'Nesting columns'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'To nest your content with the default grid, add a new ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.row'
-              ),
-              ' and set of',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-*'
-              ),
-              ' columns within an existing ',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-*'
-              ),
-              ' column. Nested rows should include a set of columns that add up to 12.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-9' },
-                'Level 1: .col-md-9',
-                _react2.default.createElement(
-                  'div',
-                  { className: 'row show-grid' },
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'col-md-6' },
-                    'Level 2: .col-md-6'
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'col-md-6' },
-                    'Level 2: .col-md-6'
-                  )
-                )
-              )
-            )
-          )
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            null,
-            _react2.default.createElement(
-              'h3',
-              { id: 'grid-column-ordering' },
-              'Column ordering'
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              'Easily change the order of our built-in grid columns with',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-push-*'
-              ),
-              ' and',
-              _react2.default.createElement(
-                'code',
-                null,
-                '.col-md-pull-*'
-              ),
-              ' modifier classes.'
-            ),
-            _react2.default.createElement(
-              'div',
-              { className: 'row show-grid' },
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-9 col-md-push-3' },
-                '.col-md-9 .col-md-push-3'
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'col-md-3 col-md-pull-9' },
-                '.col-md-3 .col-md-pull-9'
-              )
-            )
-          )
-        )
-      )
-    );
-  }
-  
-  displayGrid.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
-  
-  exports.default = displayGrid;
 
 /***/ }),
 /* 170 */
@@ -23769,190 +23133,41 @@ module.exports =
   
   var _reactBootstrap = __webpack_require__(38);
   
+  var _redux = __webpack_require__(172);
+  
+  var _reducers = __webpack_require__(173);
+  
+  var _reducers2 = _interopRequireDefault(_reducers);
+  
+  var _reduxLogger = __webpack_require__(177);
+  
+  var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
+  
+  var _reactDom = __webpack_require__(104);
+  
+  var _reactRedux = __webpack_require__(178);
+  
+  var _productsList = __webpack_require__(179);
+  
+  var _productsList2 = _interopRequireDefault(_productsList);
+  
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
+  "use strict";
+  
+  
+  // store
+  var middleware = (0, _redux.applyMiddleware)(_reduxLogger2.default);
+  var store = (0, _redux.createStore)(_reducers2.default, middleware);
+  
   var title = 'Online Store';
-  
-  var buttonStyle = {
-    float: 'right',
-    margin: '-7px -10px 0px 0px'
-  };
-  
-  var logo = __webpack_require__(172);
   
   function displayOnlineStore(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'div',
-        { className: 'col-lg-12' },
-        _react2.default.createElement(
-          _reactBootstrap.PageHeader,
-          null,
-          'Online Store',
-          _react2.default.createElement('i', { className: 'fa fa-shopping-cart fa-fw' })
-        )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'row' },
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                'Club Jersey'
-              ), className: 'panel-success',
-  
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                '\xA330',
-                _react2.default.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'primary', style: buttonStyle },
-                  'Add to Basket'
-                )
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement('img', { src: logo, alt: 'Club Connect', title: 'ClubConnect' }),
-              _react2.default.createElement(
-                'p',
-                null,
-                '17 and above for all sports'
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.FormGroup,
-                { controlId: 'formControlsSelect' },
-                _react2.default.createElement(
-                  _reactBootstrap.ControlLabel,
-                  null,
-                  'Size'
-                ),
-                _react2.default.createElement(
-                  _reactBootstrap.FormControl,
-                  { componentClass: 'select', placeholder: 'select' },
-                  _react2.default.createElement(
-                    'option',
-                    { value: '1' },
-                    '7-8'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '2' },
-                    '9-10'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '3' },
-                    '11-12'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '4' },
-                    '13-14'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '5' },
-                    'Small'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '5' },
-                    'Medium'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '5' },
-                    'Large'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                _reactBootstrap.FormGroup,
-                { controlId: 'formControlsSelect' },
-                _react2.default.createElement(
-                  _reactBootstrap.ControlLabel,
-                  null,
-                  'Quantity'
-                ),
-                _react2.default.createElement(
-                  _reactBootstrap.FormControl,
-                  { componentClass: 'select', placeholder: 'select' },
-                  _react2.default.createElement(
-                    'option',
-                    { value: '1' },
-                    '1'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '2' },
-                    '2'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '3' },
-                    '3'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '4' },
-                    '4'
-                  ),
-                  _react2.default.createElement(
-                    'option',
-                    { value: '5' },
-                    '5'
-                  )
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-4' },
-          _react2.default.createElement(
-            _reactBootstrap.Panel,
-            {
-              header: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('i', { className: 'fa fa-shopping-basket fa-fw' }),
-                'Basket'
-              ), className: 'panel-primary',
-              footer: _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement(
-                  _reactBootstrap.Button,
-                  { bsStyle: 'success' },
-                  'Buy Now'
-                )
-              )
-            },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                '() items in basket'
-              )
-            )
-          )
-        )
-      )
+      _reactRedux.Provider,
+      { store: store },
+      _react2.default.createElement(_productsList2.default, null)
     );
   }
   
@@ -23962,41 +23177,887 @@ module.exports =
 
 /***/ }),
 /* 172 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-  module.exports = __webpack_require__.p + "routes/dashboardPages/onlinestore/logo1.png?8a2775b651bd94385e39b7025ca10ce3";
+  module.exports = require("redux");
 
 /***/ }),
 /* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
-  'use strict';
+  "use strict";
   
   Object.defineProperty(exports, "__esModule", {
-    value: true
+      value: true
   });
+  
+  var _redux = __webpack_require__(172);
+  
+  var _productsReducer = __webpack_require__(174);
+  
+  var _productsReducer2 = _interopRequireDefault(_productsReducer);
+  
+  var _cartReducer = __webpack_require__(175);
+  
+  var _cartReducer2 = _interopRequireDefault(_cartReducer);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  exports.default = (0, _redux.combineReducers)({
+      products: _productsReducer2.default,
+      cart: _cartReducer2.default
+  });
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  
+  var _extends2 = __webpack_require__(55);
+  
+  var _extends3 = _interopRequireDefault(_extends2);
+  
+  var _toConsumableArray2 = __webpack_require__(2);
+  
+  var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+  
+  exports.default = productsReducer;
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var INIT_PRODUCTS = [{ id: 1, title: 'Jersey', description: 'Club jersey', price: 30 }, { id: 2, title: 'Hoody', description: 'Club hoody', price: 25 }, { id: 3, title: 'Shorts', description: 'Clubs shorts to be worn during matches', price: 20 }, { id: 4, title: 'Kitbag', description: 'Club kitbag to bring to training and matches', price: 20 }, { id: 5, title: 'Hat', description: 'Club hat', price: 10 }, { id: 6, title: 'Scarf', description: 'Club scarf', price: 10 }];
+  function productsReducer() {
+      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INIT_PRODUCTS;
+      var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  
+      // PLEASE NOTE:
+      // below actions are unused
+      // kept for instance - Ajinkya
+      switch (action.type) {
+          case 'ADD_PRODUCT':
+              return state.concat(action.payload);
+  
+          case 'DELETE_PRODUCT':
+              var indexToDel = findProductIndex(state, action.payload.id);
+              return [].concat((0, _toConsumableArray3.default)(state.slice(0, indexToDel)), (0, _toConsumableArray3.default)(state.slice(indexToDel + 1)));
+  
+          case 'UPDATE_PRODUCT':
+              var indexToUpdate = findProductIndex(state, action.payload.id);
+              var newProductExtend = (0, _extends3.default)({}, state[indexToUpdate], { title: action.payload.title
+              });
+              return [].concat((0, _toConsumableArray3.default)(state.slice(0, indexToUpdate)), [newProductExtend], (0, _toConsumableArray3.default)(state.slice(indexToUpdate + 1)));
+  
+      }
+  
+      function findProductIndex(products, id) {
+          return products.findIndex(function (p) {
+              return p.id === id;
+          });
+      }
+  
+      return state;
+  }
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  
+  var _toConsumableArray2 = __webpack_require__(2);
+  
+  var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+  
+  exports.default = cartReducer;
+  
+  var _cartActions = __webpack_require__(176);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  function cartReducer() {
+      var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  
+      switch (action.type) {
+          case _cartActions.ADD_TO_CART:
+              var existingIndex = findProductIndex(state, action.payload.id);
+              if (existingIndex !== -1) {
+                  state[existingIndex].units += 1;
+                  return state.concat([]);
+              }
+              return state.concat(action.payload);
+  
+          case _cartActions.UPDATE_ITEM_UNITS:
+              var existingItemIndex = findProductIndex(state, action.payload.id);
+              if (state[existingItemIndex].units === 0 && action.payload.units === -1) {
+                  break;
+              }
+              state[existingItemIndex].units += action.payload.units;
+              return state.concat([]);
+  
+          case _cartActions.DELETE_FROM_CART:
+              var indexToDel = findProductIndex(state, action.payload.id);
+              return [].concat((0, _toConsumableArray3.default)(state.slice(0, indexToDel)), (0, _toConsumableArray3.default)(state.slice(indexToDel + 1)));
+      }
+  
+      function findProductIndex(products, id) {
+          return products.findIndex(function (p) {
+              return p.id === id;
+          });
+      }
+  
+      return state;
+  }
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  exports.addToCart = addToCart;
+  exports.deleteFromCart = deleteFromCart;
+  exports.updateItemUnits = updateItemUnits;
+  var ADD_TO_CART = exports.ADD_TO_CART = 'ADD_TO_CART';
+  var DELETE_FROM_CART = exports.DELETE_FROM_CART = 'DELETE_FROM_CART';
+  var UPDATE_ITEM_UNITS = exports.UPDATE_ITEM_UNITS = 'UPDATE_ITEM_UNITS';
+  
+  function addToCart(_ref) {
+      var id = _ref.id,
+          title = _ref.title,
+          description = _ref.description,
+          price = _ref.price,
+          _ref$units = _ref.units,
+          units = _ref$units === undefined ? 1 : _ref$units;
+  
+      return {
+          type: ADD_TO_CART,
+          payload: { id: id, title: title, description: description, price: price, units: units }
+      };
+  }
+  function deleteFromCart(_ref2) {
+      var id = _ref2.id;
+  
+      return {
+          type: DELETE_FROM_CART,
+          payload: { id: id }
+      };
+  }
+  function updateItemUnits(_ref3) {
+      var id = _ref3.id,
+          units = _ref3.units;
+  
+      return {
+          type: UPDATE_ITEM_UNITS,
+          payload: { id: id, units: units }
+      };
+  }
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports) {
+
+  module.exports = require("redux-logger");
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports) {
+
+  module.exports = require("react-redux");
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
   
   var _react = __webpack_require__(11);
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _MorrisjsCharts = __webpack_require__(174);
+  var _redux = __webpack_require__(172);
   
-  var _MorrisjsCharts2 = _interopRequireDefault(_MorrisjsCharts);
+  var _reactRedux = __webpack_require__(178);
+  
+  var _cartActions = __webpack_require__(176);
+  
+  var _reactBootstrap = __webpack_require__(38);
+  
+  var _productItem = __webpack_require__(180);
+  
+  var _productItem2 = _interopRequireDefault(_productItem);
+  
+  var _cart = __webpack_require__(181);
+  
+  var _cart2 = _interopRequireDefault(_cart);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
-  exports.default = {
+  var ProductsList = function (_React$Component) {
+      (0, _inherits3.default)(ProductsList, _React$Component);
   
-    path: '/morrisjscharts',
+      function ProductsList() {
+          (0, _classCallCheck3.default)(this, ProductsList);
+          return (0, _possibleConstructorReturn3.default)(this, (ProductsList.__proto__ || (0, _getPrototypeOf2.default)(ProductsList)).apply(this, arguments));
+      }
   
-    action: function action() {
-      return _react2.default.createElement(_MorrisjsCharts2.default, null);
-    }
-  };
+      (0, _createClass3.default)(ProductsList, [{
+          key: 'dispachAddToCart',
+          value: function dispachAddToCart(product) {
+              this.props.addToCart(product);
+          }
+      }, {
+          key: 'renderProducts',
+          value: function renderProducts() {
+              var _this2 = this;
+  
+              return this.props.products.map(function (p) {
+                  return _react2.default.createElement(
+                      _reactBootstrap.Col,
+                      { className: 'productsList', xs: 12, sm: 6, md: 4, key: p.id },
+                      _react2.default.createElement(_productItem2.default, { handleOnAdd: _this2.dispachAddToCart.bind(_this2), product: p })
+                  );
+              });
+          }
+      }, {
+          key: 'render',
+          value: function render() {
+              return _react2.default.createElement(
+                  _reactBootstrap.Grid,
+                  null,
+                  _react2.default.createElement(
+                      _reactBootstrap.Row,
+                      null,
+                      _react2.default.createElement(
+                          'h1',
+                          null,
+                          'Online Store'
+                      )
+                  ),
+                  _react2.default.createElement(
+                      _reactBootstrap.Row,
+                      { style: { margin: '10px' } },
+                      this.renderProducts()
+                  ),
+                  _react2.default.createElement(
+                      _reactBootstrap.Row,
+                      null,
+                      _react2.default.createElement(_cart2.default, null)
+                  )
+              );
+          }
+      }]);
+      return ProductsList;
+  }(_react2.default.Component);
+  
+  function mapStateToProps(state) {
+      return {
+          products: state.products
+      };
+  }
+  function mapActionsToProps(dispatch) {
+      return (0, _redux.bindActionCreators)({
+          addToCart: _cartActions.addToCart
+      }, dispatch);
+  }
+  
+  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapActionsToProps)(ProductsList);
 
 /***/ }),
-/* 174 */
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _reactBootstrap = __webpack_require__(38);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var ProductItem = function (_React$Component) {
+      (0, _inherits3.default)(ProductItem, _React$Component);
+  
+      function ProductItem() {
+          (0, _classCallCheck3.default)(this, ProductItem);
+          return (0, _possibleConstructorReturn3.default)(this, (ProductItem.__proto__ || (0, _getPrototypeOf2.default)(ProductItem)).apply(this, arguments));
+      }
+  
+      (0, _createClass3.default)(ProductItem, [{
+          key: 'render',
+          value: function render() {
+              var _this2 = this;
+  
+              return _react2.default.createElement(
+                  _reactBootstrap.Well,
+                  null,
+                  _react2.default.createElement(
+                      _reactBootstrap.Row,
+                      null,
+                      _react2.default.createElement(
+                          _reactBootstrap.Col,
+                          { xs: 12, className: 'productItem' },
+                          _react2.default.createElement(
+                              'h4',
+                              null,
+                              this.props.product.title
+                          ),
+                          _react2.default.createElement(
+                              'p',
+                              null,
+                              this.props.product.description
+                          ),
+                          _react2.default.createElement(
+                              'p',
+                              null,
+                              'Price: ',
+                              this.props.product.price
+                          ),
+                          _react2.default.createElement(
+                              _reactBootstrap.Button,
+                              { onClick: function onClick() {
+                                      return _this2.props.handleOnAdd(_this2.props.product);
+                                  }, bsStyle: 'primary' },
+                              'Add to Basket'
+                          )
+                      )
+                  )
+              );
+          }
+      }]);
+      return ProductItem;
+  }(_react2.default.Component);
+  
+  exports.default = ProductItem;
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _redux = __webpack_require__(172);
+  
+  var _reactRedux = __webpack_require__(178);
+  
+  var _cartActions = __webpack_require__(176);
+  
+  var _reactBootstrap = __webpack_require__(38);
+  
+  var _cartItem = __webpack_require__(182);
+  
+  var _cartItem2 = _interopRequireDefault(_cartItem);
+  
+  var _checkout = __webpack_require__(183);
+  
+  var _checkout2 = _interopRequireDefault(_checkout);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var Cart = function (_React$Component) {
+      (0, _inherits3.default)(Cart, _React$Component);
+  
+      function Cart() {
+          (0, _classCallCheck3.default)(this, Cart);
+          return (0, _possibleConstructorReturn3.default)(this, (Cart.__proto__ || (0, _getPrototypeOf2.default)(Cart)).apply(this, arguments));
+      }
+  
+      (0, _createClass3.default)(Cart, [{
+          key: 'renderCart',
+          value: function renderCart() {
+              return _react2.default.createElement(
+                  _reactBootstrap.Panel,
+                  { className: 'cartList', header: 'Basket', bsStyle: 'primary' },
+                  this.cartList()
+              );
+          }
+      }, {
+          key: 'handleDeleteFromCart',
+          value: function handleDeleteFromCart(id) {
+              this.props.deleteFromCart({ id: id });
+          }
+      }, {
+          key: 'handleDeductUnit',
+          value: function handleDeductUnit(id) {
+              var units = -1;
+              this.props.updateItemUnits({ id: id, units: units });
+          }
+      }, {
+          key: 'handleAddUnit',
+          value: function handleAddUnit(id) {
+              var units = 1;
+              this.props.updateItemUnits({ id: id, units: units });
+          }
+      }, {
+          key: 'cartList',
+          value: function cartList() {
+              var _this2 = this;
+  
+              return this.props.cart.map(function (cartItem) {
+                  return _react2.default.createElement(_cartItem2.default, { key: cartItem.id,
+                      cartItem: cartItem,
+                      onAddUnit: _this2.handleAddUnit.bind(_this2, cartItem.id),
+                      onDeductUnit: _this2.handleDeductUnit.bind(_this2, cartItem.id),
+                      handleDeleteFromCart: _this2.handleDeleteFromCart.bind(_this2, cartItem.id) });
+              });
+          }
+      }, {
+          key: 'cartTotal',
+          value: function cartTotal() {
+              return _react2.default.createElement(
+                  _reactBootstrap.Panel,
+                  null,
+                  _react2.default.createElement(
+                      _reactBootstrap.Row,
+                      null,
+                      _react2.default.createElement(
+                          _reactBootstrap.Col,
+                          { sm: 4 },
+                          _react2.default.createElement(
+                              'h4',
+                              null,
+                              'Total Price: \xA3',
+                              this.totalAmount(this.props.cart)
+                          )
+                      )
+                  )
+              );
+          }
+      }, {
+          key: 'renderCheckout',
+          value: function renderCheckout() {
+              return _react2.default.createElement(_checkout2.default, null);
+          }
+      }, {
+          key: 'totalAmount',
+          value: function totalAmount(cartArray) {
+              return cartArray.reduce(function (acum, item) {
+                  acum += item.price * item.units;
+                  return acum;
+              }, 0);
+          }
+      }, {
+          key: 'render',
+          value: function render() {
+              if (this.props.cart.length !== 0) {
+                  return _react2.default.createElement(
+                      'aside',
+                      { className: 'cart' },
+                      this.renderCart(),
+                      this.cartTotal(),
+                      this.renderCheckout()
+                  );
+              }
+  
+              return _react2.default.createElement(
+                  'aside',
+                  { className: 'cart' },
+                  'Cart is empty'
+              );
+          }
+      }]);
+      return Cart;
+  }(_react2.default.Component);
+  
+  function mapStateToProps(state) {
+      return {
+          cart: state.cart
+      };
+  }
+  function mapActionsToProps(dispatch) {
+      return (0, _redux.bindActionCreators)({
+          deleteFromCart: _cartActions.deleteFromCart,
+          updateItemUnits: _cartActions.updateItemUnits
+      }, dispatch);
+  }
+  
+  exports.default = (0, _reactRedux.connect)(mapStateToProps, mapActionsToProps)(Cart);
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+      value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _reactBootstrap = __webpack_require__(38);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var CartItem = function (_React$Component) {
+      (0, _inherits3.default)(CartItem, _React$Component);
+  
+      function CartItem() {
+          (0, _classCallCheck3.default)(this, CartItem);
+          return (0, _possibleConstructorReturn3.default)(this, (CartItem.__proto__ || (0, _getPrototypeOf2.default)(CartItem)).apply(this, arguments));
+      }
+  
+      (0, _createClass3.default)(CartItem, [{
+          key: 'render',
+          value: function render() {
+              var _this2 = this;
+  
+              return _react2.default.createElement(
+                  _reactBootstrap.Panel,
+                  { className: 'cartItem' },
+                  _react2.default.createElement(
+                      _reactBootstrap.Row,
+                      null,
+                      _react2.default.createElement(
+                          _reactBootstrap.Col,
+                          { xs: 12, sm: 6 },
+                          _react2.default.createElement(
+                              'h5',
+                              null,
+                              this.props.cartItem.title,
+                              ' ',
+                              _react2.default.createElement(
+                                  _reactBootstrap.Badge,
+                                  { pullRight: true },
+                                  'Price: \xA3',
+                                  this.props.cartItem.price
+                              )
+                          )
+                      ),
+                      _react2.default.createElement(
+                          _reactBootstrap.Col,
+                          { xs: 6, sm: 4 },
+                          _react2.default.createElement(
+                              'p',
+                              null,
+                              'units :\xA0',
+                              _react2.default.createElement(
+                                  _reactBootstrap.Label,
+                                  { bsStyle: 'success' },
+                                  ' ',
+                                  this.props.cartItem.units,
+                                  ' '
+                              ),
+                              '\xA0',
+                              _react2.default.createElement(
+                                  _reactBootstrap.Button,
+                                  { bsSize: 'small', onClick: function onClick() {
+                                          return _this2.props.onAddUnit();
+                                      } },
+                                  '+'
+                              ),
+                              _react2.default.createElement(
+                                  _reactBootstrap.Button,
+                                  { bsSize: 'small', onClick: function onClick() {
+                                          return _this2.props.onDeductUnit();
+                                      } },
+                                  '-'
+                              )
+                          )
+                      ),
+                      _react2.default.createElement(
+                          _reactBootstrap.Col,
+                          { xs: 6, sm: 2 },
+                          _react2.default.createElement(
+                              _reactBootstrap.Button,
+                              { onClick: function onClick() {
+                                      return _this2.props.handleDeleteFromCart();
+                                  },
+                                  bsSize: 'small', bsStyle: 'danger' },
+                              'DELETE ITEM'
+                          )
+                      )
+                  )
+              );
+          }
+      }]);
+      return CartItem;
+  }(_react2.default.Component);
+  
+  exports.default = CartItem;
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  "use strict";
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _redux = __webpack_require__(172);
+  
+  var _reactRedux = __webpack_require__(178);
+  
+  var _reactBootstrap = __webpack_require__(38);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var message = '';
+  
+  var Checkout = function (_React$Component) {
+    (0, _inherits3.default)(Checkout, _React$Component);
+  
+    function Checkout() {
+      (0, _classCallCheck3.default)(this, Checkout);
+      return (0, _possibleConstructorReturn3.default)(this, (Checkout.__proto__ || (0, _getPrototypeOf2.default)(Checkout)).apply(this, arguments));
+    }
+  
+    (0, _createClass3.default)(Checkout, [{
+      key: 'render',
+      value: function render() {
+        return _react2.default.createElement(
+          'div',
+          { className: 'col-md-6' },
+          _react2.default.createElement(
+            _reactBootstrap.Panel,
+            { className: 'checkoutItem', header: _react2.default.createElement(
+                'h3',
+                null,
+                'Enter Checkout Details'
+              ) },
+            _react2.default.createElement(
+              'form',
+              { role: 'form', action: '/createCheckout', method: 'post' },
+              _react2.default.createElement(
+                'fieldset',
+                null,
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    type: 'name',
+                    className: 'form-control',
+                    placeholder: 'Name',
+                    name: 'name',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    componentClass: 'textarea',
+                    className: 'form-control',
+                    placeholder: 'Address',
+                    type: 'address',
+                    name: 'address',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'Name on Card',
+                    type: 'name',
+                    name: 'cardName',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'Card Number',
+                    type: 'number',
+                    name: 'cardNo',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'CSV',
+                    type: 'number',
+                    name: 'csv',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'form-group' },
+                  _react2.default.createElement(_reactBootstrap.FormControl, {
+                    className: 'form-control',
+                    placeholder: 'Expiry Date',
+                    type: 'date',
+                    name: 'expiryDate',
+                    required: true
+                  })
+                ),
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  { type: 'submit', bsSize: 'large', bsStyle: 'success', block: true },
+                  'Checkout'
+                ),
+                _react2.default.createElement(
+                  'div',
+                  null,
+                  message.length > 0 ? _react2.default.createElement(
+                    'div',
+                    { 'class': 'alert alert-danger col-sm-12' },
+                    ' ',
+                    message
+                  ) : _react2.default.createElement(
+                    'div',
+                    null,
+                    ' not working '
+                  )
+                )
+              )
+            )
+          )
+        );
+      }
+    }]);
+    return Checkout;
+  }(_react2.default.Component);
+  
+  exports.default = Checkout;
+
+/***/ }),
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -24009,33 +24070,56 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Button = __webpack_require__(150);
+  var _failed = __webpack_require__(185);
   
-  var _Button2 = _interopRequireDefault(_Button);
+  var _failed2 = _interopRequireDefault(_failed);
+  
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  exports.default = {
+  
+    path: '/failed',
+  
+    action: function action() {
+      return _react2.default.createElement(_failed2.default, null);
+    }
+  };
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
   
   var _Panel = __webpack_require__(151);
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _PageHeader = __webpack_require__(157);
+  var _PageHeader = __webpack_require__(159);
   
   var _PageHeader2 = _interopRequireDefault(_PageHeader);
   
-  var _Donut = __webpack_require__(57);
+  var _Button = __webpack_require__(150);
   
-  var _Donut2 = _interopRequireDefault(_Donut);
+  var _Button2 = _interopRequireDefault(_Button);
   
-  var _recharts = __webpack_require__(100);
+  var _Widget = __webpack_require__(52);
+  
+  var _Widget2 = _interopRequireDefault(_Widget);
   
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
   
-  // ResponsiveContainer is broken so we have customise the ResponsiveContainer
+  var title = 'failed';
   
-  var title = 'MorrisjsCharts';
-  
-  var data = [{ name: 'Page A', uv: 4000, pv: 2400, amt: 2400, value: 600 }, { name: 'Page B', uv: 3000, pv: 1398, amt: 2210, value: 300 }, { name: 'Page C', uv: 2000, pv: 9800, amt: 2290, value: 500 }, { name: 'Page D', uv: 2780, pv: 3908, amt: 2000, value: 400 }, { name: 'Page E', uv: 1890, pv: 4800, amt: 2181, value: 200 }, { name: 'Page F', uv: 2390, pv: 3800, amt: 2500, value: 700 }, { name: 'Page G', uv: 3490, pv: 4300, amt: 2100, value: 100 }];
-  
-  function displayMorrisjsCharts(props, context) {
+  function displayFailed(props, context) {
     context.setTitle(title);
     return _react2.default.createElement(
       'div',
@@ -24049,7 +24133,7 @@ module.exports =
           _react2.default.createElement(
             _PageHeader2.default,
             null,
-            'Morris.js Charts'
+            'Something wasnt right'
           )
         )
       ),
@@ -24064,136 +24148,29 @@ module.exports =
             { header: _react2.default.createElement(
                 'span',
                 null,
-                'Area Chart Example'
+                'Failed login'
               ) },
             _react2.default.createElement(
               'div',
               null,
+              'Your email and password dont seem to match. Please try again or continue as a guest',
               _react2.default.createElement(
-                _recharts.ResponsiveContainer,
-                { width: '100%', aspect: 2 },
-                _react2.default.createElement(
-                  _recharts.AreaChart,
-                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
-                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
-                  _react2.default.createElement(_recharts.YAxis, null),
-                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
-                  _react2.default.createElement(_recharts.Tooltip, null),
-                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'uv', stackId: '1', stroke: '#8884d8', fill: '#8884d8' }),
-                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'pv', stackId: '1', stroke: '#82ca9d', fill: '#82ca9d' }),
-                  _react2.default.createElement(_recharts.Area, { type: 'monotone', dataKey: 'amt', stackId: '1', stroke: '#ffc658', fill: '#ffc658' })
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-6' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Bar Chart Example'
-              ) },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                _recharts.ResponsiveContainer,
-                { width: '100%', aspect: 2 },
-                _react2.default.createElement(
-                  _recharts.BarChart,
-                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
-                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
-                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
-                  _react2.default.createElement(_recharts.YAxis, null),
-                  _react2.default.createElement(_recharts.Tooltip, null),
-                  _react2.default.createElement(_recharts.Bar, { dataKey: 'pv', stackId: '1', fill: '#8884d8' }),
-                  _react2.default.createElement(_recharts.Bar, { dataKey: 'uv', stackId: '1', fill: '#82ca9d' }),
-                  _react2.default.createElement(_recharts.Bar, { type: 'monotone', dataKey: 'amt', fill: '#ffc658' })
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-6' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Line Chart Example'
-              ) },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                _recharts.ResponsiveContainer,
-                { width: '100%', aspect: 2 },
-                _react2.default.createElement(
-                  _recharts.LineChart,
-                  { data: data, margin: { top: 10, right: 30, left: 0, bottom: 0 } },
-                  _react2.default.createElement(_recharts.CartesianGrid, { stroke: '#ccc' }),
-                  _react2.default.createElement(_recharts.XAxis, { dataKey: 'name' }),
-                  _react2.default.createElement(_recharts.YAxis, null),
-                  _react2.default.createElement(_recharts.Tooltip, null),
-                  _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'uv', stroke: '#8884d8' }),
-                  _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'pv', stroke: '#82ca9d' }),
-                  _react2.default.createElement(_recharts.Line, { type: 'monotone', dataKey: 'amt', stroke: '#ffc658' })
-                )
-              )
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-6' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Donut Chart Example'
-              ) },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(_Donut2.default, { data: data, color: '#8884d8', innerRadius: '60', outerRadius: '80' })
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'col-lg-12' },
-          _react2.default.createElement(
-            _Panel2.default,
-            { header: _react2.default.createElement(
-                'span',
-                null,
-                'Morris.js Usage'
-              ) },
-            _react2.default.createElement(
-              'div',
-              null,
-              _react2.default.createElement(
-                'p',
-                null,
-                'Morris Morris.js is a jQuery based charting plugin created by Olly Smith. In SB Admin, we are using the most recent version of Morris.js which includes the resize functions, which makes the charts fully responsive. The documentation for Morris.js is available on their website,',
-                _react2.default.createElement(
-                  'a',
-                  { target: '_blank', rel: 'noopener noreferrer', href: 'http://morrisjs.github.io/morris.js/' },
-                  '\'http://morrisjs.github.io/morris.js/\''
-                ),
-                '.'
+                'div',
+                { className: ' col-md-6' },
+                _react2.default.createElement(_Widget2.default, {
+                  style: 'panel-primary',
+                  headerText: 'Back to Login',
+                  linkTo: '/login'
+                })
               ),
               _react2.default.createElement(
-                _Button2.default,
-                { bsSize: 'large', block: true, href: 'http://morrisjs.github.io/morris.js/' },
-                'View Morris.js Documentation'
+                'div',
+                { className: 'col-md-6' },
+                _react2.default.createElement(_Widget2.default, {
+                  style: 'panel-info',
+                  headerText: 'Continue as guest',
+                  linkTo: '/'
+                })
               )
             )
           )
@@ -24202,12 +24179,12 @@ module.exports =
     );
   }
   
-  displayMorrisjsCharts.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
+  displayFailed.contextTypes = { setTitle: _react.PropTypes.func.isRequired };
   
-  exports.default = displayMorrisjsCharts;
+  exports.default = displayFailed;
 
 /***/ }),
-/* 175 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -24220,7 +24197,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Notification = __webpack_require__(176);
+  var _Notification = __webpack_require__(187);
   
   var _Notification2 = _interopRequireDefault(_Notification);
   
@@ -24236,7 +24213,7 @@ module.exports =
   };
 
 /***/ }),
-/* 176 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -24273,7 +24250,7 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _Alert = __webpack_require__(177);
+  var _Alert = __webpack_require__(188);
   
   var _Alert2 = _interopRequireDefault(_Alert);
   
@@ -24281,23 +24258,23 @@ module.exports =
   
   var _Button2 = _interopRequireDefault(_Button);
   
-  var _OverlayTrigger = __webpack_require__(178);
+  var _OverlayTrigger = __webpack_require__(189);
   
   var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
   
-  var _Tooltip = __webpack_require__(179);
+  var _Tooltip = __webpack_require__(190);
   
   var _Tooltip2 = _interopRequireDefault(_Tooltip);
   
-  var _Popover = __webpack_require__(180);
+  var _Popover = __webpack_require__(191);
   
   var _Popover2 = _interopRequireDefault(_Popover);
   
-  var _Modal = __webpack_require__(181);
+  var _Modal = __webpack_require__(152);
   
   var _Modal2 = _interopRequireDefault(_Modal);
   
-  var _PageHeader = __webpack_require__(157);
+  var _PageHeader = __webpack_require__(159);
   
   var _PageHeader2 = _interopRequireDefault(_PageHeader);
   
@@ -24796,37 +24773,31 @@ module.exports =
   exports.default = Notification;
 
 /***/ }),
-/* 177 */
+/* 188 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Alert");
 
 /***/ }),
-/* 178 */
+/* 189 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/OverlayTrigger");
 
 /***/ }),
-/* 179 */
+/* 190 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Tooltip");
 
 /***/ }),
-/* 180 */
+/* 191 */
 /***/ (function(module, exports) {
 
   module.exports = require("react-bootstrap/lib/Popover");
 
 /***/ }),
-/* 181 */
-/***/ (function(module, exports) {
-
-  module.exports = require("react-bootstrap/lib/Modal");
-
-/***/ }),
-/* 182 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -24839,7 +24810,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _membershipReg = __webpack_require__(183);
+  var _membershipReg = __webpack_require__(193);
   
   var _membershipReg2 = _interopRequireDefault(_membershipReg);
   
@@ -24855,7 +24826,7 @@ module.exports =
   };
 
 /***/ }),
-/* 183 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25038,7 +25009,7 @@ module.exports =
   exports.default = displayMembershipRegistration;
 
 /***/ }),
-/* 184 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25051,7 +25022,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _chat = __webpack_require__(185);
+  var _chat = __webpack_require__(195);
   
   var _chat2 = _interopRequireDefault(_chat);
   
@@ -25067,7 +25038,7 @@ module.exports =
   };
 
 /***/ }),
-/* 185 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25104,19 +25075,19 @@ module.exports =
   
   var _Panel2 = _interopRequireDefault(_Panel);
   
-  var _PageHeader = __webpack_require__(157);
+  var _PageHeader = __webpack_require__(159);
   
   var _PageHeader2 = _interopRequireDefault(_PageHeader);
   
-  var _MessageList = __webpack_require__(186);
+  var _MessageList = __webpack_require__(196);
   
   var _MessageList2 = _interopRequireDefault(_MessageList);
   
-  var _firebase = __webpack_require__(187);
+  var _firebase = __webpack_require__(199);
   
   var _firebase2 = _interopRequireDefault(_firebase);
   
-  var _MessageBox = __webpack_require__(188);
+  var _MessageBox = __webpack_require__(200);
   
   var _MessageBox2 = _interopRequireDefault(_MessageBox);
   
@@ -25179,7 +25150,7 @@ module.exports =
   exports.default = Chat;
 
 /***/ }),
-/* 186 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25212,11 +25183,11 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _Message = __webpack_require__(202);
+  var _Message = __webpack_require__(197);
   
   var _Message2 = _interopRequireDefault(_Message);
   
-  var _lodash = __webpack_require__(203);
+  var _lodash = __webpack_require__(198);
   
   var _lodash2 = _interopRequireDefault(_lodash);
   
@@ -25280,13 +25251,7 @@ module.exports =
   exports.default = MessageList;
 
 /***/ }),
-/* 187 */
-/***/ (function(module, exports) {
-
-  module.exports = require("firebase");
-
-/***/ }),
-/* 188 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25319,7 +25284,78 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _trim = __webpack_require__(189);
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+  
+  var Message = function (_Component) {
+    (0, _inherits3.default)(Message, _Component);
+  
+    function Message() {
+      (0, _classCallCheck3.default)(this, Message);
+      return (0, _possibleConstructorReturn3.default)(this, (Message.__proto__ || (0, _getPrototypeOf2.default)(Message)).apply(this, arguments));
+    }
+  
+    (0, _createClass3.default)(Message, [{
+      key: 'render',
+      value: function render() {
+        return _react2.default.createElement(
+          'div',
+          null,
+          this.props.message
+        );
+      }
+    }]);
+    return Message;
+  }(_react.Component);
+  
+  exports.default = Message;
+
+/***/ }),
+/* 198 */
+/***/ (function(module, exports) {
+
+  module.exports = require("lodash");
+
+/***/ }),
+/* 199 */
+/***/ (function(module, exports) {
+
+  module.exports = require("firebase");
+
+/***/ }),
+/* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  'use strict';
+  
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  
+  var _getPrototypeOf = __webpack_require__(29);
+  
+  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+  
+  var _classCallCheck2 = __webpack_require__(30);
+  
+  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+  
+  var _createClass2 = __webpack_require__(31);
+  
+  var _createClass3 = _interopRequireDefault(_createClass2);
+  
+  var _possibleConstructorReturn2 = __webpack_require__(32);
+  
+  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+  
+  var _inherits2 = __webpack_require__(33);
+  
+  var _inherits3 = _interopRequireDefault(_inherits2);
+  
+  var _react = __webpack_require__(11);
+  
+  var _react2 = _interopRequireDefault(_react);
+  
+  var _trim = __webpack_require__(201);
   
   var _trim2 = _interopRequireDefault(_trim);
   
@@ -25384,13 +25420,13 @@ module.exports =
   exports.default = MessageBox;
 
 /***/ }),
-/* 189 */
+/* 201 */
 /***/ (function(module, exports) {
 
   module.exports = require("trim");
 
 /***/ }),
-/* 190 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25403,7 +25439,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _resultsFixtures = __webpack_require__(191);
+  var _resultsFixtures = __webpack_require__(203);
   
   var _resultsFixtures2 = _interopRequireDefault(_resultsFixtures);
   
@@ -25418,7 +25454,7 @@ module.exports =
   };
 
 /***/ }),
-/* 191 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25553,7 +25589,7 @@ module.exports =
   exports.default = resultsFixtures;
 
 /***/ }),
-/* 192 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25602,7 +25638,7 @@ module.exports =
       */
 
 /***/ }),
-/* 193 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25615,7 +25651,7 @@ module.exports =
   
   var _react2 = _interopRequireDefault(_react);
   
-  var _clubs = __webpack_require__(194);
+  var _clubs = __webpack_require__(206);
   
   var _clubs2 = _interopRequireDefault(_clubs);
   
@@ -25631,7 +25667,7 @@ module.exports =
   };
 
 /***/ }),
-/* 194 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
   'use strict';
@@ -25650,7 +25686,7 @@ module.exports =
   
   var _reactBootstrap = __webpack_require__(38);
   
-  var _clubs = __webpack_require__(195);
+  var _clubs = __webpack_require__(207);
   
   var _clubs2 = _interopRequireDefault(_clubs);
   
@@ -26201,11 +26237,11 @@ module.exports =
   exports.default = (0, _withStyles2.default)(_clubs2.default)(Clubs);
 
 /***/ }),
-/* 195 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
   
-      var content = __webpack_require__(196);
+      var content = __webpack_require__(208);
       var insertCss = __webpack_require__(22);
   
       if (typeof content === 'string') {
@@ -26235,7 +26271,7 @@ module.exports =
     
 
 /***/ }),
-/* 196 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
   exports = module.exports = __webpack_require__(21)();
@@ -26256,18 +26292,18 @@ module.exports =
   };
 
 /***/ }),
-/* 197 */
+/* 209 */
 /***/ (function(module, exports) {
 
   module.exports = require("./assets");
 
 /***/ }),
-/* 198 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
   "use strict";
   
-  var mysql = __webpack_require__(199);
+  var mysql = __webpack_require__(211);
   
   var con = mysql.createConnection({
     host: "localhost",
@@ -26283,87 +26319,16 @@ module.exports =
   module.exports = con;
 
 /***/ }),
-/* 199 */
+/* 211 */
 /***/ (function(module, exports) {
 
   module.exports = require("mysql");
 
 /***/ }),
-/* 200 */
+/* 212 */
 /***/ (function(module, exports) {
 
-  module.exports = require("http");
-
-/***/ }),
-/* 201 */
-/***/ (function(module, exports) {
-
-  module.exports = require("socket.io");
-
-/***/ }),
-/* 202 */
-/***/ (function(module, exports, __webpack_require__) {
-
-  'use strict';
-  
-  Object.defineProperty(exports, "__esModule", {
-    value: true
-  });
-  
-  var _getPrototypeOf = __webpack_require__(29);
-  
-  var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-  
-  var _classCallCheck2 = __webpack_require__(30);
-  
-  var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-  
-  var _createClass2 = __webpack_require__(31);
-  
-  var _createClass3 = _interopRequireDefault(_createClass2);
-  
-  var _possibleConstructorReturn2 = __webpack_require__(32);
-  
-  var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-  
-  var _inherits2 = __webpack_require__(33);
-  
-  var _inherits3 = _interopRequireDefault(_inherits2);
-  
-  var _react = __webpack_require__(11);
-  
-  var _react2 = _interopRequireDefault(_react);
-  
-  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-  
-  var Message = function (_Component) {
-    (0, _inherits3.default)(Message, _Component);
-  
-    function Message() {
-      (0, _classCallCheck3.default)(this, Message);
-      return (0, _possibleConstructorReturn3.default)(this, (Message.__proto__ || (0, _getPrototypeOf2.default)(Message)).apply(this, arguments));
-    }
-  
-    (0, _createClass3.default)(Message, [{
-      key: 'render',
-      value: function render() {
-        return _react2.default.createElement(
-          'div',
-          null,
-          this.props.message
-        );
-      }
-    }]);
-    return Message;
-  }(_react.Component);
-  
-  exports.default = Message;
-
-/***/ }),
-/* 203 */
-/***/ (function(module, exports) {
-
-  module.exports = require("lodash");
+  module.exports = require("connect-flash");
 
 /***/ })
 /******/ ]);

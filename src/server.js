@@ -22,6 +22,8 @@ import assets from './assets'; // eslint-disable-line import/no-unresolved
 import { port, auth } from './config';
 import con from './db';
 
+var flash = require('connect-flash');
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var db = require('./db');
 
 const app = express();
@@ -40,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(flash());
 
 //
 // Authentication
@@ -138,20 +141,9 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.send(`<!doctype html>${html}`);
 });
 
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
-io.on('connection', function(client){
-   console.log(`The server is running at http://localhost:${port}/`);
-  });
 app.listen(port, () => {
   console.log(`The server is running at http://localhost:${port}/`);
 });
-
-
-app.post('/getMessage', (req, res)=>{
-  io.emit('sendMessage', req.body);
-});
-
 
 app.post('/createClub', function(req, res){
 
@@ -190,9 +182,59 @@ app.post('/createClub', function(req, res){
 
 });
 
+app.post('/checkLogin', urlencodedParser, function(req, res){
+    var email=req.body.email;
+    var password=req.body.password;
+    con.query('SELECT * FROM tbl_users WHERE email = ?',[email], function (error, results, fields, req) {
+      if (error) {
+          console.log("error with query");
+      }else{
+        if(results.length >0){
+            if(password==results[0].password){
+               console.log("working");
+
+               res.redirect('/');
+
+            }else{
+                console.log("Email and password dont match");
+                 res.redirect('/failed');
+            }
+
+        }
+        else{
+          console.log("Email does not exist");
+          res.redirect('/failed')
+        }
+      }
+    });
+
+});
+
+app.post('/createCheckout', function(req, res){
+        var message='';
+        var name = req.body.name;
+        var address = req.body.address;
+        var cardName = req.body.cardName;
+        var cardNo = req.body.cardNo;
+        var csv = req.body.csv;
+        var expiryDate = req.body.expiryDate;
+        var checkoutPost  = {name: name, address: address, cardName:cardName, cardNumber:cardNo,  expiryDate:expiryDate, csv:csv};
+
+
+    con.query('INSERT INTO tbl_checkOut SET?',checkoutPost,  function(err, result){
+        if(err) throw err;
+
+        console.log("1 record inserted");
+
+
+    });
+
+
+});
+
 //
 // Launch the server
-// -----------------------------------------------------------------------------
+// --------------------------------------------------s---------------------------
 /* eslint-disable no-console */
 // models.sync().catch(err => console.error(err.stack)).then(() => {
 //   app.listen(port, () => {

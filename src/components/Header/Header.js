@@ -15,6 +15,7 @@ import {
   NavDropdown,
   MenuItem,
   ProgressBar,
+  Button
 } from 'react-bootstrap';
 import Navbar, {Brand} from 'react-bootstrap/lib/Navbar';
 import history from '../../core/history';
@@ -23,8 +24,38 @@ import Sidebar from '../Sidebar';
 
 const logo = require('./logo1.png');
 
-function Header() {
-  return (
+class Header extends React.Component {
+  constructor(props) {
+      super(props);
+      this.handleLoginClick = this.handleLoginClick.bind(this);
+      this.handleLogoutClick = this.handleLogoutClick.bind(this);
+      this.state = {isLoggedIn: true};
+    }
+      handleLoginClick() {
+        this.setState({isLoggedIn: true});
+      }
+
+      handleLogoutClick() {
+        this.setState({isLoggedIn: false});
+      }
+
+  render() {
+     const isLoggedInStatus = this.state.isLoggedIn;
+
+
+     var loginButton;
+     if (isLoggedInStatus) {
+       loginButton =
+       <Button className = "pt button pt-intent-button" onClick = {(event) => { history.push('/login');}} >
+       Logout
+       </Button>;
+     } else {
+       loginButton =
+      <Button className="pt button pt-intent-button" onClick = {(event) => { history.push('/login');}}>
+       Registration/Login
+      </Button>;
+     }
+    return (
     <div id="wrapper" className="content">
       <Navbar fluid={true}  style={ {margin: 0} }>
           <Brand>
@@ -35,20 +66,7 @@ function Header() {
             </span>
           </Brand>
           <ul className="nav navbar-top-links navbar-right">
-
-
-           <NavDropdown title={<i className="fa fa-user fa-fw"></i> } id = 'navDropdown4'>
-                  <MenuItem eventKey = "4" onClick = {(event) => { history.push('/login');}}>
-                    <span> <i className = "fa fa-sign-out fa-fw" /> Logout </span>
-                  </MenuItem>
-            </NavDropdown>
-
-
-                <MenuItem eventKey = "4" onClick = {(event) => { history.push('/login');}}>
-                  <span> <div className="pt button pt-intent-button" /> Registration/Login </span>
-                </MenuItem>
-
-
+          {loginButton}
           </ul>
           <Sidebar />
 
@@ -56,14 +74,8 @@ function Header() {
     </Navbar>
     </div>
   );
-}
-function toggleMenu(){
-    if($(".navbar-collapse").hasClass('collapse')){
-      $(".navbar-collapse").removeClass('collapse');
-    }
-    else{
-      $(".navbar-collapse").addClass('collapse');
-    }
   }
+}
+
 
 export default Header;
