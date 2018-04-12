@@ -59,7 +59,7 @@ class Header extends React.Component {
     <div id="wrapper" className="content">
       <Navbar fluid={true}  style={ {margin: 0} }>
           <Brand>
-            <span>
+            <span onClick = {(event) => { history.push('/home');}}>
               <img src={logo} alt="Club Connect" title="ClubConnect" />
               <span>&nbsp;Club Connect</span>
 
