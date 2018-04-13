@@ -2,6 +2,15 @@ import React, {Component} from 'react';
 import Message from './Message';
 import _ from 'lodash';
 
+const messageStyle = {
+      backgroundColor: 'white',
+      borderRadius: '2px',
+      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+      padding: '10px',
+      maxWidth: '50%',
+      marginTop: '1em'
+};
+
 class MessageList extends Component {
   constructor(props){
     super(props);
@@ -33,7 +42,7 @@ class MessageList extends Component {
     let messageNodes = this.state.messages.map((message) => {
       return (
         <div className="card">
-          <div className="card-content">
+          <div className="card-content" style={messageStyle}>
             <Message message = {message.message} />
           </div>
         </div>

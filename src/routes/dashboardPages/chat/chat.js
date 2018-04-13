@@ -7,6 +7,25 @@ import MessageBox from './components/MessageBox';
 
 const title = 'Chat';
 
+
+const containerStyle = {
+   border: '2px solid #dedede',
+      backgroundColor: '#f1f1f1',
+      borderRadius: '5px',
+      padding: '10px',
+      margin: '10px 0'
+};
+
+const headerStyle = {
+      width: '50%',
+      backgroundColor: '#5bc0de',
+      borderRadius: '5px',
+      padding: '10px',
+      margin: '15px 0',
+      textAlign: 'center'
+};
+
+
 class Chat extends Component {
 
 constructor(props){
@@ -24,8 +43,8 @@ constructor(props){
 
   render() {
     return (
-      <div className="container">
-
+    <div className="container" style={containerStyle}>
+    <h1 style={headerStyle}> Chat </h1>
             <div className="columns">
               <div className="column is-3"></div>
               <div className="column is-6">
