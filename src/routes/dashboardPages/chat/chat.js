@@ -1,67 +1,144 @@
 import React, { PropTypes, Component } from 'react';
 import Panel from 'react-bootstrap/lib/Panel';
-import PageHeader from 'react-bootstrap/lib/PageHeader';
-import MessageList from './components/MessageList';
-import firebase from 'firebase';
-import MessageBox from './components/MessageBox';
+import moment from 'moment';
 
 const title = 'Chat';
 
+
+import './App.css';
+import firebase from './firebase.js';
+
+const textareaStyle = {
+   boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+      backgroundColor: 'white',
+      borderRadius: '2px',
+      padding: '10px',
+      maxWidth: '100%',
+      marginTop: '1em'
+};
+
+const messageStyle = {
+      backgroundColor: 'white',
+      borderRadius: '2px',
+      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
+      padding: '10px',
+      maxWidth: '100%',
+      marginTop: '1em'
+};
 
 const containerStyle = {
    border: '2px solid #dedede',
       backgroundColor: '#f1f1f1',
       borderRadius: '5px',
       padding: '10px',
-      margin: '10px 0'
+      margin: '10px 0',
+      width: '100%'
 };
-
-const headerStyle = {
-      width: '50%',
-      backgroundColor: '#5bc0de',
-      borderRadius: '5px',
-      padding: '10px',
-      margin: '15px 0',
-      textAlign: 'center'
-};
-
-
 class Chat extends Component {
-
-constructor(props){
-  super(props);
-  var config = {
-      apiKey: "AIzaSyCOgQiq1Tq6Cdgx60UVZ6a2mp-42T9XNJ0",
-      authDomain: "clubconnect-c4852.firebaseapp.com",
-      databaseURL: "https://clubconnect-c4852.firebaseio.com",
-      projectId: "clubconnect-c4852",
-      storageBucket: "clubconnect-c4852.appspot.com",
-      messagingSenderId: "270307080443"
-    };
-    firebase.initializeApp(config);
-}
+  constructor() {
+    super();
+    this.state = {
+      currentItem: '',
+      name: '',
+      message: [],
+      dateAdded: ''
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    const itemsRef = firebase.database().ref('items');
+    const item = {
+      message: this.state.message,
+      name: this.state.name,
+      dateAdded: moment().format('MMMM Do YYYY, h:mm:ss a')
+    }
+    itemsRef.push(item);
+    this.setState({
+      name: '',
+      message: '',
+      dateAdded: ''
+    });
+  }
+  componentDidMount() {
+    const itemsRef = firebase.database().ref('items');
+    itemsRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      let newState = [];
+      for (let item in items) {
+        newState.push({
+          id: item,
+          name: items[item].name,
+          message: items[item].message,
+          dateAdded: items[item].dateAdded
+        });
+      }
+      this.setState({
+        items: newState
+      });
+    });
+  }
 
   render() {
     return (
-    <div className="container" style={containerStyle}>
-    <h1 style={headerStyle}> Chat </h1>
-            <div className="columns">
-              <div className="column is-3"></div>
-              <div className="column is-6">
-                <MessageList db={firebase} />
-              </div>
+      <div className='container' style={containerStyle}>
+        <header>
+            <div className="wrapper">
+              <h1>Chat</h1>
             </div>
-
-        <div className="columns">
-          <div className="column is-3"></div>
-          <div className="column is-6">
-            <MessageBox db={firebase} />
-          </div>
+        </header>
+        <div >
+          <section className='display-item'>
+              <div className="wrapper">
+               <div>
+                  {this.state.items.map((item) => {
+                    return (
+                      <div style={messageStyle} key={item.id}>
+                        <h3>{item.name}:</h3>
+                        <p>{item.message} </p>
+                        <p> {item.dateAdded} </p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+          </section>
+          <section className='form-group'>
+                <form onSubmit={this.handleSubmit}>
+                  <input
+                  className='form-control'
+                   type="text"
+                    style={textareaStyle}
+                    name="name"
+                    placeholder="What's your name?"
+                    onChange={this.handleChange}
+                    value={this.state.name}
+                    required
+                     />
+              <textarea
+                  className='form-control'
+                  type="text"
+                  cols='20'
+                  rows= '4'
+                  style={textareaStyle}
+                   name="message"
+                   placeholder="Type your message here"
+                   onChange={this.handleChange}
+                   value={this.state.message}
+                   required
+                   />
+                  <button style={{marginTop:'1em'}} className='btn btn-primary btn-lg'>Send</button>
+                </form>
+          </section>
         </div>
-        </div>
-
+      </div>
     );
   }
 }
-
 export default Chat;
