@@ -39,7 +39,7 @@ class RegisterForm extends React.Component {
     return (
       <Panel header={<h3>Please Register Your Club</h3>}>
 
-        <form id="register" action="http://localhost:4001/api/createClub" method="post" >
+        <form id="register" action="api/createClub" method="post" >
           <fieldset>
             <div className="form-group">
               <FormControl
@@ -50,7 +50,6 @@ class RegisterForm extends React.Component {
                 required
               />
             </div>
-
 
             <div className="form-group">
               <FormControl

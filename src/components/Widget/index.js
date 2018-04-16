@@ -7,6 +7,7 @@ class StatWidget extends Component{ // eslint-disable-line
     style: React.PropTypes.string,
     count: React.PropTypes.string,
     headerText: React.PropTypes.string,
+    bodyText: React.PropTypes.string,
     icon: React.PropTypes.string,
     footerText: React.PropTypes.string,
   }

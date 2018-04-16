@@ -120,7 +120,6 @@ app.listen(port, () => {
   console.log(`The server is running at http://localhost:${port}/`);
 });
 app.post('/api/createClub', function(req, res){
-
         var clubName = req.body.clubName;
         var typeOfClub = req.body.clubType;
         var town = req.body.town;
@@ -130,30 +129,26 @@ app.post('/api/createClub', function(req, res){
         var password = req.body.password;
         var clubPost  = {clubName: clubName, typeOfClub: typeOfClub, town:town, county:county};
 
-
     con.query('INSERT INTO tbl_clubs SET?',clubPost,  function(err, result){
-        if(err) throw err;
+            if(err) throw err;
+            console.log("1 record inserted");
+            var clubId = result.insertId
+            var userPost  = {name: name, email: email, password:password};
+        con.query('INSERT INTO tbl_users SET?',userPost,  function(err, result){
+            if(err) throw err;
+            console.log("1 record inserted");
+            var userId = result.insertId
+            var clubAdminPost  = {clubId: clubId, userId: userId};
+        con.query('INSERT INTO tbl_clubAdmins SET?',clubAdminPost,  function(err, result){
+            if(err) throw err;
+            console.log("1 record inserted");
+            var userId = result.insertId
+            res.redirect('/profile');
+         });
 
-        console.log("1 record inserted");
-        var clubId = result.insertId
-        var userPost  = {name: name, email: email, password:password};
-            con.query('INSERT INTO tbl_users SET?',userPost,  function(err, result){
-                    if(err) throw err;
-
-                    console.log("1 record inserted");
-                    var userId = result.insertId
-                    var clubAdminPost  = {clubId: clubId, userId: userId};
-                                    con.query('INSERT INTO tbl_clubAdmins SET?',clubAdminPost,  function(err, result){
-                                                if(err) throw err;
-
-                                                console.log("1 record inserted");
-                                                var userId = result.insertId
-                                            });
-                });
+       });
 
     });
-
-
 });
 
 app.post('/api/checkLogin', urlencodedParser, function(req, res){
@@ -166,7 +161,6 @@ app.post('/api/checkLogin', urlencodedParser, function(req, res){
         if(results.length >0){
             if(password==results[0].password){
                console.log("working");
-
                res.redirect('/profile');
             }else{
                 console.log("Email and password dont match");
