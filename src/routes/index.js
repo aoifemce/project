@@ -62,7 +62,7 @@ export default [
 
   // keep in mind, routes are evaluated in order
     children: [
-      home,
+      login,
       // contact,
       failed,
       profile,

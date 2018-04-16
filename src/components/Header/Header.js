@@ -43,17 +43,15 @@ class Header extends React.Component {
 
   render() {
      const isLoggedInStatus = this.state.isLoggedIn;
-
-
      var loginButton;
      if (localStorage.getItem('email') === null ) {
        loginButton =
-             <Button bsStyle="primary" style={ {marginTop: '5px'} } onClick={(event) => { history.push('/login');}}>
+             <Button bsStyle="primary" style={{marginTop: '5px'}} onClick={(event) => { history.push('/login');}}>
               Registration/Login
              </Button>;
      } else {
       loginButton =
-             <Button bsStyle="primary" onClick={this.handleLogoutClick}  >
+             <Button bsStyle="primary" style={{marginTop: '5px'}} onClick={this.handleLogoutClick}  >
              Logout
              </Button>;
      }
@@ -71,8 +69,6 @@ class Header extends React.Component {
           {loginButton}
           </ul>
           <Sidebar />
-
-
     </Navbar>
     </div>
   );

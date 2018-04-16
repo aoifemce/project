@@ -6,7 +6,7 @@ import axios from 'axios';
 const title = 'Chat';
 
 import './App.css';
-import firebase from './firebase.js';
+import firebase from '../firebase.js';
 
 const textareaStyle = {
    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',

@@ -20,6 +20,8 @@ class displayProfile extends React.Component {
 
   }
 
+
+
    componentDidMount(){
    let currentComponent = this;
 
@@ -36,8 +38,8 @@ class displayProfile extends React.Component {
       });
    }
    render () {
-
-   const contents = this.state.profile.slice(0, 1).map(function(response){
+  const email = localStorage.getItem('email');
+   const contents = this.state.profile.slice(1).map(function(response){
       return <div>
       <label for="adminName">Admin Name:</label>
         <div id="adminName">{response.name}</div>
