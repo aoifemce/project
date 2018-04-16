@@ -48,12 +48,12 @@ class Header extends React.Component {
      var loginButton;
      if (localStorage.getItem('email') === null ) {
        loginButton =
-             <Button className="pt button pt-intent-button" onClick = {(event) => { history.push('/login');}}>
+             <Button bsStyle="primary" style={ {marginTop: '5px'} } onClick={(event) => { history.push('/login');}}>
               Registration/Login
              </Button>;
      } else {
       loginButton =
-             <Button className = "pt button pt-intent-button" onClick={this.handleLogoutClick}  >
+             <Button bsStyle="primary" onClick={this.handleLogoutClick}  >
              Logout
              </Button>;
      }
