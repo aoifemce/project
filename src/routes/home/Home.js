@@ -1,7 +1,7 @@
-
-
 import React, { PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import axios from 'axios';
+import _ from 'lodash';
 import {
   MenuItem,
   DropdownButton,
@@ -21,37 +21,48 @@ import {
 
 const title = 'Club Connect';
 
-function Home(props, context) {
-  context.setTitle(title);
-  return (
-    <div>
-      <div className="row">
-        <div className="col-lg-12">
-          <PageHeader>Welcome to ClubConnect</PageHeader>
-        </div>
-      </div>
-        <div className="col-lg-8 col-md-6">
-          <StatWidget
-            style="panel-green"
-            icon="fa fa-tasks fa-5x"
-            count="12"
-            headerText="All clubs signed up"
-            footerText="View Clubs"
-            linkTo="/clubs"
-          />
-        </div>
+class Home extends React.Component {
+    constructor () {
+        super();
+        this.state = {
+          count: '',
+        };
+      }
 
-    </div>
-  );
+   componentDidMount(){
+   let currentComponent = this;
+
+    axios.get('http://localhost:4000/api/countClubs')
+      .then(function (response) {
+        currentComponent.setState({count: response.data.length})
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+   }
+  render () {
+    return (
+        <div>
+          <div className="row">
+            <div className="col-lg-12">
+              <PageHeader>Welcome to ClubConnect</PageHeader>
+            </div>
+          </div>
+            <div className="col-lg-8 col-md-6">
+              <StatWidget
+                style="panel-green"
+                icon="fa fa-tasks fa-5x"
+                count={this.state.count}
+                headerText="All clubs signed up"
+                footerText="View Clubs"
+                linkTo="/clubs"
+              />
+            </div>
+
+        </div>
+        )}
 }
 
-Home.propTypes = {
-  // news: PropTypes.arrayOf(PropTypes.shape({
-  //   title: PropTypes.string.isRequired,
-  //   link: PropTypes.string.isRequired,
-  //   contentSnippet: PropTypes.string,
-  // })).isRequired,
-};
-Home.contextTypes = { setTitle: PropTypes.func.isRequired };
+
 
 export default withStyles(s)(Home);

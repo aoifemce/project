@@ -21,12 +21,13 @@ import routes from './routes';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import { port, auth } from './config';
 import con from './db';
-
-var flash = require('connect-flash');
+var cors = require('cors')
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 var db = require('./db');
+var app        = express();
 
-const app = express();
+//const app = express();
+app.use(cors())
 
 //
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
@@ -40,9 +41,9 @@ global.navigator.userAgent = global.navigator.userAgent || 'all';
 // -----------------------------------------------------------------------------
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(flash());
+app.use(bodyParser.urlencoded({extended: true}));
+
 
 //
 // Authentication
@@ -53,32 +54,6 @@ app.use(expressJwt({
   getToken: req => req.cookies.id_token,
 }));
 
-// app.use(passport.initialize());
-//
-// app.get('/login/facebook',
-//   passport.authenticate('facebook', { scope: ['email', 'user_location'], session: false })
-// );
-// app.get('/login/facebook/return',
-//   passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
-//   (req, res) => {
-//     const expiresIn = 60 * 60 * 24 * 180; // 180 days
-//     const token = jwt.sign(req.user, auth.jwt.secret, { expiresIn });
-//     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-//     res.redirect('/');
-//   }
-// );
-
-//
-// Register API middleware
-// -----------------------------------------------------------------------------
-// app.use('/graphql', expressGraphQL(req => ({
-//   schema,
-//   graphiql: true,
-//   rootValue: { request: req },
-//   pretty: process.env.NODE_ENV !== 'production',
-// })));
-
-//
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
 app.get('*', async (req, res, next) => {
@@ -144,8 +119,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 app.listen(port, () => {
   console.log(`The server is running at http://localhost:${port}/`);
 });
-
-app.post('/createClub', function(req, res){
+app.post('/api/createClub', function(req, res){
 
         var clubName = req.body.clubName;
         var typeOfClub = req.body.clubType;
@@ -182,7 +156,7 @@ app.post('/createClub', function(req, res){
 
 });
 
-app.post('/checkLogin', urlencodedParser, function(req, res){
+app.post('/api/checkLogin', urlencodedParser, function(req, res){
     var email=req.body.email;
     var password=req.body.password;
     con.query('SELECT * FROM tbl_users WHERE email = ?',[email], function (error, results, fields, req) {
@@ -194,7 +168,6 @@ app.post('/checkLogin', urlencodedParser, function(req, res){
                console.log("working");
 
                res.redirect('/profile');
-
             }else{
                 console.log("Email and password dont match");
                  res.redirect('/failed');
@@ -210,7 +183,7 @@ app.post('/checkLogin', urlencodedParser, function(req, res){
 
 });
 
-app.post('/createCheckout', function(req, res){
+app.post('/api/createCheckout', function(req, res){
         var message='';
         var name = req.body.name;
         var address = req.body.address;
@@ -232,13 +205,3 @@ app.post('/createCheckout', function(req, res){
 
 });
 
-//
-// Launch the server
-// --------------------------------------------------s---------------------------
-/* eslint-disable no-console */
-// models.sync().catch(err => console.error(err.stack)).then(() => {
-//   app.listen(port, () => {
-//     console.log(`The server is running at http://localhost:${port}/`);
-//   });
-// });
-/* eslint-enable no-console */

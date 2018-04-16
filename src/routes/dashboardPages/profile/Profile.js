@@ -5,6 +5,7 @@ import Panel from 'react-bootstrap/lib/Panel';
 import Pagination from 'react-bootstrap/lib/Pagination';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
 import Well from 'react-bootstrap/lib/Well';
+import axios from 'axios';
 
 
 const title = 'Admin Information';
@@ -13,14 +14,44 @@ class displayProfile extends React.Component {
   constructor () {
     super();
        this.state = {
-         clubName: 'Bellaghy Wolfe Tones',
-         clubType: 'GAA',
-         county: 'Derry',
-         email: 'bellaghy@wolfetones.co.uk'
+         profile: []
        };
+
+
   }
 
+   componentDidMount(){
+   let currentComponent = this;
+
+    axios.get('http://localhost:4000/api/clubs')
+      .then(function (response) {
+          currentComponent.setState({
+        profile: response.data
+        });
+        console.log(response);
+      })
+
+      .catch(function (error) {
+        console.log(error);
+      });
+   }
    render () {
+
+   const contents = this.state.profile.slice(0, 1).map(function(response){
+      return <div>
+      <label for="adminName">Admin Name:</label>
+        <div id="adminName">{response.name}</div>
+      <label for="email">Email:</label>
+        <div>{response.email}</div>
+      <label for="clubName">Club Name:</label>
+        <div>{response.clubName}</div>
+       <label for="Club Type">Club Type:</label>
+        <div>{response.typeOfClub}</div>
+        <label for="county">County:</label>
+        <div>{response.county}</div>
+        <label for="town">Town:</label>
+        <div>{response.town}</div></div>
+   });
 
   return (
     <div>
@@ -29,24 +60,11 @@ class displayProfile extends React.Component {
       </div>
 
       <div className="col-lg-12">
-        <Panel  bsStyle="primary"  header={<span>Club/ Admin Information</span>} >
+        <Panel  bsStyle="primary"  header={<span>Club / Admin Information</span>} >
+            <div className="form-group">
+              {contents}
+            </div>
 
-           <div class="form-group">
-              <label for="name">Club Name:</label>
-              <p className="name">{this.state.clubName}</p>
-            </div>
-             <div class="form-group">
-              <label for="clubType">Club Name:</label>
-               <p className="clubType">{this.state.clubType}</p>
-            </div>
-            <div class="form-group">
-             <label for="county">Club Name:</label>
-              <p className="county">{this.state.county}</p>
-           </div>
-           <div class="form-group">
-            <label for="email">Club Name:</label>
-             <p className="email">{this.state.email}</p>
-          </div>
           </Panel>
         </div>
         </div>

@@ -36,7 +36,9 @@ class Header extends React.Component {
       }
 
       handleLogoutClick() {
-        this.setState({isLoggedIn: false});
+      localStorage.getItem('email');
+      localStorage.removeItem('email');
+      history.push('/login')
       }
 
   render() {
@@ -44,16 +46,16 @@ class Header extends React.Component {
 
 
      var loginButton;
-     if (isLoggedInStatus) {
+     if (localStorage.getItem('email') === null ) {
        loginButton =
-       <Button className = "pt button pt-intent-button" onClick = {(event) => { history.push('/login');}} >
-       Logout
-       </Button>;
+             <Button className="pt button pt-intent-button" onClick = {(event) => { history.push('/login');}}>
+              Registration/Login
+             </Button>;
      } else {
-       loginButton =
-      <Button className="pt button pt-intent-button" onClick = {(event) => { history.push('/login');}}>
-       Registration/Login
-      </Button>;
+      loginButton =
+             <Button className = "pt button pt-intent-button" onClick={this.handleLogoutClick}  >
+             Logout
+             </Button>;
      }
     return (
     <div id="wrapper" className="content">

@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react';
 import Panel from 'react-bootstrap/lib/Panel';
 import moment from 'moment';
+import axios from 'axios';
 
 const title = 'Chat';
-
 
 import './App.css';
 import firebase from './firebase.js';
@@ -19,9 +19,9 @@ const textareaStyle = {
 
 const messageStyle = {
       backgroundColor: 'white',
-      borderRadius: '2px',
+      borderRadius: '10px',
       boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
-      padding: '10px',
+      padding: '5px',
       maxWidth: '100%',
       marginTop: '1em'
 };
@@ -100,9 +100,11 @@ class Chat extends Component {
                   {this.state.items.map((item) => {
                     return (
                       <div style={messageStyle} key={item.id}>
-                        <h3>{item.name}:</h3>
+                      <div className="text-primary">
+                        <h3 class="text-primary">{item.name}:</h3>
+                      </div>
                         <p>{item.message} </p>
-                        <p> {item.dateAdded} </p>
+                        <p style={{ fontSize: "13px", color: "#999"}}> {item.dateAdded} </p>
                       </div>
                     )
                   })}
