@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Panel, Accordion, Well, Jumbotron, Button, Tabs, Tab, PageHeader } from 'react-bootstrap';
-
+import Checkout from './checkout';
 
 const title = 'Membership Registration';
 
@@ -9,20 +9,39 @@ var buttonStyle = {
   margin: '-7px -10px 0px 0px'
 }
 
-function displayMembershipRegistration(props, context) {
-  context.setTitle(title);
-  return (
+class membershipReg extends React.Component {
+   constructor(props) {
+      super(props);
+
+      this.state = {
+        showComponent: false,
+        adultTitle: 'Adult Membership',
+        adultPrice: '£30',
+        studentTitle: 'Student Membership',
+        studentPrice: '£15',
+        childTitle: 'Child Membership',
+        childPrice: '£15'
+      };
+      this._onButtonClick = this._onButtonClick.bind(this);
+    }
+
+      _onButtonClick() {
+        this.setState({
+          showComponent: true,
+        });
+      }
+ render() {
+        return (
     <div>
       <div className="col-lg-12">
         <PageHeader>Membership Registration  <i className="fa fa-user-plus fa-fw" /></PageHeader>
       </div>
 
       <div className="row">
-        <div className="col-lg-8">
+        <div className="col-lg-4">
           <Panel
-            header={<span>Adult Membership</span>} className="panel-success"
-            footer={<span>£30
-            <Button bsStyle="primary" style={buttonStyle}>Add to Basket</Button>
+            header={<span>{this.state.adultTitle}</span>} className="panel-success"
+            footer={<span>{this.state.adultPrice}
             </span>}
           >
             <div>
@@ -31,28 +50,10 @@ function displayMembershipRegistration(props, context) {
             </div>
           </Panel>
         </div>
-
-         <div className="col-lg-4">
-                  <Panel
-                    header={<span><i className="fa fa-shopping-basket fa-fw" />Basket</span>} className="panel-primary"
-                    footer={<span>
-                    <Button bsStyle="success">Buy Now</Button>
-                    </span>  }
-                  >
-                    <div>
-                      <p>() items in basket</p>
-
-                    </div>
-                  </Panel>
-                </div>
-
-
-        <div className="col-lg-8">
+        <div className="col-lg-4">
           <Panel
-            header={<span>Student Membership</span>} className="panel-success"
-            footer={<span>£15
-            <Button bsStyle="primary" style={buttonStyle}>Add to Basket</Button>
-            </span>}
+            header={<span>{this.state.studentTitle}</span>} className="panel-success"
+            footer={<span>{this.state.studentPrice}</span>}
           >
             <div>
               <p>Anyone still in full time education
@@ -60,27 +61,28 @@ function displayMembershipRegistration(props, context) {
             </div>
           </Panel>
         </div>
-
-
-        <div className="col-lg-8">
+        <div className="col-lg-4">
           <Panel
-            header={<span>Children Membership</span>} className="panel-success"
-            footer={<span>£15
-            <Button bsStyle="primary" style={buttonStyle}>Add to Basket</Button>
-            </span>  }
+            header={<span>{this.state.childTitle}</span>} className="panel-success"
+            footer={<span>{this.state.childPrice} </span>}
           >
             <div>
               <p>16 or below for all sports </p>
-
             </div>
           </Panel>
         </div>
+        <div>
+       <Button onClick={this._onButtonClick} bsStyle="primary" style={buttonStyle}>Sign up for membership here</Button>
+      {this.state.showComponent ?
+                <Checkout /> :
+                null
+             }
+             </div>
       </div>
     </div>
 
 );
 }
+}
 
-displayMembershipRegistration.contextTypes = { setTitle: PropTypes.func.isRequired };
-
-export default displayMembershipRegistration;
+export default membershipReg;

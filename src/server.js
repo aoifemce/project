@@ -119,6 +119,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 app.listen(port, () => {
   console.log(`The server is running at http://localhost:${port}/`);
 });
+
 app.post('/api/createClub', function(req, res){
         var clubName = req.body.clubName;
         var typeOfClub = req.body.clubType;
@@ -198,4 +199,36 @@ app.post('/api/createCheckout', function(req, res){
 
 
 });
+
+app.post('/api/createMembership', function(req, res){
+        var name = req.body.name;
+        var membershipType = req.body.membershipType;
+        var address = req.body.address;
+        var cardName = req.body.cardName;
+        var cardNumber = req.body.cardNumber;
+        var csv = req.body.csv;
+        var expiryDate = req.body.expiryDate;
+        var email = req.body.email;
+        var price = req.body.price;
+        var checkoutPost  = {
+            name: name,
+            address: address,
+            cardName:cardName,
+            cardNumber:cardNumber,
+            expiryDate:expiryDate,
+            csv:csv,
+            membershipType:membershipType,
+            price: price,
+            email:email
+        };
+
+
+    con.query('INSERT INTO tbl_membership SET?',checkoutPost,  function(err, result){
+        if(err) throw err;
+
+        console.log("1 record inserted");
+
+    });
+});
+
 
