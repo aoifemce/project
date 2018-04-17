@@ -15,16 +15,16 @@ import home from './home';
 import login from './login';
 import profile from './dashboardPages/profile';
 import button from './dashboardPages/buttons';
-import flotcharts from './dashboardPages/flotCharts';
 import forms from './dashboardPages/forms';
 import onlinestore from './dashboardPages/onlinestore';
 import failed from './dashboardPages/failed';
-import notification from './dashboardPages/notification';
+import storeCheckout from './dashboardPages/storeCheckout';
 import membershipReg from './dashboardPages/membershipReg';
 import chat from './dashboardPages/chat';
 import resultsFixtures from './dashboardPages/resultsFixtures';
 import error from './error';
 import clubs from './dashboardPages/clubs';
+import membershipCheckout from './dashboardPages/membershipCheckout';
 
 import Header from '../components/Header';
 
@@ -68,11 +68,11 @@ export default [
       profile,
       clubs,
       button,
-      flotcharts,
+      membershipCheckout,
       forms,
       failed,
       onlinestore,
-      notification,
+      storeCheckout,
       membershipReg,
       chat,
       resultsFixtures

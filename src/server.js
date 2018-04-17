@@ -186,9 +186,16 @@ app.post('/api/createCheckout', function(req, res){
         var cardNo = req.body.cardNo;
         var csv = req.body.csv;
         var expiryDate = req.body.expiryDate;
-        var checkoutPost  = {name: name, address: address, cardName:cardName, cardNumber:cardNo,  expiryDate:expiryDate, csv:csv};
+        var checkoutPost  = {
+              name: name,
+              address: address,
+              cardName:cardName,
+              cardNumber:cardNo,
+              expiryDate:expiryDate,
+              csv:csv
+              };
 
-
+   res.redirect('/storeCheckout');
     con.query('INSERT INTO tbl_checkOut SET?',checkoutPost,  function(err, result){
         if(err) throw err;
 
@@ -221,9 +228,10 @@ app.post('/api/createMembership', function(req, res){
             price: price,
             email:email
         };
+    res.redirect('/membershipCheckout');
+    con.query('INSERT INTO tbl_membership SET?',checkoutPost,  function(err, res){
 
 
-    con.query('INSERT INTO tbl_membership SET?',checkoutPost,  function(err, result){
         if(err) throw err;
 
         console.log("1 record inserted");

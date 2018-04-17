@@ -13,6 +13,7 @@ class Checkout extends React.Component {
     this.state = {
       cardNumber: '',
       csv: '',
+      email: '',
       valid: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -24,12 +25,12 @@ class Checkout extends React.Component {
 
     this.setState({
       [id]: value,
-      valid: this.cardNumber.validity.valid && this.csv.validity.valid
+      valid: this.cardNumber.validity.valid && this.csv.validity.valid && this.email.validity.valid
     });
   };
 
   render () {
-    const { cardNumber, csv, valid,  } = this.state;
+    const { cardNumber, csv, email, valid,  } = this.state;
     return (
          <div className="col-md-6">
          <Panel className="checkoutItem" header={<h3>Enter Checkout Details</h3>}>
@@ -72,6 +73,7 @@ class Checkout extends React.Component {
                 name="cardNumber"
                 minLength={16}
                 maxLength={16}
+                onChange={(event) => this.handleChange(event)}
                 required
               />
             </div>
@@ -84,6 +86,7 @@ class Checkout extends React.Component {
                 name="csv"
                 minLength={3}
                 maxLength={3}
+                onChange={(event) => this.handleChange(event)}
                 required
               />
               </div>
@@ -103,9 +106,11 @@ class Checkout extends React.Component {
                   placeholder="Email"
                   type="email"
                   name="email"
+                  onChange={(event) => this.handleChange(event)}
                   required
                 />
               </div>
+              <small>{this.email ? this.email.validationMessage : null}</small>
               <div className="form-group">
               <select name="membershipType" id="membershipType">
                       <option value="adult">Adult</option>

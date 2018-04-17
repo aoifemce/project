@@ -40,7 +40,6 @@ class LoginForm extends React.Component {
   render () {
     const { email, password, valid,  } = this.state;
 
-
     return (
       <Panel header={<h3>Please Sign In</h3>}>
         <form role="form" action="/api/checkLogin" method="post">
