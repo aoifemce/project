@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import axios from 'axios';
 import _ from 'lodash';
+import Route from 'react-router';
 import {
   MenuItem,
   DropdownButton,
@@ -9,7 +10,6 @@ import {
 } from 'react-bootstrap';
 
 
-import s from './Home.css';
 import StatWidget from '../../components/Widget';
 import Donut from '../../components/Donut';
 
@@ -48,21 +48,29 @@ class Home extends React.Component {
 
     const contents = this.state.clubs.map(function(response){
         return <div>
-
          <StatWidget
             style="panel-green"
             headerText={response.clubName}
-            bodyText="test"
             footerText="Click to see more information"
-           linkTo="/clubs"
+            linkTo={`/clubs/${response.clubName}`}
           />
           </div>
 
      });
+
     return (
         <div class="justify-content-center">
 
-              <PageHeader>Welcome to Club Connect</PageHeader>
+              <PageHeader style={{ marginLeft: "2em"}}>Welcome to Club Connect
+               <div className="col-lg-6">
+                          <StatWidget
+                          style="panel-primary"
+                          footerText="Registration / Login"
+                          linkTo='/login'
+                        />
+                        </div>
+             </PageHeader>
+
             <div className="col-lg-6 col-md-6">
             <Panel
                 header={<span>Number of clubs signed up: {this.state.count} </span>} className="panel-success"
@@ -80,5 +88,4 @@ class Home extends React.Component {
 }
 
 
-
-export default withStyles(s)(Home);
+export default Home;

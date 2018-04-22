@@ -4,7 +4,7 @@ import Clubs from './clubs';
 
 export default {
 
-  path: '/clubs',
+  path: '/clubs/:clubName',
 
   action() {
     return <Clubs />;

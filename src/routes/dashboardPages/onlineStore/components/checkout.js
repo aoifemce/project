@@ -64,22 +64,13 @@ class Checkout extends React.Component {
               <FormControl
                 className="form-control"
                 placeholder="Expiry Date"
-                type="date"
+                type="month"
                 name="expiryDate"
                 required
               />
             </div>
 
       <Button type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
-    <div>
-     {message.length > 0 ? (
-            <div class="alert alert-danger col-sm-12"> {message}</div>
-          ) : (
-           <div> not working </div>
-          )}
-    </div>
-
-
     </fieldset>
     </form>
  </Panel>

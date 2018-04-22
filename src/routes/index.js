@@ -14,8 +14,6 @@ import App from '../components/App';
 import home from './home';
 import login from './login';
 import profile from './dashboardPages/profile';
-import button from './dashboardPages/buttons';
-import forms from './dashboardPages/forms';
 import onlinestore from './dashboardPages/onlinestore';
 import failed from './dashboardPages/failed';
 import storeCheckout from './dashboardPages/storeCheckout';
@@ -25,7 +23,6 @@ import resultsFixtures from './dashboardPages/resultsFixtures';
 import error from './error';
 import clubs from './dashboardPages/clubs';
 import membershipCheckout from './dashboardPages/membershipCheckout';
-
 import Header from '../components/Header';
 
 export default [
@@ -63,13 +60,10 @@ export default [
   // keep in mind, routes are evaluated in order
     children: [
       login,
-      // contact,
       failed,
       profile,
       clubs,
-      button,
       membershipCheckout,
-      forms,
       failed,
       onlinestore,
       storeCheckout,

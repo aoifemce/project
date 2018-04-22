@@ -28,7 +28,7 @@ class ProductsList extends React.Component {
         return (
             <Grid>
                 <Row><h1>Online Store</h1></Row>
-                <Row style={{margin:'10px'}}>
+                <Row style={{margin:'10px', width: '80%'}}>
                     {this.renderProducts()}
                 </Row>
                 <Row><Cart /></Row>

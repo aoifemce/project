@@ -14,32 +14,37 @@ class displayProfile extends React.Component {
   constructor () {
     super();
        this.state = {
-         profile: []
+         profile: [],
+         email: ''
        };
 
 
   }
 
-
-
    componentDidMount(){
+   console.log(this.state.email);
    let currentComponent = this;
 
-    axios.get('http://localhost:4000/api/clubs')
+    axios.get(`http://localhost:4000/api/clubs?email=${this.state.email}`)
       .then(function (response) {
           currentComponent.setState({
         profile: response.data
         });
-        console.log(response);
+
       })
 
       .catch(function (error) {
         console.log(error);
       });
+
+
    }
    render () {
-  const email = localStorage.getItem('email');
-   const contents = this.state.profile.slice(1).map(function(response){
+
+     this.setState({ email: localStorage.getItem('email')});
+
+
+   const contents = this.state.profile.slice(0).map(function(response){
       return <div>
       <label for="adminName">Admin Name:</label>
         <div id="adminName">{response.name}</div>

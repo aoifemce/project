@@ -4,7 +4,7 @@ import MembershipReg from './membershipReg';
 
 export default {
 
-  path: '/membershipReg',
+  path: '/membershipReg/',
 
   action() {
     return <MembershipReg />;

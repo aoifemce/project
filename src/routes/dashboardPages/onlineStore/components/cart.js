@@ -11,9 +11,11 @@ import Checkout from "./checkout";
 class Cart extends React.Component {
     renderCart() {
         return (
+        <div className="col-lg-8 col-md-8">
             <Panel className='cartList' header='Basket' bsStyle='primary'>
                 {this.cartList()}
             </Panel>
+         </div>
         );
     }
     handleDeleteFromCart(id) {
@@ -44,14 +46,15 @@ class Cart extends React.Component {
 
     cartTotal() {
         return (
+        <div className="col-lg-8 col-md-8" >
             <Panel>
-                <Row>
-                    <Col sm={4}>
+                <Row >
+                    <Col  >
                         <h4>Total Price: £{this.totalAmount(this.props.cart)}</h4>
-
                     </Col>
                 </Row>
             </Panel>
+          </div>
         );
     }
      renderCheckout() {

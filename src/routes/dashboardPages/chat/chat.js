@@ -97,7 +97,7 @@ class Chat extends Component {
           <section className='display-item'>
               <div className="wrapper">
                <div>
-                  {this.state.items.map((item) => {
+                  {this.state.items.map(function (item) {
                     return (
                       <div style={messageStyle} key={item.id}>
                       <div className="text-primary">
