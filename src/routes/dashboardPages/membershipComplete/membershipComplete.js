@@ -9,20 +9,18 @@ import Modal, { Footer, Header, Title, Body } from 'react-bootstrap/lib/Modal';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
 
 
-class Notification extends Component {
+class MembershipComplete extends Component {
 
   render() {
     return (
-   <div>
+      <div>
         <center>
-
-
-       <h1> Membership complete </h1>
-       <p> Your club has now been registered </p>
-   </center>
+           <h1> Membership complete </h1>
+           <p> Your club has now been registered </p>
+       </center>
        </div>
     );
   }
 }
 
-export default Notification;
+export default MembershipComplete;

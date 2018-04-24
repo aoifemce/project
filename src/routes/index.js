@@ -24,7 +24,7 @@ import error from './error';
 import clubs from './dashboardPages/clubs';
 import ordered from './dashboardPages/ordered';
 import registered from './dashboardPages/registered';
-import notification from './dashboardPages/notification';
+import membershipComplete from './dashboardPages/membershipComplete';
 import Header from '../components/Header';
 
 export default [
@@ -66,7 +66,7 @@ export default [
      clubs,
      ordered,
      registered,
-      notification,
+      membershipComplete,
       profile,
       failed,
       membershipReg,

@@ -228,7 +228,7 @@ app.post('/api/createMembership', function(req, res){
             price: price,
             email:email
         };
-    res.redirect('/notification');
+    res.redirect('/membershipComplete');
     con.query('INSERT INTO tbl_membership SET?',checkoutPost,  function(err, res){
 
 
