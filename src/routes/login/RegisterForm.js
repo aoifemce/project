@@ -35,11 +35,10 @@ class RegisterForm extends React.Component {
   render () {
     const { email, password, valid,  } = this.state;
 
-
     return (
       <Panel header={<h3>Please Register Your Club</h3>}>
 
-        <form id="register" action="api/createClub" method="post" >
+          <form role="form" action="/createClub"  method="post">
           <fieldset>
             <div className="form-group">
               <FormControl
@@ -53,15 +52,15 @@ class RegisterForm extends React.Component {
 
             <div className="form-group">
               <FormControl
-                ref={(email) => { this.email = email; }}
-                className="form-control"
-                placeholder="Email"
-                type="email"
-                name="email"
-                value={email}
-                onChange={(event) => this.handleChange(event)}
-                required
-              />
+               id="email"
+               type="email"
+               className="form-control"
+               placeholder="Email"
+               name="email"
+               value={email}
+               onChange={(event) => this.handleChange(event)}
+               required
+             />
 
             </div>
              <small>{this.email ? this.email.validationMessage : null}</small>
@@ -120,7 +119,7 @@ class RegisterForm extends React.Component {
               />
             </div>
            <div >
-            <Button type="submit" bsSize="large" bsStyle="primary"  block>Register</Button>
+      <Button type="submit" bsSize="large" bsStyle="success" block>Register</Button>
             </div>
           </fieldset>
         </form>

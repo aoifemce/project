@@ -11,7 +11,7 @@ class Checkout extends React.Component {
         return (
          <div className="col-md-6">
          <Panel className="checkoutItem" header={<h3>Enter Checkout Details</h3>}>
-         <form role="form" action="/createCheckout"  method="post">
+         <form role="form" action="/api/createCheckout"  method="post">
           <fieldset>
             <div className="form-group">
               <FormControl

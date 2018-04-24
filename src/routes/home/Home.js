@@ -29,7 +29,6 @@ class Home extends React.Component {
           clubs: []
         };
       }
-
    componentDidMount(){
    let currentComponent = this;
 
@@ -59,17 +58,20 @@ class Home extends React.Component {
      });
 
     return (
-        <div class="justify-content-center">
+        <div>
 
-              <PageHeader style={{ marginLeft: "2em"}}>Welcome to Club Connect
-               <div className="col-lg-6">
-                          <StatWidget
-                          style="panel-primary"
-                          footerText="Registration / Login"
-                          linkTo='/login'
-                        />
-                        </div>
-             </PageHeader>
+            <center>
+                <PageHeader style={{ marginLeft: "2em", fontFamily: "monospace", fontSize: "20px", }}>Welcome to Club Connect
+                </PageHeader>
+            </center>
+<div style={{backgroundColor: "white"}}>
+               <div className="col-lg-3" style={{float: "right"}}>
+                   <StatWidget
+                   style="panel-primary"
+                   footerText="Registration / Login"
+                   linkTo='/login'
+                 />
+                 </div>
 
             <div className="col-lg-6 col-md-6">
             <Panel
@@ -81,6 +83,7 @@ class Home extends React.Component {
        <div className="col-lg-6">
               {contents}
        </div>
+     </div>
      </div>
      </div>
 

@@ -69,7 +69,7 @@ class LoginForm extends React.Component {
               />
             </div>
             <Button onClick={this.saveData} type="submit" bsSize="large" bsStyle="success" block>Login</Button>
-            <Button onClick = {(event) => { history.push('/home');}} bsSize="large" bsStyle="primary" block>Continue as guest</Button>
+            <Button onClick = {(event) => { history.push('/clubs');}} bsSize="large" bsStyle="primary" block>Continue as guest</Button>
           </fieldset>
         </form>
       </Panel>

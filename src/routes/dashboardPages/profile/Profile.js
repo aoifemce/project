@@ -14,37 +14,27 @@ class displayProfile extends React.Component {
   constructor () {
     super();
        this.state = {
-         profile: [],
-         email: ''
+         profile: []
        };
-
 
   }
 
-   componentDidMount(){
-   console.log(this.state.email);
-   let currentComponent = this;
+     componentDidMount(){
+        let emailSaved = localStorage.getItem('email');
+        let currentComponent = this;
+         axios.get('http://localhost:4000/api/clubs?email='+emailSaved)
+           .then(function (response) {
+               currentComponent.setState({
+             profile: response.data
+             });
 
-    axios.get(`http://localhost:4000/api/clubs?email=${this.state.email}`)
-      .then(function (response) {
-          currentComponent.setState({
-        profile: response.data
-        });
+         })
 
-      })
-
-      .catch(function (error) {
-        console.log(error);
-      });
-
-
-   }
+}
    render () {
 
-     this.setState({ email: localStorage.getItem('email')});
 
-
-   const contents = this.state.profile.slice(0).map(function(response){
+   const contents = this.state.profile.map(function(response){
       return <div>
       <label for="adminName">Admin Name:</label>
         <div id="adminName">{response.name}</div>
@@ -71,14 +61,12 @@ class displayProfile extends React.Component {
             <div className="form-group">
               {contents}
             </div>
-
           </Panel>
         </div>
         </div>
 
 
-  );
-}
+  )}
 }
 
 

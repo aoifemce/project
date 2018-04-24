@@ -3,9 +3,12 @@ import React from 'react';
 import { bindActionCreators } from 'redux'
 import {connect} from 'react-redux';
 import checkout from './checkout.js';
+import firebase from '../firebase.js';
+import classNames from 'classnames';
+import validator from 'validator';
 
 import {Grid, Row, Col, FormControl, Button, Panel, DropdownButton, MenuItem} from 'react-bootstrap';
- var message ='';
+
 
 class Checkout extends React.Component {
   constructor () {
@@ -14,14 +17,16 @@ class Checkout extends React.Component {
       cardNumber: '',
       csv: '',
       email: '',
-      valid: false
+      valid: false,
+      title: [],
+      price: []
     };
-    this.handleChange = this.handleChange.bind(this);
+
   }
 
-  handleChange (event) {
-    const id = event.target.id;
-    const value = event.target.value;
+  onChange = (e) => {
+          var state = this.state;
+          state[e.target.name].value = e.target.value;
 
     this.setState({
       [id]: value,
@@ -31,8 +36,13 @@ class Checkout extends React.Component {
 
   render () {
     const { cardNumber, csv, email, valid,  } = this.state;
-    return (
-         <div className="col-md-6">
+
+    var checkoutForm;
+    checkoutForm =
+    <div>
+     {this.state.membership.map((item) => {
+        return (
+    <div className="col-md-6">
          <Panel className="checkoutItem" header={<h3>Enter Checkout Details</h3>}>
          <form role="form" action="api/createMembership"  method="post">
           <fieldset>
@@ -106,38 +116,34 @@ class Checkout extends React.Component {
                   placeholder="Email"
                   type="email"
                   name="email"
-                  onChange={(event) => this.handleChange(event)}
+
                   required
                 />
               </div>
-              <small>{this.email ? this.email.validationMessage : null}</small>
+
               <div className="form-group">
-              <select name="membershipType" id="membershipType">
-                      <option value="adult">Adult</option>
-                      <option value="student">Student</option>
-                      <option value="child">Child</option>
-                  </select>
+              <label value={item.title}>{item.title}</label>
 
             </div>
                 <div className="form-group">
-                  <select name="price" id="price">
-                       <option value="£15">£15</option>
-                       <option value="£30">£30</option>
-                   </select>
+                   <label value={item.price}>{item.price}</label>
                 </div>
 
-      <Button type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
+      <Button onClick={e => this.validate(e)} type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
     <div>
-
     </div>
-
-
     </fieldset>
     </form>
  </Panel>
  </div>
+ )
+})} </div>
+    return (
+      <div>
+        {checkoutForm}
+      </div>
     )
-}
+ }
 }
 
 

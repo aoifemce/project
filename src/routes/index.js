@@ -22,7 +22,9 @@ import chat from './dashboardPages/chat';
 import resultsFixtures from './dashboardPages/resultsFixtures';
 import error from './error';
 import clubs from './dashboardPages/clubs';
-import membershipCheckout from './dashboardPages/membershipCheckout';
+import button from './dashboardPages/buttons';
+import morrisjscharts from './dashboardPages/morrisjsCharts';
+//import registrationComplete from './dashboardPages/registrationComplete';
 import Header from '../components/Header';
 
 export default [
@@ -59,17 +61,20 @@ export default [
 
   // keep in mind, routes are evaluated in order
     children: [
-      login,
-      failed,
+     login,
+     button,
+    // registrationComplete,
+      home,
+      morrisjscharts,
       profile,
       clubs,
-      membershipCheckout,
       failed,
-      onlinestore,
-      storeCheckout,
       membershipReg,
       chat,
-      resultsFixtures
+      resultsFixtures,
+      onlinestore,
+      storeCheckout,
+
 
       // place new routes before...
       // content,

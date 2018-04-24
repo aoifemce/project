@@ -94,7 +94,7 @@ constructor() {
 
        } else {
         resultsFixturesShow =  <div>
-          <Panel >
+          <Panel header={<h3>Results</h3>}>
             <form onSubmit={this.handleSubmit} >
               <div className="form-group">
                  <textarea

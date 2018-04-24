@@ -144,7 +144,7 @@ app.post('/api/createClub', function(req, res){
             if(err) throw err;
             console.log("1 record inserted");
             var userId = result.insertId
-            res.redirect('/profile');
+
          });
 
        });
