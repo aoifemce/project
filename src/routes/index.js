@@ -23,7 +23,7 @@ import resultsFixtures from './dashboardPages/resultsFixtures';
 import error from './error';
 import clubs from './dashboardPages/clubs';
 import ordered from './dashboardPages/ordered';
-import morrisjscharts from './dashboardPages/morrisjsCharts';
+import registered from './dashboardPages/registered';
 import notification from './dashboardPages/notification';
 import Header from '../components/Header';
 
@@ -63,10 +63,10 @@ export default [
     children: [
     home,
      login,
-       clubs,
+     clubs,
      ordered,
+     registered,
       notification,
-      morrisjscharts,
       profile,
       failed,
       membershipReg,

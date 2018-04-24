@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
 
-
 const logo = require('./logo.png');
 
 const title = 'Complete';

@@ -146,7 +146,7 @@ app.post('/api/createClub', function(req, res){
             var userId = result.insertId
 
          });
-result.redirect('/morrisjscharts')
+      res.redirect('/registered')
        });
 
     });
