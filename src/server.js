@@ -146,7 +146,7 @@ app.post('/api/createClub', function(req, res){
             var userId = result.insertId
 
          });
-
+result.redirect('/morrisjscharts')
        });
 
     });
@@ -195,7 +195,7 @@ app.post('/api/createCheckout', function(req, res){
               csv:csv
               };
 
-   res.redirect('/storeCheckout');
+  res.redirect('/button')
     con.query('INSERT INTO tbl_checkOut SET?',checkoutPost,  function(err, result){
         if(err) throw err;
 
@@ -228,7 +228,7 @@ app.post('/api/createMembership', function(req, res){
             price: price,
             email:email
         };
-    res.redirect('/membershipCheckout');
+    res.redirect('/notification');
     con.query('INSERT INTO tbl_membership SET?',checkoutPost,  function(err, res){
 
 

@@ -24,7 +24,7 @@ import error from './error';
 import clubs from './dashboardPages/clubs';
 import button from './dashboardPages/buttons';
 import morrisjscharts from './dashboardPages/morrisjsCharts';
-//import registrationComplete from './dashboardPages/registrationComplete';
+import notification from './dashboardPages/notification';
 import Header from '../components/Header';
 
 export default [
@@ -63,7 +63,7 @@ export default [
     children: [
      login,
      button,
-    // registrationComplete,
+      notification,
       home,
       morrisjscharts,
       profile,

@@ -11,16 +11,13 @@ function displayButtons(props, context) {
   context.setTitle(title);
   return (
     <div>
+         <center>
 
-      <div className="row">
-        <div className="col-lg-12">
-          <PageHeader>Buttons</PageHeader>
+
+        <h1> Order complete </h1>
+        <p> Thank you for your order </p>
+    </center>
         </div>
-      </div>
-
-
-
-    </div>
   );
 }
 

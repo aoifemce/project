@@ -2,11 +2,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux'
 import {connect} from 'react-redux';
-import checkout from './checkout.js';
 import firebase from '../firebase.js';
-import classNames from 'classnames';
-import validator from 'validator';
-
 import {Grid, Row, Col, FormControl, Button, Panel, DropdownButton, MenuItem} from 'react-bootstrap';
 
 
@@ -14,28 +10,45 @@ class Checkout extends React.Component {
   constructor () {
     super();
     this.state = {
-      cardNumber: '',
-      csv: '',
       email: '',
       valid: false,
       title: [],
       price: []
     };
-
+this.handleChange = this.handleChange.bind(this);
   }
 
-  onChange = (e) => {
-          var state = this.state;
-          state[e.target.name].value = e.target.value;
+  handleChange (event) {
+    const id = event.target.id;
+    const value = event.target.value;
 
     this.setState({
       [id]: value,
-      valid: this.cardNumber.validity.valid && this.csv.validity.valid && this.email.validity.valid
+      valid: this.email.validity.valid
     });
   };
 
+    componentDidMount() {
+           const infoRef = firebase.database().ref('membership');
+           infoRef.on('value', (snapshot) => {
+             let membership = snapshot.val();
+             let newState = [];
+             for (let item in membership) {
+               newState.push({
+                 id: item,
+                 title: membership[item].title,
+                 price: membership[item].price
+               });
+             }
+             this.setState({
+               membership: newState
+             });
+           });
+         }
+
   render () {
-    const { cardNumber, csv, email, valid,  } = this.state;
+    const { email, valid,  } = this.state;
+
 
     var checkoutForm;
     checkoutForm =
@@ -72,6 +85,7 @@ class Checkout extends React.Component {
                 placeholder="Name on Card"
                 type="name"
                 name="cardName"
+
                 required
               />
             </div>
@@ -79,28 +93,20 @@ class Checkout extends React.Component {
               <FormControl
                 className="form-control"
                 placeholder="Card Number"
-                type="number"
+                type="input"
                 name="cardNumber"
-                minLength={16}
-                maxLength={16}
-                onChange={(event) => this.handleChange(event)}
                 required
               />
             </div>
-             <small>{this.cardNumber ? this.cardNumber.validationMessage : null}</small>
             <div className="form-group">
               <FormControl
                 className="form-control"
                 placeholder="CSV"
                 type="number"
                 name="csv"
-                minLength={3}
-                maxLength={3}
-                onChange={(event) => this.handleChange(event)}
                 required
               />
               </div>
-               <small>{this.csv ? this.csv.validationMessage : null}</small>
               <div className="form-group">
               <FormControl
                 className="form-control"
@@ -116,10 +122,12 @@ class Checkout extends React.Component {
                   placeholder="Email"
                   type="email"
                   name="email"
-
+                  value={email}
+                  onChange={(event) => this.handleChange(event)}
                   required
                 />
               </div>
+       <small>{this.email ? this.email.validationMessage : null}</small>
 
               <div className="form-group">
               <label value={item.title}>{item.title}</label>
@@ -129,7 +137,7 @@ class Checkout extends React.Component {
                    <label value={item.price}>{item.price}</label>
                 </div>
 
-      <Button onClick={e => this.validate(e)} type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
+      <Button type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
     <div>
     </div>
     </fieldset>
@@ -137,14 +145,14 @@ class Checkout extends React.Component {
  </Panel>
  </div>
  )
-})} </div>
-    return (
-      <div>
-        {checkoutForm}
-      </div>
+  })}
+     </div>
+        return (
+        <div>
+            {checkoutForm}
+        </div>
     )
- }
+  }
 }
-
 
 export default Checkout;
