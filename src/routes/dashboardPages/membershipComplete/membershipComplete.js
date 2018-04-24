@@ -14,8 +14,9 @@ class MembershipComplete extends Component {
   render() {
     return (
       <div>
+
         <center>
-           <h1> Membership complete </h1>
+          <PageHeader> Membership Complete </PageHeader>
            <p> Your club has now been registered </p>
        </center>
        </div>

@@ -64,15 +64,14 @@ class Home extends React.Component {
                 <PageHeader style={{ marginLeft: "2em", fontFamily: "monospace", fontSize: "20px", }}>Welcome to Club Connect
                 </PageHeader>
             </center>
-<div style={{backgroundColor: "white"}}>
+            <div>
                <div className="col-lg-3" style={{float: "right"}}>
                    <StatWidget
                    style="panel-primary"
                    footerText="Registration / Login"
                    linkTo='/login'
                  />
-                 </div>
-
+             </div>
             <div className="col-lg-6 col-md-6">
             <Panel
                 header={<span>Number of clubs signed up: {this.state.count} </span>} className="panel-success"
@@ -82,12 +81,12 @@ class Home extends React.Component {
 
        <div className="col-lg-6">
               {contents}
-       </div>
+            </div>
+        </div>
      </div>
-     </div>
-     </div>
+  </div>
 
-        )}
+  )}
 }
 
 

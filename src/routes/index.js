@@ -16,7 +16,6 @@ import login from './login';
 import profile from './dashboardPages/profile';
 import onlinestore from './dashboardPages/onlinestore';
 import failed from './dashboardPages/failed';
-import storeCheckout from './dashboardPages/storeCheckout';
 import membershipReg from './dashboardPages/membershipReg';
 import chat from './dashboardPages/chat';
 import resultsFixtures from './dashboardPages/resultsFixtures';
@@ -72,8 +71,7 @@ export default [
       membershipReg,
       chat,
       resultsFixtures,
-      onlinestore,
-      storeCheckout,
+      onlinestore
 
 
       // place new routes before...

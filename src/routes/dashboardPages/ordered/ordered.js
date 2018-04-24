@@ -12,9 +12,8 @@ function displayOrder(props, context) {
   return (
     <div>
          <center>
+<PageHeader> Order Complete </PageHeader>
 
-
-        <h1> Order complete </h1>
         <p> Thank you for your order </p>
     </center>
         </div>
