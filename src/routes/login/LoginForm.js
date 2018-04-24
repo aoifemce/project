@@ -7,6 +7,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Login.css';
 import history from '../../core/history';
 
+
 class LoginForm extends React.Component {
   constructor () {
     super();
@@ -41,6 +42,7 @@ class LoginForm extends React.Component {
     const { email, password, valid,  } = this.state;
 
     return (
+
       <Panel header={<h3>Please Sign In</h3>}>
         <form role="form" action="/api/checkLogin" method="post">
           <fieldset>
@@ -69,7 +71,7 @@ class LoginForm extends React.Component {
               />
             </div>
             <Button onClick={this.saveData} type="submit" bsSize="large" bsStyle="success" block>Login</Button>
-            <Button onClick = {(event) => { history.push('/clubs');}} bsSize="large" bsStyle="primary" block>Continue as guest</Button>
+
           </fieldset>
         </form>
       </Panel>

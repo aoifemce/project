@@ -17,6 +17,7 @@ import s from './Login.css';
 import history from '../../core/history';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import StatWidget from '../../components/Widget';
 
 const title = 'Log In';
 
@@ -27,8 +28,20 @@ class Login extends React.Component {
       <div className="text-center">
         <h1 className="login-brand-text">Club Connect</h1>
       </div>
+     <div className="row">
+     <div className="col-lg-6 col-md-6">
       <LoginForm />
+     </div>
+     <div className="col-lg-6 col-md-6">
       <RegisterForm />
+      </div>
+      </div>
+      <StatWidget
+          style="panel-primary"
+          headerText="Continue as guest"
+          footerText="Back to home page"
+          linkTo="/home"
+        />
     </div>
 
     );

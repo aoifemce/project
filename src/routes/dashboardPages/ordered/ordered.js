@@ -5,9 +5,9 @@ import Button from 'react-bootstrap/lib/Button';
 import Panel from 'react-bootstrap/lib/Panel';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
 
-const title = 'Buttons';
+const title = 'Order Complete';
 
-function displayButtons(props, context) {
+function displayOrder(props, context) {
   context.setTitle(title);
   return (
     <div>
@@ -22,6 +22,6 @@ function displayButtons(props, context) {
 }
 
 
-displayButtons.contextTypes = { setTitle: PropTypes.func.isRequired };
+displayOrder.contextTypes = { setTitle: PropTypes.func.isRequired };
 
-export default displayButtons;
+export default displayOrder;

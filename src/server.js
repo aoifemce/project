@@ -195,7 +195,7 @@ app.post('/api/createCheckout', function(req, res){
               csv:csv
               };
 
-  res.redirect('/button')
+  res.redirect('/ordered')
     con.query('INSERT INTO tbl_checkOut SET?',checkoutPost,  function(err, result){
         if(err) throw err;
 
