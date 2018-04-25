@@ -155,7 +155,7 @@ class membershipReg extends React.Component {
             }
      return (
         <div className="container-fluid">
-           <PageHeader>Membership Options</PageHeader>
+           <PageHeader>Membership Option</PageHeader>
            {membershipShow}
          </div>
       );
