@@ -38,6 +38,8 @@ class displayOrder extends React.Component {
                 <div>{response.name}</div>
               <label for="address">Address:</label>
                 <div>{response.address}</div>
+               <label for="email">Email:</label>
+                  <div>{response.email}</div>
           </div>
 
      });

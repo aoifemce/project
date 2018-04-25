@@ -90,18 +90,20 @@ this.handleChange = this.handleChange.bind(this);
             <div className="form-group">
               <FormControl
                 className="form-control"
-                placeholder="Card Number"
+                placeholder="Card Number (16 digit number)"
                 type="input"
                 name="cardNumber"
+                pattern=".{16}"
                 required
               />
             </div>
             <div className="form-group">
               <FormControl
                 className="form-control"
-                placeholder="CSV"
-                type="number"
+                placeholder="CSV (3 digit number)"
+                type="input"
                 name="csv"
+                pattern=".{3}"
                 required
               />
               </div>

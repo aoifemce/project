@@ -181,13 +181,15 @@ app.post('/api/createCheckout', function(req, res){
         var cardNo = req.body.cardNo;
         var csv = req.body.csv;
         var expiryDate = req.body.expiryDate;
+        var email = req.body.email;
         var checkoutPost  = {
               name: name,
               address: address,
               cardName:cardName,
               cardNumber:cardNo,
               expiryDate:expiryDate,
-              csv:csv
+              csv:csv,
+              email:email
               };
 
   res.redirect('/ordered')

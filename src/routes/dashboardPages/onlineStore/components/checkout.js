@@ -7,7 +7,26 @@ import {Grid, Row, Col, FormControl, Button, Panel} from 'react-bootstrap';
  var message ='';
 //checkout form when user is ready to checkout their cart
 class Checkout extends React.Component {
+  constructor () {
+    super();
+    this.state = {
+      email: '',
+      valid: false
+    };
+this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange (event) {
+    const id = event.target.id;
+    const value = event.target.value;
+
+    this.setState({
+      [id]: value,
+      valid: this.email.validity.valid
+    });
+  };
  render() {
+  const { email, valid,  } = this.state;
         return (
          <div className="col-md-6">
          <Panel className="checkoutItem" header={<h3>Enter Checkout Details</h3>}>
@@ -45,18 +64,20 @@ class Checkout extends React.Component {
             <div className="form-group">
               <FormControl
                 className="form-control"
-                placeholder="Card Number"
-                type="number"
+                placeholder="Card Number (16 digit number)"
+                type="input"
                 name="cardNo"
+                pattern=".{16}"
                 required
               />
             </div>
             <div className="form-group">
               <FormControl
                 className="form-control"
-                placeholder="CSV"
-                type="number"
+                placeholder="CSV (3 digit number)"
+                type="input"
                 name="csv"
+                pattern=".{3}"
                 required
               />
               </div>
@@ -69,6 +90,18 @@ class Checkout extends React.Component {
                 required
               />
             </div>
+          <div className="form-group">
+            <FormControl
+              className="form-control"
+              placeholder="Email"
+              type="email"
+              name="email"
+              value={email}
+              onChange={(event) => this.handleChange(event)}
+              required
+            />
+          </div>
+         <small>{this.email ? this.email.validationMessage : null}</small>
 
       <Button type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
     </fieldset>
