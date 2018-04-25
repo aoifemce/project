@@ -4,9 +4,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt from 'express-jwt';
-
-// import expressGraphQL from 'express-graphql';
-// import jwt from 'jsonwebtoken';
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import UniversalRouter from 'universal-router';
@@ -14,12 +11,10 @@ import PrettyError from 'pretty-error';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
 import errorPageStyle from './routes/error/ErrorPage.css';
-// import passport from './core/passport';
-// import models from './data/models';
-// import schema from './data/schema';
 import routes from './routes';
 import assets from './assets'; // eslint-disable-line import/no-unresolved
 import { port, auth } from './config';
+
 import con from './db';
 var cors = require('cors')
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -207,16 +202,17 @@ app.post('/api/createCheckout', function(req, res){
 
 });
 
-app.post('/api/createMembership', function(req, res){
+app.post('/api/createMembership', function(req, res, query){
         var name = req.body.name;
-        var membershipType = req.body.membershipType;
+        var membershipType = req.params.membershipType;
         var address = req.body.address;
         var cardName = req.body.cardName;
         var cardNumber = req.body.cardNumber;
         var csv = req.body.csv;
         var expiryDate = req.body.expiryDate;
         var email = req.body.email;
-        var price = req.body.price;
+        var price = req.query.price;
+        console.log(price);
         var checkoutPost  = {
             name: name,
             address: address,

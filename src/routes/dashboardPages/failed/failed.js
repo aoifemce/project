@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react';
 import Panel from 'react-bootstrap/lib/Panel';
 import PageHeader from 'react-bootstrap/lib/PageHeader';
-import Button from 'react-bootstrap/lib/Button';
 import StatWidget from '../../../components/Widget';
 const title = 'failed';
 
-
+//Page shown when login was not successful
 function displayFailed(props, context) {
   context.setTitle(title);
   return (

@@ -1,12 +1,7 @@
 import React, { PropTypes } from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import Panel from 'react-bootstrap/lib/Panel';
-import Modal from 'react-bootstrap/lib/Modal';
-import { FormControl, Checkbox } from 'react-bootstrap';
+import { FormControl, Panel, Button } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Login.css';
-import history from '../../core/history';
-
 
 class LoginForm extends React.Component {
   constructor () {
@@ -34,6 +29,7 @@ class LoginForm extends React.Component {
     this.forceUpdate();
     this.email.focus();
   }
+  // Save to local storage
   saveData() {
   var input = document.getElementById('email').value;
   localStorage.setItem('email', input);
@@ -42,7 +38,7 @@ class LoginForm extends React.Component {
     const { email, password, valid,  } = this.state;
 
     return (
-
+// Login Form
       <Panel header={<h3>Please Sign In</h3>}>
         <form role="form" action="/api/checkLogin" method="post">
           <fieldset>

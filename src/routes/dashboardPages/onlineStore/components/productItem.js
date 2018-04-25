@@ -3,7 +3,7 @@ import React from 'react';
 import {Well, Col, Row, Button} from 'react-bootstrap';
 
 class ProductItem extends React.Component {
-
+//items ready to be added to cart
     render() {
         return (
             <Well>

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Panel, Accordion, Well, Jumbotron, Button, Tabs, Tab, PageHeader } from 'react-bootstrap';
+import { Panel, PageHeader, Button } from 'react-bootstrap';
 import Checkout from './checkout';
 import firebase from '../firebase.js';
 
@@ -29,6 +29,7 @@ class membershipReg extends React.Component {
       });
     }
 
+//Sending membership option to firebase
   handleSubmit(e) {
       e.preventDefault();
       const infoRef = firebase.database().ref('membership');
@@ -47,7 +48,7 @@ class membershipReg extends React.Component {
           showComponent: true,
         });
       }
-
+//getting membership options from firebase
    componentDidMount() {
          const infoRef = firebase.database().ref('membership');
          infoRef.on('value', (snapshot) => {
@@ -65,6 +66,9 @@ class membershipReg extends React.Component {
            });
          });
        }
+       // if a club admin is logged in
+       //show the club admin page(add new membership options)
+       //else show the membership options from firebase
  render() {
     var membershipShow;
 
@@ -118,23 +122,19 @@ class membershipReg extends React.Component {
               }
      return (
         <div>
-        <div className="col-lg-12">
-        <PageHeader>Membership</PageHeader>
-        </div>
-        <div>
-        {membershipShow}
-        </div>
-       <Button onClick={this._onButtonClick} bsStyle="primary" style={buttonStyle}>Sign up for membership here</Button>
-      {this.state.showComponent ?
+         <div className="col-lg-12">
+           <PageHeader>Membership</PageHeader>
+         </div>
+          <div>
+           {membershipShow}
+          </div>
+         <Button onClick={this._onButtonClick} bsStyle="primary" style={buttonStyle}>Sign up for membership here</Button>
+           {this.state.showComponent ?
                 <Checkout /> :
-                null
-             }
-             </div>
-
-
-
+                  null
+            }
+         </div>
       );
-
 }
 }
 

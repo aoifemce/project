@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 
 import {Grid, Row, Col, FormControl, Button, Panel} from 'react-bootstrap';
  var message ='';
-
+//checkout form when user is ready to checkout their cart
 class Checkout extends React.Component {
  render() {
         return (

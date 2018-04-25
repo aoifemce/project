@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Panel, Accordion, Well, Jumbotron, Button, Tabs, Tab, PageHeader } from 'react-bootstrap';
+import { Panel, Button, PageHeader } from 'react-bootstrap';
 import firebase from '../firebase.js';
 import moment from 'moment';
 
@@ -27,7 +27,7 @@ constructor() {
         [e.target.name]: e.target.value
       });
     }
-
+//Adding results and fixtures to firebase
   handleSubmit(e) {
       e.preventDefault();
       const infoRef = firebase.database().ref('resultsFixtures');
@@ -43,7 +43,7 @@ constructor() {
         dateAdded: ''
       });
     }
-
+//getting results and fixtures from firebase
       componentDidMount() {
          const infoRef = firebase.database().ref('resultsFixtures');
          infoRef.on('value', (snapshot) => {
@@ -62,7 +62,9 @@ constructor() {
            });
          });
        }
-
+//if the club admin is logged in
+//show the club admin page (adding new results and fixtures)
+//else- show the results and fixtures from firebase
   render() {
 
   var resultsFixturesShow;
@@ -132,12 +134,12 @@ constructor() {
 
   return (
       <div>
-      <div className="col-lg-12">
-      <PageHeader>Results and Fixtures</PageHeader>
-      </div>
-      <div>
-      {resultsFixturesShow}
-      </div>
+       <div className="col-lg-12">
+         <PageHeader>Results and Fixtures</PageHeader>
+       </div>
+        <div>
+         {resultsFixturesShow}
+        </div>
       </div>
 
  );

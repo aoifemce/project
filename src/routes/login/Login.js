@@ -8,13 +8,9 @@
  */
 
 import React, { PropTypes } from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import Panel from 'react-bootstrap/lib/Panel';
-import Modal from 'react-bootstrap/lib/Modal';
-import { FormControl, Checkbox } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Login.css';
-import history from '../../core/history';
+
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import StatWidget from '../../components/Widget';

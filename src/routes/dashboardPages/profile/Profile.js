@@ -1,12 +1,6 @@
-
 import React, { PropTypes, Component } from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import Panel from 'react-bootstrap/lib/Panel';
-import Pagination from 'react-bootstrap/lib/Pagination';
-import PageHeader from 'react-bootstrap/lib/PageHeader';
-import Well from 'react-bootstrap/lib/Well';
+import {PageHeader, Panel} from 'react-bootstrap';
 import axios from 'axios';
-
 
 const title = 'Admin Information';
 
@@ -16,9 +10,8 @@ class displayProfile extends React.Component {
        this.state = {
          profile: []
        };
-
   }
-
+//Getting club information from the server
      componentDidMount(){
         let emailSaved = localStorage.getItem('email');
         let currentComponent = this;
@@ -29,11 +22,9 @@ class displayProfile extends React.Component {
              });
 
          })
-
 }
+//outputting club information from the server
    render () {
-
-
    const contents = this.state.profile.map(function(response){
       return <div>
       <label for="adminName">Admin Name:</label>

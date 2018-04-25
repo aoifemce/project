@@ -8,6 +8,7 @@ export function addProduct({id, title, description, price}) {
         payload: {id, title, description, price}
     }
 }
+
 export function updateProduct({id, title}) {
     return {
         type: UPDATE_PRODUCT,

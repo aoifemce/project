@@ -29,7 +29,7 @@ class Cart extends React.Component {
         let units = 1;
         this.props.updateItemUnits({id, units})
     }
-
+//items within the cart
     cartList() {
         return (
             this.props.cart.map(cartItem => {
@@ -43,7 +43,7 @@ class Cart extends React.Component {
             })
         );
     }
-
+//cart total
     cartTotal() {
         return (
         <div className="col-lg-8 col-md-8" >

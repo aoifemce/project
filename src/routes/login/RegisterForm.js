@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
-import Button from 'react-bootstrap/lib/Button';
-import Panel from 'react-bootstrap/lib/Panel';
-import Modal from 'react-bootstrap/lib/Modal';
-import { FormControl, Checkbox } from 'react-bootstrap';
+import { FormControl, Panel, Button } from 'react-bootstrap';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Login.css';
 
@@ -34,7 +31,7 @@ class RegisterForm extends React.Component {
 
   render () {
     const { email, password, valid,  } = this.state;
-
+// Registration form
     return (
       <Panel header={<h3>Please Register Your Club</h3>}>
 

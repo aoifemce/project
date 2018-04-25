@@ -3,7 +3,7 @@ import React from 'react';
 import {Col, Row, Panel, Button, Label, Badge} from 'react-bootstrap';
 
 class CartItem extends React.Component {
-
+//Items within cart
     render() {
         return (
             <Panel className='cartItem'>

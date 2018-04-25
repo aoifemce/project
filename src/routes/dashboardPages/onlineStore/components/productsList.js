@@ -7,7 +7,7 @@ import {Grid, Row, Col} from 'react-bootstrap';
 import ProductItem from "./productItem";
 import Cart from './cart';
 
-
+//list of all product items
 class ProductsList extends React.Component {
     dispachAddToCart(product) {
         this.props.addToCart(product);

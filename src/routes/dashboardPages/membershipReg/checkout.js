@@ -1,9 +1,7 @@
 "use strict";
 import React from 'react';
-import { bindActionCreators } from 'redux'
-import {connect} from 'react-redux';
 import firebase from '../firebase.js';
-import {Grid, Row, Col, FormControl, Button, Panel, DropdownButton, MenuItem} from 'react-bootstrap';
+import {FormControl, Button, Panel} from 'react-bootstrap';
 
 
 class Checkout extends React.Component {
@@ -27,7 +25,7 @@ this.handleChange = this.handleChange.bind(this);
       valid: this.email.validity.valid
     });
   };
-
+//Getting membership options from firebase
     componentDidMount() {
            const infoRef = firebase.database().ref('membership');
            infoRef.on('value', (snapshot) => {
@@ -49,7 +47,7 @@ this.handleChange = this.handleChange.bind(this);
   render () {
     const { email, valid,  } = this.state;
 
-
+//if the user clicks the checkout button
     var checkoutForm;
     checkoutForm =
     <div>

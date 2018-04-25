@@ -1,13 +1,12 @@
 import React, { PropTypes, Component } from 'react';
-import Panel from 'react-bootstrap/lib/Panel';
 import moment from 'moment';
 import axios from 'axios';
 
 const title = 'Chat';
 
-import './App.css';
 import firebase from '../firebase.js';
 
+//Styles
 const textareaStyle = {
    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
       backgroundColor: 'white',
@@ -51,6 +50,7 @@ class Chat extends Component {
       [e.target.name]: e.target.value
     });
   }
+  //Adding chat message to firebase on submit
   handleSubmit(e) {
     e.preventDefault();
     const itemsRef = firebase.database().ref('items');
@@ -66,6 +66,7 @@ class Chat extends Component {
       dateAdded: ''
     });
   }
+  //Getting chat messages from firebase
   componentDidMount() {
     const itemsRef = firebase.database().ref('items');
     itemsRef.on('value', (snapshot) => {
@@ -84,7 +85,7 @@ class Chat extends Component {
       });
     });
   }
-
+//Message box and list
   render() {
     return (
       <div className='container' style={containerStyle}>
