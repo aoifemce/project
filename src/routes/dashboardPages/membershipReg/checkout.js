@@ -11,7 +11,9 @@ class Checkout extends React.Component {
       email: '',
       valid: false,
       title: [],
-      price: []
+      price: [],
+      selectedPrice:'',
+      selectedMembershipType:''
     };
 this.handleChange = this.handleChange.bind(this);
   }
@@ -54,9 +56,34 @@ this.handleChange = this.handleChange.bind(this);
      {this.state.membership.map((item) => {
         return (
     <div className="col-md-6">
-         <Panel className="checkoutItem" header={<h3>Enter Checkout Details</h3>}>
+         <Panel className="checkoutItem" header={<h3>{item.title}</h3>}>
          <form role="form" action="api/createMembership"  method="post">
           <fieldset>
+          <h3>Membership Type: {item.title}</h3>
+          <h4>Price: {item.price}</h4>
+
+         <div className="form-group">
+             <FormControl
+               className="form-control"
+               placeholder="Membership Title"
+               type="hidden"
+               value={item.title}
+               name="membershipType"
+
+
+               required
+             />
+           </div>
+           <div className="form-group">
+              <FormControl
+                className="form-control"
+                placeholder="Membership Price"
+                type="hidden"
+                value={item.price}
+                name="price"
+                required
+              />
+            </div>
             <div className="form-group">
               <FormControl
                 type="name"
@@ -83,7 +110,6 @@ this.handleChange = this.handleChange.bind(this);
                 placeholder="Name on Card"
                 type="name"
                 name="cardName"
-
                 required
               />
             </div>
@@ -111,6 +137,7 @@ this.handleChange = this.handleChange.bind(this);
               <FormControl
                 className="form-control"
                 placeholder="Expiry Date"
+                min="2018-04"
                 type="month"
                 name="expiryDate"
                 required
@@ -128,16 +155,7 @@ this.handleChange = this.handleChange.bind(this);
                 />
               </div>
        <small>{this.email ? this.email.validationMessage : null}</small>
-
-              <div className="form-group">
-              <label value={item.title}>{item.title}</label>
-
-            </div>
-                <div className="form-group">
-                   <label value={item.price}>{item.price}</label>
-                </div>
-
-      <Button type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
+         <Button type="submit" bsSize="large" bsStyle="success" block>Checkout</Button>
     <div>
     </div>
     </fieldset>

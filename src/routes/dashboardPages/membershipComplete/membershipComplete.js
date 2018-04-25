@@ -33,6 +33,10 @@ class MembershipComplete extends Component {
          return <div>
          <label for="orderNo">Membership Number:</label>
                  <div id="orderNo">{response.membershipId}</div>
+                 <label for="membershipType">Membership Type:</label>
+                <div>{response.membershipType}</div>
+                <label for="price">Price:</label>
+                 <div>{response.price}</div>
                <label for="name">Name:</label>
                  <div>{response.name}</div>
                <label for="address">Address:</label>

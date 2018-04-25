@@ -22,12 +22,18 @@ class membershipReg extends React.Component {
       this._onButtonClick = this._onButtonClick.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.removeItem = this.removeItem.bind(this);
     }
   handleChange(e) {
       this.setState({
         [e.target.name]: e.target.value
       });
     }
+
+   removeItem(itemId) {
+     const itemRef = firebase.database().ref(`/membership/${itemId}`);
+     itemRef.remove();
+   }
 
 //Sending membership option to firebase
   handleSubmit(e) {
@@ -77,17 +83,25 @@ class membershipReg extends React.Component {
      <div>
      {this.state.membership.map((item) => {
                return (
-         <div className="row">
             <div className="col-lg-6">
-              <Panel
-                header={<span>Membership Type: {item.title}</span>} className="panel-success"
-                footer={<span>Price: {item.price} <p style={{ fontSize: "13px", color: "#999"}}> {item.dateAdded} </p></span>}
-                 >
-              </Panel>
+           <div className="panel panel-success">
+              <div className="panel-heading">Membership Options</div>
+              <div className="panel-body">
+              <span><b>Type: </b>{item.title}</span>
+              <br/>
+              <span><b>Price: </b>{item.price}</span>
+              </div>
             </div>
-          </div>
+            </div>
           )
           })}
+          <div className="row">
+          <Button onClick={this._onButtonClick} bsStyle="primary">Sign up for membership here</Button>
+          </div>
+             {this.state.showComponent ?
+                  <Checkout /> :
+                    null
+              }
           </div>;
       } else {
         membershipShow =  <div>
@@ -118,21 +132,31 @@ class membershipReg extends React.Component {
                <button style={{marginTop:'1em'}} className='btn btn-primary btn-lg' >Send</button>
               </form>
               </Panel>
+               {this.state.membership.map((item) => {
+                    return (
+              <div className="col-lg-6">
+               <div className="panel panel-success">
+                  <div className="panel-heading">Membership Options</div>
+                  <div className="panel-body">
+                  <span><b>Type: </b>{item.title}</span>
+                  <br/>
+                  <span><b>Price: </b>{item.price}</span>
+                  </div>
+                  <div className="panel-footer">
+                   <Button className="btn btn-danger" onClick={() => this.removeItem(item.id)}>Delete item </Button>
+                   </div>
+                </div>
+                </div>
+              )
+             })}
               </div>
-              }
-     return (
-        <div>
-         <div className="col-lg-12">
-           <PageHeader>Membership</PageHeader>
-         </div>
-          <div>
-           {membershipShow}
-          </div>
-         <Button onClick={this._onButtonClick} bsStyle="primary" style={buttonStyle}>Sign up for membership here</Button>
-           {this.state.showComponent ?
-                <Checkout /> :
-                  null
+
+
             }
+     return (
+        <div className="container-fluid">
+           <PageHeader>Membership Options</PageHeader>
+           {membershipShow}
          </div>
       );
 }

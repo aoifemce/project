@@ -20,6 +20,7 @@ constructor() {
           }
      this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+     this.removeItem = this.removeItem.bind(this);
     }
 
    handleChange(e) {
@@ -62,6 +63,11 @@ constructor() {
            });
          });
        }
+
+       removeItem(itemId) {
+         const itemRef = firebase.database().ref(`/resultsFixtures/${itemId}`);
+         itemRef.remove();
+       }
 //if the club admin is logged in
 //show the club admin page (adding new results and fixtures)
 //else- show the results and fixtures from firebase
@@ -74,20 +80,14 @@ constructor() {
           <div>
           {this.state.resultsFixtures.map((item) => {
                     return (
-              <div className="row">
                  <div className="col-lg-6">
-                   <Panel
-                     header={<span>Results:</span>} className="panel-success"
-                     footer={<span>{item.results} <p style={{ fontSize: "13px", color: "#999"}}> {item.dateAdded} </p></span>}
-                      >
-                   </Panel>
-                 </div>
-                 <div className="col-lg-6">
-                   <Panel
-                     header={<span>Fixtures:</span>} className="panel-success"
-                     footer={<span>{item.fixtures} <p style={{ fontSize: "13px", color: "#999"}}> {item.dateAdded} </p></span>}
-                   >
-                   </Panel>
+                 <div className="panel panel-success">
+                   <div className="panel-heading">Date: {item.dateAdded}</div>
+                   <div className="panel-body">
+                   <span><b>Results: </b>{item.results}</span>
+                   <br/>
+                   <span><b>Fixtures: </b>{item.fixtures}</span>
+                   </div>
                  </div>
                </div>
                )
@@ -96,7 +96,7 @@ constructor() {
 
        } else {
         resultsFixturesShow =  <div>
-          <Panel header={<h3>Results</h3>}>
+          <Panel>
             <form onSubmit={this.handleSubmit} >
               <div className="form-group">
                  <textarea
@@ -127,13 +127,30 @@ constructor() {
                <button style={{marginTop:'1em'}} className='btn btn-primary btn-lg' >Send</button>
               </form>
               </Panel>
+              {this.state.resultsFixtures.map((item) => {
+                  return (
+               <div className="col-lg-6">
+               <div className="panel panel-success">
+                  <div className="panel-heading">Date: {item.dateAdded}</div>
+                  <div className="panel-body">
+                  <span><b>Results: </b>{item.results}</span>
+                  <br/>
+                  <span><b>Fixtures: </b>{item.fixtures}</span>
+                  </div>
+                  <div className="panel-footer">
+                   <Button className="btn btn-danger" onClick={() => this.removeItem(item.id)}>Delete item </Button>
+                   </div>
+                </div>
+                </div>
+             )
+             })}
               </div>
         ;
 
        }
 
   return (
-      <div>
+      <div className="container-fluid">
        <div className="col-lg-12">
          <PageHeader>Results and Fixtures</PageHeader>
        </div>

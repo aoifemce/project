@@ -206,14 +206,14 @@ app.post('/api/createCheckout', function(req, res){
 
 app.post('/api/createMembership', function(req, res, query){
         var name = req.body.name;
-        var membershipType = req.params.membershipType;
+        var membershipType = req.body.membershipType;
         var address = req.body.address;
         var cardName = req.body.cardName;
         var cardNumber = req.body.cardNumber;
         var csv = req.body.csv;
         var expiryDate = req.body.expiryDate;
         var email = req.body.email;
-        var price = req.query.price;
+        var price = req.body.price;
         console.log(price);
         var checkoutPost  = {
             name: name,
@@ -228,7 +228,7 @@ app.post('/api/createMembership', function(req, res, query){
         };
     res.redirect('/membershipComplete');
     con.query('INSERT INTO tbl_membership SET?',checkoutPost,  function(err, res){
-
+      console.log(res)
 
         if(err) throw err;
 
