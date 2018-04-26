@@ -5,11 +5,6 @@ import firebase from '../firebase.js';
 
 const title = 'Membership Registration';
 
-var buttonStyle = {
-  float: 'right',
-  margin: '-7px -10px 0px 0px'
-}
-
 class membershipReg extends React.Component {
    constructor(props) {
       super(props);
@@ -85,7 +80,7 @@ class membershipReg extends React.Component {
                return (
             <div className="col-lg-6">
            <div className="panel panel-success">
-              <div className="panel-heading">Membership Options</div>
+              <div className="panel-heading">Membership Option</div>
               <div className="panel-body">
               <span><b>Type: </b>{item.title}</span>
               <br/>
@@ -136,7 +131,7 @@ class membershipReg extends React.Component {
                     return (
               <div className="col-lg-6">
                <div className="panel panel-success">
-                  <div className="panel-heading">Membership Options</div>
+                  <div className="panel-heading">Membership Option</div>
                   <div className="panel-body">
                   <span><b>Type: </b>{item.title}</span>
                   <br/>

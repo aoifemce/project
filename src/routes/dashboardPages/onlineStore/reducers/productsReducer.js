@@ -8,9 +8,7 @@ const INIT_PRODUCTS = [
     {id:6, title: 'Scarf', description: 'Club scarf', price: 10}
 ];
 export default function productsReducer(state=INIT_PRODUCTS, action={}) {
-    // PLEASE NOTE:
-    // below actions are unused
-    // kept for instance - Ajinkya
+
     switch(action.type) {
         case 'ADD_PRODUCT':
             return state.concat(action.payload);

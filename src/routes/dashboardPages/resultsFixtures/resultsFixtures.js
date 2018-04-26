@@ -5,10 +5,6 @@ import moment from 'moment';
 
 const title = 'Results and Fixtures';
 
-var buttonStyle = {
-  float: 'right',
-  margin: '-7px -10px 0px 0px'
-}
 
 class resultsFixtures extends React.Component {
 constructor() {

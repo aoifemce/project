@@ -86,6 +86,7 @@ this.handleChange = this.handleChange.bind(this);
                 className="form-control"
                 placeholder="Expiry Date"
                 type="month"
+                 min="2018-04"
                 name="expiryDate"
                 required
               />

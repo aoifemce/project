@@ -11,9 +11,7 @@ class Checkout extends React.Component {
       email: '',
       valid: false,
       title: [],
-      price: [],
-      selectedPrice:'',
-      selectedMembershipType:''
+      price: []
     };
 this.handleChange = this.handleChange.bind(this);
   }
@@ -59,8 +57,8 @@ this.handleChange = this.handleChange.bind(this);
          <Panel className="checkoutItem" header={<h3>{item.title}</h3>}>
          <form role="form" action="api/createMembership"  method="post">
           <fieldset>
-          <h3>Membership Type: {item.title}</h3>
-          <h4>Price: {item.price}</h4>
+          <center><h3>Type: {item.title}</h3>
+          <h4>Price: {item.price}</h4></center>
 
          <div className="form-group">
              <FormControl
@@ -69,8 +67,6 @@ this.handleChange = this.handleChange.bind(this);
                type="hidden"
                value={item.title}
                name="membershipType"
-
-
                required
              />
            </div>
